@@ -39,6 +39,12 @@ void AudioTime::update(uint64_t frame, SoundRecordingAudioData *AudioData) {
         if (mTimeCallback != nullptr) mTimeCallback->EndOfFile(this);
         EndOfFileCalled = true;
     }
+
+    previousFrame = currentFrame;
+    currentFrame = frame;
+    totalFrames = frame;
+    if (currentFrame != previousFrame) if (mTimeCallback != nullptr) mTimeCallback->frame(this);
+
     nanosecondsTotal =
             (static_cast<double>(frame) * divisionValue().nanoseconds) / static_cast<double>(AudioData->sampleRate);
     nanosecondsPrevious = nanoseconds;

@@ -5,8 +5,13 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.jraska.console.Console
 import liblayout.Builder
 import libmedia.Media
 
@@ -21,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     var media: Media? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        media = Media(this)
         val build = Builder(this)
         build
             .row(1) {
@@ -30,9 +36,26 @@ class MainActivity : AppCompatActivity() {
                     height = build.currentColumn!!.sizeFromTop
                 )
             }
+            .row(1) {
+                ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).also {
+                    it.max = 1440
+                    it.min = 0
+                    Thread() {
+                        var previousFrame = 0
+                        var currentFrame = 0
+                        while(true) {
+                            previousFrame = currentFrame
+                            currentFrame = media!!.currentFrame()
+                            if (currentFrame != previousFrame) {
+                                it.progress = currentFrame
+                                Log.i("PLAYHEAD", "currentFrame is $currentFrame, previousFrame is $previousFrame")
+                            }
+                        }
+                    }.start()
+                }
+            }
             .build()
-        media = Media(this)
-            .init()
+            media!!.init()
 //            .loadMediaPath("/sdcard/RAW_FILE/mp3/00001240.mp3")
 //            .loadMediaPath("/sdcard/Music/SuperpoweredPlayer Demo.mp3")
 //            .loadMediaPath("/sdcard/Download/11ms.wav")
@@ -78,6 +101,7 @@ class MainActivity : AppCompatActivity() {
 //       manually set from the activity and not used in any layout.
 @SuppressLint("ViewConstructor")
 internal class WaveformView(context: Context, width: Int, height: Int) : View(context) {
+
     private val mBitmap: Bitmap
     private val mStartTime: Long
 

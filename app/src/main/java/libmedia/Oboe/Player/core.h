@@ -11,18 +11,17 @@
 #include "../AudioEngine.h"
 #include <android/asset_manager_jni.h>
 
+
 oboe::AudioStream *stream {nullptr};
 oboe::AudioStreamBuilder streamBuilder;
 AudioEngine AudioEngine;
 Mixer Mixer;
 AAssetManager *mAssetManager {nullptr};
-SoundRecording *currentAudioTrack {nullptr};
 
+SoundRecording *currentAudioTrack {nullptr};
 #include "internal/looper.h"
 Looper Looper;
-
 #include "internal/callback.h"
 CALLBACK CALLBACK;
-
 
 #endif //MEDIA_PLAYER_PRO_CORE_H

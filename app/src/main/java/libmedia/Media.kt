@@ -154,6 +154,8 @@ class Media(private val activity: Activity) {
         return this
     }
 
+    fun currentFrame(): Int = Oboe_CurrentFrame();
+
     // Functions implemented in the native library.
 
     // Oboe
@@ -164,5 +166,6 @@ class Media(private val activity: Activity) {
     private external fun Oboe_Stop()
     private external fun Oboe_Loop(value: Boolean)
     private external fun Oboe_Looper(start: Double, end: Double, timing: Int)
+    private external fun Oboe_CurrentFrame(): Int
     private external fun Oboe_Cleanup()
 }

@@ -11,7 +11,9 @@
 #include <chrono>
 #include <cmath>
 #include <jni.h>
+#include <android/bitmap.h>
 #include "../Oboe/audio/SoundRecordingAudioData.h"
+#include "../waveform/timestats.h"
 
 void AUDIOTIMECHECK(char * name, int64_t now, int64_t last, int64_t increment, int64_t min, int64_t max);
 
@@ -38,6 +40,9 @@ public:
     double hoursTotal = 0;
     double hours = 0;
     double hoursPrevious = 0;
+    uint64_t currentFrame = 0;
+    uint64_t previousFrame = 0;
+    uint64_t totalFrames = 0;
 
     double cb = 0;
     bool StartOfFile = false;
@@ -129,6 +134,7 @@ public:
         virtual void minute(AudioTime * currentTime) {/* Stub */}
         virtual void hourTenth(AudioTime * currentTime) {/* Stub */}
         virtual void hour(AudioTime * currentTime) {/* Stub */}
+        virtual void frame(AudioTime *currentTime) {/* Stub */}
     };
 
     Callback *mTimeCallback = nullptr;

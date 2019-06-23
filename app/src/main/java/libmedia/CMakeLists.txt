@@ -15,6 +15,7 @@ add_library (
         Oboe/audio/Mixer.cpp
         Oboe/Player.cpp
         waveform/timestats.cpp
+        waveform/pixelTypes.cpp
         waveform/waveform.cpp
         waveform/TimeStretch.cpp
         waveform/AudioTools.cpp

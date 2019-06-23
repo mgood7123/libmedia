@@ -16,6 +16,8 @@ public:
     class Shorten {
     public:
         static void test(int16_t in[], uint64_t inSamples, int16_t out[], uint64_t outSamples);
+
+        static uint64_t FrameToStretchedFrame(uint64_t inSamples, uint64_t outSamples, uint64_t wanted);
     };
 };
 
