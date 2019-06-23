@@ -4,10 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Point
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import liblayout.Builder
 import libmedia.Media
 
 class MainActivity : AppCompatActivity() {
@@ -21,22 +21,30 @@ class MainActivity : AppCompatActivity() {
     var media: Media? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val display = windowManager.defaultDisplay
-        val displaySize = Point()
-        display.getSize(displaySize)
-        setContentView(PlasmaView(this, displaySize.x, displaySize.y/2))
+        val build = Builder(this)
+        build
+            .row(1) {
+                WaveformView(
+                    context = this,
+                    width = build.currentColumn!!.sizeFromLeft,
+                    height = build.currentColumn!!.sizeFromTop
+                )
+            }
+            .build()
         media = Media(this)
             .init()
 //            .loadMediaPath("/sdcard/RAW_FILE/mp3/00001240.mp3")
 //            .loadMediaPath("/sdcard/Music/SuperpoweredPlayer Demo.mp3")
-            .loadMediaPath("/sdcard/Download/11ms.wav")
+//            .loadMediaPath("/sdcard/Download/11ms.wav")
+            .loadMediaAsset("FUNKY_HOUSE.raw")
+//            .loadMediaAsset("CLAP.raw")
             .loop(true)
             // test loopers
-            .addLooper("1/4", 0, 250, Media.LooperTiming().milliseconds)
-            .addLooper("1/2", 60, 300, Media.LooperTiming().milliseconds)
-            .addLooper("1/1", 0, 1, Media.LooperTiming().seconds)
-            .setLooper("1/2")
-//            .play()
+//            .addLooper("1/4", 0, 250, Media.LooperTiming().milliseconds)
+//            .addLooper("1/2", 60, 300, Media.LooperTiming().milliseconds)
+//            .addLooper("1/1", 0, 1, Media.LooperTiming().seconds)
+//            .setLooper("1/2")
+            .play()
 
 //        Thread {
 //            while(true) {
@@ -64,17 +72,17 @@ class MainActivity : AppCompatActivity() {
 
 }
 
-// Custom view for rendering plasma.
+// Custom view for rendering waveform.
 //
 // Note: suppressing lint warning for ViewConstructor since it is
 //       manually set from the activity and not used in any layout.
 @SuppressLint("ViewConstructor")
-internal class PlasmaView(context: Context, width: Int, height: Int) : View(context) {
+internal class WaveformView(context: Context, width: Int, height: Int) : View(context) {
     private val mBitmap: Bitmap
     private val mStartTime: Long
 
-    // implementend by libplasma.so
-    private external fun renderPlasma(bitmap: Bitmap, time_ms: Long)
+    // implementend by libwaveform.so
+    private external fun renderWaveform(bitmap: Bitmap, time_ms: Long)
 
     init {
         mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
@@ -82,7 +90,7 @@ internal class PlasmaView(context: Context, width: Int, height: Int) : View(cont
     }
 
     override fun onDraw(canvas: Canvas) {
-        renderPlasma(mBitmap, System.currentTimeMillis() - mStartTime)
+        renderWaveform(mBitmap, System.currentTimeMillis() - mStartTime)
         canvas.drawBitmap(mBitmap, 0f, 0f, null)
         // force a redraw, with a different time-based pattern.
         invalidate()

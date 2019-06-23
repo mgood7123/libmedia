@@ -5,25 +5,30 @@
 #ifndef MEDIA_PLAYER_PRO_PIXELTYPES_H
 #define MEDIA_PLAYER_PRO_PIXELTYPES_H
 
+int pixelFrames = 0;
+
 void pixelDraw_RGB_565(AndroidBitmapInfo *info, void *pixels, int16_t row, int16_t column, uint16_t colour) {
     ((uint16_t*)((char*)pixels + static_cast<uint32_t>(info->stride*row)))[column] = colour;
+    pixelFrames++;
 }
-// usage: drawPixel<uint32_t>(pImage, 1, 0, 0xFFFFFF00u, 16);
+// usage: pixelDraw<uint32_t>(pImage, 1, 0, 0xFFFFFF00u, 16);
 template<typename T>
-void drawPixel2(void *pixels, int16_t row, int16_t column, T colour, uint32_t stride)
+void pixelDraw2(void *pixels, int16_t row, int16_t column, T colour, uint32_t stride)
 {
     T *p = reinterpret_cast<T*>(pixels);
     p[(row*(stride/sizeof(T))) + column] = colour;
+    pixelFrames++;
 }
 
 template<typename T>
-void drawPixel(void *pixels, int16_t row, int16_t column, T colour, uint32_t stride)
+void pixelDraw(void *pixels, int16_t row, int16_t column, T colour, uint32_t stride)
 {
     T *p = reinterpret_cast<T*>(
             reinterpret_cast<uint8_t*>(pixels) + (stride * row)
     );
 
     p[column] = colour;
+    pixelFrames++;
 }
 
 //

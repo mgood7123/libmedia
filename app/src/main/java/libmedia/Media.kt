@@ -64,7 +64,12 @@ class Media(private val activity: Activity) {
         p.requestAllRemaining()
         while (!p.checkAll()) Thread.sleep(1)
 //        if (type == Type().Superpowered) Superpowered_OpenFilePath(path)                            // open audio file from storage
-        Oboe_LoadTrackFromAssets(activity.assets)
+//        Oboe_LoadTrackFromAssets(activity.assets)
+        return this
+    }
+
+    fun loadMediaAsset(asset: String): Media {
+        Oboe_LoadTrackFromAssets(asset, activity.assets)
         return this
     }
 
@@ -153,7 +158,7 @@ class Media(private val activity: Activity) {
 
     // Oboe
     private external fun Oboe_Init(sampleRate: Int, framesPerBurst: Int)
-    private external fun Oboe_LoadTrackFromAssets(assetManager: AssetManager)
+    private external fun Oboe_LoadTrackFromAssets(asset: String, assetManager: AssetManager)
     private external fun Oboe_Play()
     private external fun Oboe_Pause()
     private external fun Oboe_Stop()

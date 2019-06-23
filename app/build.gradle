@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 def libmediaPath = "src/main/java/libmedia"
 
@@ -36,7 +36,7 @@ android { // main settings for your application
             path "${libmediaPath}/CMakeLists.txt"
         }
     }
-    ndkVersion = '19.2.5345600'
+    ndkVersion = '20.0.5594570'
 }
 
 dependencies {

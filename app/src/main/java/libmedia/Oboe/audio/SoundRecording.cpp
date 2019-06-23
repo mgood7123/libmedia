@@ -61,8 +61,8 @@ void SoundRecording::renderAudio(int16_t *targetData, int64_t totalFrames, Sound
     }
 }
 
-extern const int16_t *PLASMAAUDIODATA;
-extern uint64_t PLASMAAUDIODATATOTALFRAMES;
+extern const int16_t *WAVEFORMAUDIODATA;
+extern uint64_t WAVEFORMAUDIODATATOTALFRAMES;
 
 SoundRecording * SoundRecording::loadFromAssets(AAssetManager *assetManager, const char *filename, int64_t SampleRate, int64_t mChannelCount) {
 
@@ -79,7 +79,7 @@ SoundRecording * SoundRecording::loadFromAssets(AAssetManager *assetManager, con
 
     // Load it into memory
     const int16_t *audioBuffer = static_cast<const int16_t*>(AAsset_getBuffer(asset));
-    PLASMAAUDIODATA = audioBuffer;
+    WAVEFORMAUDIODATA = audioBuffer;
 
     if (audioBuffer == nullptr){
         LOGE("Could not get buffer for track");
@@ -90,7 +90,7 @@ SoundRecording * SoundRecording::loadFromAssets(AAssetManager *assetManager, con
     // each sample is 2 bytes and
     // it's a stereo recording which has 2 samples per frame.
     const uint64_t totalFrames = trackSize / (2 * mChannelCount);
-    PLASMAAUDIODATATOTALFRAMES = totalFrames;
+    WAVEFORMAUDIODATATOTALFRAMES = totalFrames;
     SoundRecordingAudioData * AudioData = new SoundRecordingAudioData(totalFrames, mChannelCount, SampleRate);
     AudioTime * allFrames = new AudioTime();
     allFrames->update(totalFrames, AudioData);

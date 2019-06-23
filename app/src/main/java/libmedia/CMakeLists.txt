@@ -14,8 +14,10 @@ add_library (
         Oboe/audio/SoundRecording.cpp
         Oboe/audio/Mixer.cpp
         Oboe/Player.cpp
-        plasma/timestats.cpp
-        plasma/plasma.cpp
+        waveform/timestats.cpp
+        waveform/waveform.cpp
+        waveform/TimeStretch.cpp
+        waveform/AudioTools.cpp
 )
 
 target_link_libraries (
