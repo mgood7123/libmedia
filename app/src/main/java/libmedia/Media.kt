@@ -3,8 +3,16 @@ package libmedia
 import android.app.Activity
 import android.content.Context
 import android.content.res.AssetManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.media.AudioManager
+import android.os.VibrationEffect
+import android.util.AttributeSet
 import android.util.Log
+import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.libperm.PermissionManager
 import java.io.IOException
 
@@ -156,6 +164,12 @@ class Media(private val activity: Activity) {
 
     fun currentFrame(): Int = Oboe_CurrentFrame();
 
+    fun WaveformView(context: Context, height: Int, width: Int): ConstraintLayout =
+        internal().WaveformView_(context, height, width)
+
+    fun WaveformView(context: Context, height: Int, width: Int, media: Media): ConstraintLayout =
+        internal().WaveformView_(context, height, width, media)
+
     // Functions implemented in the native library.
 
     // Oboe
@@ -168,4 +182,120 @@ class Media(private val activity: Activity) {
     private external fun Oboe_Looper(start: Double, end: Double, timing: Int)
     private external fun Oboe_CurrentFrame(): Int
     private external fun Oboe_Cleanup()
+
+    private inner class internal {
+        internal inner class WaveformView_ : ConstraintLayout {
+
+            private var height_ = 0;
+            private var width_ = 0;
+            private var media: Media? = null
+
+            constructor(context: Context, height: Int, width: Int) :
+                    super(context) {
+                height_ = height
+                width_ = width
+                initView()
+            }
+            constructor(context: Context, height: Int, width: Int, media: Media) :
+                    super(context) {
+                height_ = height
+                width_ = width
+                this.media = media
+                initView()
+            }
+
+
+
+            constructor(context: Context, height: Int, width: Int, attrs: AttributeSet) :
+                    super(context, attrs) {
+                height_ = height
+                width_ = width
+                initView()
+            }
+            constructor(context: Context, height: Int, width: Int, media: Media, attrs: AttributeSet) :
+                    super(context, attrs) {
+                height_ = height
+                width_ = width
+                this.media = media
+                initView()
+            }
+
+
+
+            constructor(context: Context, height: Int, width: Int, attrs: AttributeSet, defStyleAttr: Int) :
+                    super(context, attrs, defStyleAttr) {
+                height_ = height
+                width_ = width
+                initView()
+            }
+            constructor(context: Context, height: Int, width: Int, media: Media, attrs: AttributeSet, defStyleAttr: Int) :
+                    super(context, attrs, defStyleAttr) {
+                height_ = height
+                width_ = width
+                this.media = media
+                initView()
+            }
+
+            fun initView() {
+                addView(
+                    WaveformView__(context, width_, height_)
+                )
+                if (media != null) addView(
+                    MyView__(context, height_).also {
+                        Thread() {
+                            var currentFrame = 0
+                            while (true) {
+                                val previousFrame = currentFrame
+                                currentFrame = media!!.currentFrame()
+                                if (currentFrame != previousFrame) {
+                                    it.left = currentFrame
+                                }
+                            }
+                        }.start()
+                    }
+                )
+            }
+        }
+
+        private inner class WaveformView__(context: Context, width_: Int, height_: Int) : View(context) {
+
+            private val mBitmap: Bitmap
+            private val mStartTime: Long
+
+            // implementend by libwaveform.so
+            private external fun renderWaveform(bitmap: Bitmap, time_ms: Long)
+
+            init {
+                mBitmap = Bitmap.createBitmap(width_, height_, Bitmap.Config.RGB_565)
+                mStartTime = System.currentTimeMillis()
+            }
+
+            override fun onDraw(canvas: Canvas) {
+                renderWaveform(mBitmap, System.currentTimeMillis() - mStartTime)
+                canvas.drawBitmap(mBitmap, 0f, 0f, null)
+                // force a redraw, with a different time-based pattern.
+                invalidate()
+            }
+        }
+
+        internal inner class MyView__(context: Context, val height_: Int) : View(context) {
+
+            internal var paint: Paint? = null
+
+            init {
+                paint = Paint()
+                paint!!.color = Color.BLUE
+                paint!!.strokeWidth = 5f
+                paint!!.style = Paint.Style.STROKE
+            }
+
+            override fun onDraw(canvas: Canvas) {
+                // TODO Auto-generated method stub
+                super.onDraw(canvas)
+                val offset: Float = 0f
+                canvas.drawRect(offset, 0f, offset, height_.toFloat(), paint!!)
+            }
+
+        }
+    }
 }

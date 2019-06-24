@@ -114,7 +114,7 @@ static void fill_waveform(AndroidBitmapInfo *info, void *pixels)
 
 #include "timestats.h"
 
-extern "C" JNIEXPORT void JNICALL Java_media_player_pro_WaveformView_renderWaveform(JNIEnv * env, jobject  obj, jobject bitmap,  jlong  time_ms)
+extern "C" JNIEXPORT void JNICALL Java_libmedia_Media_00024internal_00024WaveformView_1_1_renderWaveform(JNIEnv * env, jobject  obj, jobject bitmap,  jlong  time_ms)
 {
     AndroidBitmapInfo  info;
     void*              pixels;

@@ -1,18 +1,18 @@
 package media.player.pro
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.os.Bundle
-import android.util.Log
+import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ProgressBar
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.jraska.console.Console
 import liblayout.Builder
+import liblayout.UiThread
 import libmedia.Media
 
 class MainActivity : AppCompatActivity() {
@@ -28,31 +28,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         media = Media(this)
         val build = Builder(this)
+        val UI = UiThread(this)
         build
             .row(1) {
-                WaveformView(
-                    context = this,
-                    width = build.currentColumn!!.sizeFromLeft,
-                    height = build.currentColumn!!.sizeFromTop
+                media!!.WaveformView(
+                    this,
+                    build.currentColumn!!.sizeFromTop,
+                    build.currentColumn!!.sizeFromLeft,
+                    media!!
                 )
-            }
-            .row(1) {
-                ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).also {
-                    it.max = 1440
-                    it.min = 0
-                    Thread() {
-                        var previousFrame = 0
-                        var currentFrame = 0
-                        while(true) {
-                            previousFrame = currentFrame
-                            currentFrame = media!!.currentFrame()
-                            if (currentFrame != previousFrame) {
-                                it.progress = currentFrame
-                                Log.i("PLAYHEAD", "currentFrame is $currentFrame, previousFrame is $previousFrame")
-                            }
-                        }
-                    }.start()
-                }
             }
             .build()
             media!!.init()
@@ -64,9 +48,9 @@ class MainActivity : AppCompatActivity() {
             .loop(true)
             // test loopers
 //            .addLooper("1/4", 0, 250, Media.LooperTiming().milliseconds)
-//            .addLooper("1/2", 60, 300, Media.LooperTiming().milliseconds)
+            .addLooper("1/2", 500, 1000, Media.LooperTiming().milliseconds)
 //            .addLooper("1/1", 0, 1, Media.LooperTiming().seconds)
-//            .setLooper("1/2")
+            .setLooper("1/2")
             .play()
 
 //        Thread {
@@ -93,30 +77,4 @@ class MainActivity : AppCompatActivity() {
         media!!.destroy()
     }
 
-}
-
-// Custom view for rendering waveform.
-//
-// Note: suppressing lint warning for ViewConstructor since it is
-//       manually set from the activity and not used in any layout.
-@SuppressLint("ViewConstructor")
-internal class WaveformView(context: Context, width: Int, height: Int) : View(context) {
-
-    private val mBitmap: Bitmap
-    private val mStartTime: Long
-
-    // implementend by libwaveform.so
-    private external fun renderWaveform(bitmap: Bitmap, time_ms: Long)
-
-    init {
-        mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
-        mStartTime = System.currentTimeMillis()
-    }
-
-    override fun onDraw(canvas: Canvas) {
-        renderWaveform(mBitmap, System.currentTimeMillis() - mStartTime)
-        canvas.drawBitmap(mBitmap, 0f, 0f, null)
-        // force a redraw, with a different time-based pattern.
-        invalidate()
-    }
 }
