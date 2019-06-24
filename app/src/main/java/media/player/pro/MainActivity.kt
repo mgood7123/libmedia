@@ -1,18 +1,8 @@
 package media.player.pro
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
 import android.os.Bundle
-import android.util.AttributeSet
-import android.view.View
-import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import liblayout.Builder
-import liblayout.UiThread
 import libmedia.Media
 
 class MainActivity : AppCompatActivity() {
@@ -28,7 +18,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         media = Media(this)
         val build = Builder(this)
-        val UI = UiThread(this)
         build
             .row(1) {
                 media!!.WaveformView(
@@ -48,18 +37,11 @@ class MainActivity : AppCompatActivity() {
             .loop(true)
             // test loopers
 //            .addLooper("1/4", 0, 250, Media.LooperTiming().milliseconds)
-            .addLooper("1/2", 500, 1000, Media.LooperTiming().milliseconds)
+//            .addLooper("1/2", 500, 1000, Media.LooperTiming().milliseconds)
 //            .addLooper("1/1", 0, 1, Media.LooperTiming().seconds)
-            .setLooper("1/2")
+//            .setLooper("1/2")
             .play()
 
-//        Thread {
-//            while(true) {
-//                Thread.sleep(5000)
-//                media!!.stop()
-//                media!!.play()
-//            }
-//        }.start()
     }
 
     public override fun onPause() {

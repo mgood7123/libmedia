@@ -242,13 +242,15 @@ class Media(private val activity: Activity) {
                 )
                 if (media != null) addView(
                     MyView__(context, height_).also {
-                        Thread() {
+                        Thread {
                             var currentFrame = 0
                             while (true) {
                                 val previousFrame = currentFrame
                                 currentFrame = media!!.currentFrame()
                                 if (currentFrame != previousFrame) {
-                                    it.left = currentFrame
+                                    activity.runOnUiThread {
+                                        it.left = currentFrame
+                                    }
                                 }
                             }
                         }.start()
@@ -284,7 +286,7 @@ class Media(private val activity: Activity) {
 
             init {
                 paint = Paint()
-                paint!!.color = Color.BLUE
+                paint!!.color = Color.GREEN
                 paint!!.strokeWidth = 5f
                 paint!!.style = Paint.Style.STROKE
             }
