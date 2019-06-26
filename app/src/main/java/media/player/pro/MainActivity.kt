@@ -18,16 +18,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         media = Media(this)
         val build = Builder(this)
-        build
-            .row(1) {
-                media!!.WaveformView(
-                    this,
-                    build.currentColumn!!.sizeFromTop,
-                    build.currentColumn!!.sizeFromLeft,
-                    media!!
-                )
-            }
-            .build()
             media!!.init()
 //            .loadMediaPath("/sdcard/RAW_FILE/mp3/00001240.mp3")
 //            .loadMediaPath("/sdcard/Music/SuperpoweredPlayer Demo.mp3")
@@ -41,6 +31,38 @@ class MainActivity : AppCompatActivity() {
 //            .addLooper("1/1", 0, 1, Media.LooperTiming().seconds)
 //            .setLooper("1/2")
             .play()
+
+        build
+            .row(1) {
+                libmedia.waveform.view.WaveformView(
+                    this,
+                    build.currentColumn!!.sizeFromTop,
+                    build.currentColumn!!.sizeFromLeft
+                ).also {
+                    it.sampleRate = media!!.sampleRate
+                    it.channels = media!!.channelCount
+                    it.samples = media!!.samples
+                    Thread {
+                        var currentFrame = 0
+                        while (true) {
+                            val previousFrame = currentFrame
+                            currentFrame = media!!.currentFrame()
+                            if (currentFrame != previousFrame) {
+                                runOnUiThread {
+                                    it.markerPosition = currentFrame
+                                }
+                            }
+                        }
+                    }.start()
+                }
+//                media!!.WaveformView(
+//                    this,
+//                    build.currentColumn!!.sizeFromTop,
+//                    build.currentColumn!!.sizeFromLeft,
+//                    media!!
+//                )
+            }
+            .build()
 
     }
 

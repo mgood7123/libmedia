@@ -39,7 +39,7 @@ void SoundRecording::renderAudio(int16_t *targetData, int64_t totalFrames, Sound
         }
         for (int i = 0; i < totalFrames; ++i) {
             for (int j = 0; j < AudioData->channelCount; ++j) {
-                targetData[(i * AudioData->channelCount) + j] = mData[(mReadFrameIndex * AudioData->channelCount) + j];
+                targetData[(i * AudioData->channelCount) + j] = Audio->Audio[(mReadFrameIndex * AudioData->channelCount) + j];
             }
             // Increment and handle wraparound
             if (++mReadFrameIndex >= mTotalFrames) {
@@ -64,7 +64,7 @@ void SoundRecording::renderAudio(int16_t *targetData, int64_t totalFrames, Sound
 extern const int16_t *WAVEFORMAUDIODATA;
 extern uint64_t WAVEFORMAUDIODATATOTALFRAMES;
 
-SoundRecording * SoundRecording::loadFromAssets(AAssetManager *assetManager, const char *filename, int64_t SampleRate, int64_t mChannelCount) {
+SoundRecording * SoundRecording::loadFromAssets(AAssetManager *assetManager, const char *filename, int SampleRate, int mChannelCount) {
 
     // Load the backing track
     AAsset* asset = AAssetManager_open(assetManager, filename, AASSET_MODE_BUFFER);
@@ -98,8 +98,8 @@ SoundRecording * SoundRecording::loadFromAssets(AAssetManager *assetManager, con
     LOGD("length in nanoseconds:                             %G", allFrames->nanosecondsTotal);
     LOGD("bytes:                                             %ld", trackSize);
     LOGD("frames:                                            %ld", totalFrames);
-    LOGD("sample rate:                                       %ld", SampleRate);
-    LOGD("length of 1 frame at %ld sample rate:", SampleRate);
+    LOGD("sample rate:                                       %d", SampleRate);
+    LOGD("length of 1 frame at %d sample rate:", SampleRate);
     LOGD("Nanoseconds:                                        %G", AudioData->nanosecondsPerFrame);
     LOGD("Microseconds:                                       %G", AudioData->microsecondsPerFrame);
     LOGD("Milliseconds:                                       %G", AudioData->millisecondsPerFrame);
@@ -112,5 +112,5 @@ SoundRecording * SoundRecording::loadFromAssets(AAssetManager *assetManager, con
 //        float ypos=bitmapheight*(0.5f + audioBuffer[i]/maxValue);
 //        bitmap[ypos*bitmapwidth + xpos] = 0xffffffff;
 //    }
-    return new SoundRecording(audioBuffer, AudioData);
+    return new SoundRecording(const_cast<int16_t *>(audioBuffer), AudioData);
 }

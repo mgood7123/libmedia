@@ -8,7 +8,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.media.AudioManager
-import android.os.VibrationEffect
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
@@ -19,10 +18,6 @@ import java.io.IOException
 
 @Suppress("unused")
 class Media(private val activity: Activity) {
-
-    var buffersize = 0
-    var samplerate = 0
-    var playing = false
 
     fun `init`(): Media {
         val myAudioMgr = activity.getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -170,6 +165,15 @@ class Media(private val activity: Activity) {
     fun WaveformView(context: Context, height: Int, width: Int, media: Media): ConstraintLayout =
         internal().WaveformView_(context, height, width, media)
 
+
+    val samples: ShortArray get() {
+        val a = mutableListOf<Short>()
+        for (i in 0..Oboe_SampleCount()) a.add(Oboe_SampleIndex(i))
+        return a.toTypedArray().toShortArray()
+    }
+    val sampleRate get() = Oboe_SampleRate()
+    val channelCount get() = Oboe_ChannelCount()
+
     // Functions implemented in the native library.
 
     // Oboe
@@ -182,13 +186,17 @@ class Media(private val activity: Activity) {
     private external fun Oboe_Looper(start: Double, end: Double, timing: Int)
     private external fun Oboe_CurrentFrame(): Int
     private external fun Oboe_Cleanup()
+    private external fun Oboe_SampleIndex(index: Long): Short
+    private external fun Oboe_SampleCount(): Long
+    private external fun Oboe_SampleRate(): Int
+    private external fun Oboe_ChannelCount(): Int
 
     private inner class internal {
         internal inner class WaveformView_ : ConstraintLayout {
 
+            private var media: Media? = null
             private var height_ = 0;
             private var width_ = 0;
-            private var media: Media? = null
 
             constructor(context: Context, height: Int, width: Int) :
                     super(context) {

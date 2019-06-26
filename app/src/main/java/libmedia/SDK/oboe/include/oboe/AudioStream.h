@@ -421,7 +421,7 @@ protected:
      * @return true if callbacks may be called
      */
     bool isDataCallbackEnabled() {
-        return mDataCallbackEnabled;
+        return AudioCallbackEnabled;
     }
 
     /**
@@ -429,7 +429,7 @@ protected:
      * after DataCallbackResult::Stop has been returned.
      */
     void setDataCallbackEnabled(bool enabled) {
-        mDataCallbackEnabled = enabled;
+        AudioCallbackEnabled = enabled;
     }
 
     /**
@@ -453,7 +453,7 @@ protected:
 private:
     int                  mPreviousScheduler = -1;
 
-    std::atomic<bool>    mDataCallbackEnabled{};
+    std::atomic<bool>    AudioCallbackEnabled{};
 
 };
 

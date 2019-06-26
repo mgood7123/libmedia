@@ -9,15 +9,15 @@
 
 class SoundRecordingAudioData {
 public:
-    SoundRecordingAudioData(const uint64_t totalFrames, const int64_t channelCount, const int64_t sampleRate)
+    SoundRecordingAudioData(const uint64_t totalFrames, const int channelCount, const int sampleRate)
             : totalFrames(totalFrames), channelCount(channelCount), sampleRate(sampleRate) {
         Initializations = new class Initializations();
     }
 
 public:
     const uint64_t totalFrames;
-    const int64_t channelCount;
-    const int64_t sampleRate;
+    int32_t channelCount;
+    int32_t sampleRate;
     class Initializations {
     public:
         bool nanosecondsPerFrameInitialized = false;

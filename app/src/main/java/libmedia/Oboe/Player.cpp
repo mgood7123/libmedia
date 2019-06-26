@@ -8,3 +8,4 @@
 #include "Player/load.h"
 #include "Player/playback.h"
 #include "Player/CurrentFrame.h"
+#include "Player/Data.h"

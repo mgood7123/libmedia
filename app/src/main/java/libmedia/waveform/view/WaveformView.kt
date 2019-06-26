@@ -41,6 +41,7 @@ class WaveformView : View {
 
     private var width1: Int = 0
     private var height1: Int = 0
+    private var overrideWH = false
     private var xStep: Float = 0.toFloat()
     private var centerY: Float = 0.toFloat()
     var audioLength: Int = 0
@@ -81,6 +82,30 @@ class WaveformView : View {
             mMarkerPosition = markerPosition
             postInvalidate()
         }
+
+    constructor(context: Context, height: Int, width: Int) :
+            super(context) {
+        height1 = height
+        width1 = width
+        overrideWH = true
+        init(context, null, 0)
+    }
+
+    constructor(context: Context, height: Int, width: Int, attrs: AttributeSet) :
+            super(context, attrs) {
+        height1 = height
+        width1 = width
+        overrideWH = true
+        init(context, attrs, 0)
+    }
+
+    constructor(context: Context, height: Int, width: Int, attrs: AttributeSet, defStyle: Int) :
+            super(context, attrs, defStyle) {
+        height1 = height
+        width1 = width
+        overrideWH = true
+        init(context, attrs, defStyle)
+    }
 
     constructor(context: Context) : super(context) {
         init(context, null, 0)
@@ -124,8 +149,10 @@ class WaveformView : View {
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
 
-        width1 = measuredWidth
-        height1 = measuredHeight
+        if (!overrideWH) {
+            width1 = measuredWidth
+            height1 = measuredHeight
+        }
         xStep = width1 / (audioLength * 1.0f)
         centerY = height1 / 2f
         drawRect = Rect(0, 0, width1, height1)

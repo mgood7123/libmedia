@@ -32,8 +32,8 @@ class SoundRecording {
 
 public:
     SoundRecordingAudioData * AudioData = nullptr;
-    SoundRecording(const int16_t *sourceData, SoundRecordingAudioData * audiodata)
-            : mData(sourceData)
+    SoundRecording(int16_t *sourceData, SoundRecordingAudioData * audiodata)
+            : Audio(sourceData)
             , mTotalFrames(audiodata->totalFrames)
     {
         AudioData = audiodata;
@@ -44,11 +44,10 @@ public:
     void setPlaying(bool isPlaying) { mIsPlaying = isPlaying; resetPlayHead(); };
     void setLooping(bool isLooping) { mIsLooping = isLooping; };
 
-    static SoundRecording * loadFromAssets(AAssetManager *assetManager, const char * filename, int64_t SampleRate, int64_t mChannelCount);
-
+    static SoundRecording * loadFromAssets(AAssetManager *assetManager, const char * filename, int SampleRate, int mChannelCount);
+    int16_t* Audio = nullptr;
 private:
     uint64_t mReadFrameIndex = 0;
-    const int16_t* mData = nullptr;
     int64_t mTotalFrames = 0;
     std::atomic<bool> mIsPlaying { false };
     std::atomic<bool> mIsLooping { false };
