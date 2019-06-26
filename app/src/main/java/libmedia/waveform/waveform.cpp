@@ -88,9 +88,11 @@ static void fill_waveform(AndroidBitmapInfo *info, void *pixels)
         LOGE("max = %d", max);
         AudioTools::clone(const_cast<int16_t *>(WAVEFORMAUDIODATA), SCALED, samples);
         LOGI("scaling width");
-        int16_t TIMESTRETCHED[info->width];
-        AudioTools::zero(TIMESTRETCHED, info->width);
-        TimeStretch::Shorten::test(SCALED, samples, TIMESTRETCHED, info->width);
+        int16_t TIMESTRETCHED[info->width]; AudioTools::zero(TIMESTRETCHED, info->width);
+        int16_t TIMESTRETCHEDL[info->width]; AudioTools::zero(TIMESTRETCHEDL, info->width);
+        int16_t TIMESTRETCHEDR[info->width]; AudioTools::zero(TIMESTRETCHEDR, info->width);
+        AudioTools::splitStereo(SCALED, TIMESTRETCHEDL, TIMESTRETCHEDR, samples);
+        TimeStretch::Shorten::test(TIMESTRETCHEDR, samples, TIMESTRETCHED, info->width);
         LOGI("scaling height");
         AudioTools::scale(TIMESTRETCHED, TIMESTRETCHED, info->width, static_cast<int16_t>(info->height));
 

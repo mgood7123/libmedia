@@ -4,15 +4,27 @@
 
 #include "AudioTools.h"
 
-void AudioTools::zero(int16_t *DATA, uint64_t samples) {
-    for (int i = 0; i<=samples; i++) DATA[i] = 0;
+void AudioTools::zero(int16_t *DATA, uint64_t inSamples) {
+    for (uint64_t i = 0; i<=inSamples; i++) DATA[i] = 0;
 }
 
-void AudioTools::clone(int16_t *in, int16_t *out, uint64_t samples) {
-    for (int i = 0; i<=samples; i++) out[i] = in[i];
+void AudioTools::clone(int16_t *in, int16_t *out, uint64_t inSamples) {
+    for (uint64_t i = 0; i<=inSamples; i++) out[i] = in[i];
 }
 
-void AudioTools::scale(int16_t *in, int16_t *out, uint64_t samples, int16_t height) {
-    for (int i = 0; i<=samples; i++)
+void AudioTools::splitStereo(int16_t *in, int16_t *outLeft, int16_t *outRight, uint64_t inSamples) {
+    for (uint64_t i = 0; i<=inSamples/2; i++) {
+        uint64_t leftout = i;
+        uint64_t rightout = leftout;
+        uint64_t leftin = leftout*2;
+        uint64_t rightin = leftin+1;
+        i++;
+        outLeft[leftout] = in[leftin];
+        outRight[rightout] = in[rightin];
+    }
+}
+
+void AudioTools::scale(int16_t *in, int16_t *out, uint64_t inSamples, int16_t height) {
+    for (uint64_t i = 0; i<=inSamples; i++)
         out[i] = static_cast<int16_t>(((float)(in[i] + 32768) / 65536.0F) * (float)height);
 }
