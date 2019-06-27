@@ -183,7 +183,7 @@ class WaveformView : View {
                 canvas.drawBitmap(mCachedWaveformBitmap!!, null, drawRect!!, null)
             }
             if (mMarkerPosition > -1 && mMarkerPosition < audioLength)
-                canvas.drawLine(xStep * mMarkerPosition, 0f, xStep * mMarkerPosition, height1.toFloat(), mMarkerPaint!!)
+                canvas.drawLine(mMarkerPosition.toFloat(), 0f, mMarkerPosition.toFloat(), height1.toFloat(), mMarkerPaint!!)
         }
     }
 

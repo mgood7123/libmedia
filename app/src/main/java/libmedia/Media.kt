@@ -168,7 +168,11 @@ class Media(private val activity: Activity) {
 
     val samples: ShortArray get() {
         val a = mutableListOf<Short>()
-        for (i in 0..Oboe_SampleCount()) a.add(Oboe_SampleIndex(i))
+        // this WILL read incur a buffer overrun by twice its size
+        // | [] [] [] [] | -> | [] [] [] [] | [] [] [] [] |
+        // |    DATA     | -> |    DATA     | RANDOM DATA |
+        // a.size == Oboe_SampleCount()*2
+        for (i in 0 until ((Oboe_SampleCount()*2)-1)) a.add(Oboe_SampleIndex(i))
         return a.toTypedArray().toShortArray()
     }
     val sampleRate get() = Oboe_SampleRate()
