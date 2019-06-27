@@ -34,13 +34,21 @@ class MainActivity : AppCompatActivity() {
         media.init().loadMediaAsset("FUNKY_HOUSE.raw")
         val samples1 = audioSample
         val samples2 = media.samples
-        Builder(this)
-            .row(1) {
+        val build = Builder(this)
+        build.row(1) {
                 libmedia.waveform.view.WaveformView(this).also {
                     it.channels = 2
                     it.sampleRate = 48000
                     it.samples = samples1
                 }
+            }
+            .row(1) {
+                media.WaveformView(
+                    context = this,
+                    height = build.currentColumn!!.sizeFromTop,
+                    width = build.currentColumn!!.sizeFromLeft,
+                    media = media
+                )
             }
             .row(1) {
                 libmedia.waveform.view.WaveformView(this).also {
