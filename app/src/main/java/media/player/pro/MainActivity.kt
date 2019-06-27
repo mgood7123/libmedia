@@ -1,21 +1,57 @@
 package media.player.pro
 
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import liblayout.Builder
 import libmedia.Media
+import java.io.IOException
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import org.apache.commons.io.IOUtils
 
 class MainActivity : AppCompatActivity() {
-    companion object {
+    private val audioSample: ShortArray
+        @Throws(IOException::class)
+        get() {
+            val `is` = resources.openRawResource(R.raw.fh)
+            val data: ByteArray
+            try {
+                data = IOUtils.toByteArray(`is`)
+            } finally {
+                `is`?.close()
+            }
 
-        init {
-            System.loadLibrary("PlayerOboe")
+            val sb = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer()
+            val samples = ShortArray(sb.limit())
+            sb.get(samples)
+            return samples
         }
-    }
-
-    var media: Media? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        System.loadLibrary("PlayerOboe")
+        val media = Media(this)
+        media.init().loadMediaAsset("FUNKY_HOUSE.raw")
+        val samples1 = audioSample
+        val samples2 = media.samples
+        Builder(this)
+            .row(1) {
+                libmedia.waveform.view.WaveformView(this).also {
+                    it.channels = 2
+                    it.sampleRate = 48000
+                    it.samples = samples1
+                }
+            }
+            .row(1) {
+                libmedia.waveform.view.WaveformView(this).also {
+                    it.channels = 2
+                    it.sampleRate = 48000
+                    it.samples = samples2
+                }
+            }
+            .build()
+    }
+/*
         media = Media(this)
         val build = Builder(this)
             media!!.init()
@@ -33,11 +69,13 @@ class MainActivity : AppCompatActivity() {
             .play()
 
         build
-            .row(1) {
+            .row()
+//            .column { Button(this) }
+            .column {
                 libmedia.waveform.view.WaveformView(
-                    this,
-                    build.currentColumn!!.sizeFromTop,
-                    build.currentColumn!!.sizeFromLeft
+                    context = this,
+                    height = build.currentColumn!!.sizeFromTop,
+                    width = 1440
                 ).also {
                     it.sampleRate = media!!.sampleRate
                     it.channels = media!!.channelCount
@@ -55,30 +93,37 @@ class MainActivity : AppCompatActivity() {
                         }
                     }.start()
                 }
-//                media!!.WaveformView(
-//                    this,
-//                    build.currentColumn!!.sizeFromTop,
-//                    build.currentColumn!!.sizeFromLeft,
-//                    media!!
-//                )
             }
+//            .column {Button(this)}
+            .row()
+//            .column { Button(this) }
+            .column {
+                media!!.WaveformView(
+                    context = this,
+                    height = build.currentColumn!!.sizeFromTop,
+                    width = 1440,
+                    media = media!!
+                )
+            }
+//            .column { Button(this) }
             .build()
 
-    }
+*/
+//    }
 
     public override fun onPause() {
         super.onPause()
-        media!!.background()
+//        media!!.background()
     }
 
     public override fun onResume() {
         super.onResume()
-        media!!.foreground()
+//        media!!.foreground()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        media!!.destroy()
+//        media!!.destroy()
     }
 
 }

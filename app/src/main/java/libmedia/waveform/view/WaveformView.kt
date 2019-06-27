@@ -150,8 +150,8 @@ class WaveformView : View {
         super.onSizeChanged(w, h, oldw, oldh)
 
         if (!overrideWH) {
-            width1 = measuredWidth
-            height1 = measuredHeight
+            width1 = measuredWidth // 2792
+            height1 = measuredHeight // 678
         }
         xStep = width1 / (audioLength * 1.0f)
         centerY = height1 / 2f
