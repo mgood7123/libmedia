@@ -7,7 +7,7 @@
 #include "pixelTypes.h"
 int pixelFrames = 0;
 
-void pixelDraw_RGB_565(AndroidBitmapInfo *info, void *pixels, int16_t row, int16_t column, uint16_t colour) {
+void pixelDraw_RGB_565(AndroidBitmapInfo *info, void *pixels, int row, int column, uint16_t colour) {
     ((uint16_t*)((char*)pixels + static_cast<uint32_t>(info->stride*row)))[column] = colour;
     pixelFrames++;
 }

@@ -157,7 +157,7 @@ class Media(private val activity: Activity) {
         return this
     }
 
-    fun currentFrame(): Int = Oboe_CurrentFrame();
+    fun currentFrame(width: Int): Int = Oboe_CurrentFrame(width);
 
     fun WaveformView(context: Context, height: Int, width: Int): ConstraintLayout =
         internal().WaveformView_(context, height, width)
@@ -188,7 +188,7 @@ class Media(private val activity: Activity) {
     private external fun Oboe_Stop()
     private external fun Oboe_Loop(value: Boolean)
     private external fun Oboe_Looper(start: Double, end: Double, timing: Int)
-    private external fun Oboe_CurrentFrame(): Int
+    private external fun Oboe_CurrentFrame(width: Int): Int
     private external fun Oboe_Cleanup()
     private external fun Oboe_SampleIndex(index: Long): Short
     private external fun Oboe_SampleCount(): Long
@@ -258,7 +258,7 @@ class Media(private val activity: Activity) {
                             var currentFrame = 0
                             while (true) {
                                 val previousFrame = currentFrame
-                                currentFrame = media!!.currentFrame()
+                                currentFrame = currentFrame(width_)
                                 if (currentFrame != previousFrame) {
                                     activity.runOnUiThread {
                                         it.left = currentFrame
@@ -287,6 +287,7 @@ class Media(private val activity: Activity) {
             override fun onDraw(canvas: Canvas) {
                 renderWaveform(mBitmap, System.currentTimeMillis() - mStartTime)
                 canvas.drawBitmap(mBitmap, 0f, 0f, null)
+//                canvas.drawLine()
                 // force a redraw, with a different time-based pattern.
                 invalidate()
             }

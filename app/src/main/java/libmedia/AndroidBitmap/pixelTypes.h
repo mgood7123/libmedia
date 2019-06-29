@@ -7,7 +7,7 @@
 
 extern int pixelFrames;
 
-extern void pixelDraw_RGB_565(AndroidBitmapInfo *info, void *pixels, int16_t row, int16_t column, uint16_t colour);
+extern void pixelDraw_RGB_565(AndroidBitmapInfo *info, void *pixels, int row, int column, uint16_t colour);
 
 // usage: pixelDraw<uint32_t>(pImage, 1, 0, 0xFFFFFF00u, 16);
 template<typename T>

@@ -20,6 +20,12 @@
 
 #include <cmath>
 #include <stdlib.h>
+#include "../AndroidBitmap/pixelTypes.h"
+#include <cstring>
+#include "TimeStretch.h"
+#include "AudioTools.h"
+#include "timestats.h"
+#include "../AndroidBitmap/bitmap.h"
 
 #define  LOG_TAG    "libwaveform"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
@@ -33,11 +39,6 @@
 
 const int16_t *WAVEFORMAUDIODATA = nullptr;
 uint64_t WAVEFORMAUDIODATATOTALFRAMES = 0;
-
-#include "pixelTypes.h"
-#include <cstring>
-#include "TimeStretch.h"
-#include "AudioTools.h"
 
 static void fill_waveform(AndroidBitmapInfo *info, void *pixels)
 {
@@ -98,6 +99,9 @@ static void fill_waveform(AndroidBitmapInfo *info, void *pixels)
 
         LOGI("drawing");
 
+        Canvas canvas = Canvas(info, pixels);
+        canvas.buffered = false;
+        canvas.setColor(255, 0, 0);
         if (info->format == ANDROID_BITMAP_FORMAT_RGBA_8888) {
             LOGE("BITMAP FORMAT RGBA_8888 UNSUPPORTED!");
             return;
@@ -106,15 +110,26 @@ static void fill_waveform(AndroidBitmapInfo *info, void *pixels)
                 pixelDraw<uint32_t>(pixels, TIMESTRETCHED[column], column, 0xFFFFFFFFu, info->stride);
         } else if (info->format == ANDROID_BITMAP_FORMAT_RGB_565) {
             LOGI("BITMAP FORMAT RGB_565");
-            for (int16_t column = 0; column < info->width; column++)
-                pixelDraw_RGB_565(info, pixels, TIMESTRETCHED[column], column, pixelColourRGB_565(255, 255, 255));
+            for (int16_t column = 0; column < info->width; column++) {
+                // highlight silence in green
+                // silence threshold: positive 1 to negative 1
+                if (!(
+                        (TIMESTRETCHED[column] - (info->height/2)) > 1 &&
+                        (TIMESTRETCHED[column] - (info->height/2)) < -1)) {
+                    canvas.setColor(0, 255, 0);
+                    canvas.pixel(TIMESTRETCHED[column], column);
+                    canvas.setColor(255, 0, 0);
+                }
+                else {
+                    canvas.lineVertical(column, TIMESTRETCHED[column], TIMESTRETCHED[column+1]);
+                }
+            }
+            canvas.flush();
         } else LOGE("BITMAP FORMAT UNKNOWN: %d", info->format);
     }
 
     LOGI("rendered sound form (Waveform): %d frames rendered", pixelFrames);
 }
-
-#include "timestats.h"
 
 extern "C" JNIEXPORT void JNICALL Java_libmedia_Media_00024internal_00024WaveformView_1_1_renderWaveform(JNIEnv * env, jobject  obj, jobject bitmap,  jlong  time_ms)
 {
@@ -139,7 +154,7 @@ extern "C" JNIEXPORT void JNICALL Java_libmedia_Media_00024internal_00024Wavefor
             return;
         }
         height = info.height;
-        width = info.height;
+        width = info.width;
         if (height != heightP || width != widthP) {
             heightP = height;
             widthP = width;
@@ -152,7 +167,6 @@ extern "C" JNIEXPORT void JNICALL Java_libmedia_Media_00024internal_00024Wavefor
 
             /* Now fill the values with a nice little waveform */
             fill_waveform(&info, pixels);
-
             AndroidBitmap_unlockPixels(env, bitmap);
 
             stats_endFrame(&stats);

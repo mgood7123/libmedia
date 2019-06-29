@@ -7,12 +7,12 @@
 
 #include "../../waveform/TimeStretch.h"
 
-NATIVE(jint , Oboe, CurrentFrame) (JNIEnv *env, jobject thiz) {
+NATIVE(jint , Oboe, CurrentFrame) (JNIEnv *env, jobject thiz, jint width) {
     return static_cast<jint>(
-            // GET CURRENT FRAME FROM THE WAVEFORM
-            TimeStretch::Shorten::FrameToStretchedFrame(
-                    currentAudioTrack->AudioData->totalFrames, 1440, GlobalTime.currentFrame
-                    )
+        // GET CURRENT FRAME FROM THE WAVEFORM
+        TimeStretch::Shorten::FrameToStretchedFrame(
+            currentAudioTrack->AudioData->totalFrames, width, GlobalTime.currentFrame
+        )
     );
 }
 
