@@ -37,14 +37,34 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-            .row(1) {
+            .row().height(20)
+            .column {
+                Button(this).also {
+                    it.text = "waveform stretch to screen height ${media!!.WaveformViewOptions.stretchToScreenHeight}"
+                    it.setOnClickListener { _ ->
+                        media!!.WaveformViewOptions.stretchToScreenHeight = !media!!.WaveformViewOptions.stretchToScreenHeight
+                        it.text = "waveform stretch to screen height ${media!!.WaveformViewOptions.stretchToScreenHeight}"
+                    }
+                }
+            }
+            .column {
+                Button(this).also {
+                    it.text = "waveform stretch to screen width ${media!!.WaveformViewOptions.stretchToScreenWidth}"
+                    it.setOnClickListener { _ ->
+                        media!!.WaveformViewOptions.stretchToScreenWidth = !media!!.WaveformViewOptions.stretchToScreenWidth
+                        it.text = "waveform stretch to screen width ${media!!.WaveformViewOptions.stretchToScreenWidth}"
+                    }
+                }
+            }
+            .row().height(60)
+            .column {
                 media!!.WaveformView(
                     context = this,
                     height = build.currentColumn!!.sizeFromTop,
                     width = build.currentColumn!!.sizeFromLeft
 //                media = media!!
                 )
-            }.height(80)
+            }
             .build()
     }
 

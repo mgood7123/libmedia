@@ -198,6 +198,8 @@ class Media(private val activity: Activity) {
     inner class WaveformViewOptions__ {
         var drawLines: Boolean = false
         var highlightSilence: Boolean = false
+        var stretchToScreenHeight: Boolean = true;
+        var stretchToScreenWidth: Boolean = false;
     }
     val WaveformViewOptions = WaveformViewOptions__()
 

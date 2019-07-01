@@ -148,8 +148,8 @@ public:
 };
 */
 MonitorPool MOMO;
-Monitor<uint32_t*> MOMO1;
-Monitor<bool*> MOMO2;
+Monitor<uint32_t*> MONITOR_uint32_t;
+Monitor<bool*> MONITOR_bool;
 
 #define  LOG_TAG    "libwaveform"
 
@@ -166,6 +166,8 @@ class WaveformViewOptions {
 public:
     bool drawLines = false;
     bool highlightSilence = false;
+    bool stretchToScreenHeight = true;
+    bool stretchToScreenWidth = false;
 } WVO;
 
 static void fill_waveform(AndroidBitmapInfo *info, void *pixels, bool highlightSilence = false)
@@ -218,10 +220,12 @@ static void fill_waveform(AndroidBitmapInfo *info, void *pixels, bool highlightS
 //        int16_t TIMESTRETCHEDL[info->width]; AudioTools::zero(TIMESTRETCHEDL, info->width);
 //        int16_t TIMESTRETCHEDR[info->width]; AudioTools::zero(TIMESTRETCHEDR, info->width);
 //        AudioTools::splitStereo(SCALED, TIMESTRETCHEDL, TIMESTRETCHEDR, samples);
-        TimeStretch::Shorten::test(SCALED, samples, TIMESTRETCHED, info->width);
-        __android_log_print(ANDROID_LOG_INFO,LOG_TAG,"scaling height");
-        AudioTools::scale(TIMESTRETCHED, TIMESTRETCHED, info->width, static_cast<int16_t>(info->height));
 
+        if (WVO.stretchToScreenWidth) TimeStretch::Shorten::test(SCALED, samples, TIMESTRETCHED, info->width);
+        else AudioTools::clone(SCALED, TIMESTRETCHED, info->width);
+        __android_log_print(ANDROID_LOG_INFO,LOG_TAG,"scaling height");
+        if (WVO.stretchToScreenHeight) AudioTools::scale(TIMESTRETCHED, TIMESTRETCHED, info->width, static_cast<int16_t>(info->height));
+        else AudioTools::crop(SCALED, info->height, TIMESTRETCHED, info->width);
         __android_log_print(ANDROID_LOG_INFO,LOG_TAG,"drawing");
 
         Canvas canvas = Canvas(info, pixels);
@@ -289,6 +293,8 @@ extern "C" JNIEXPORT void JNICALL Java_libmedia_Media_00024internal_00024Wavefor
     std::deque<javaClassToCppClassInformation> a = std::deque<javaClassToCppClassInformation>();
     a.push_front(javaClassToCppClassInformation("bool", "drawLines", &WVO.drawLines));
     a.push_front(javaClassToCppClassInformation("bool", "highlightSilence", &WVO.highlightSilence));
+    a.push_front(javaClassToCppClassInformation("bool", "stretchToScreenWidth", &WVO.stretchToScreenWidth));
+    a.push_front(javaClassToCppClassInformation("bool", "stretchToScreenHeight", &WVO.stretchToScreenHeight));
     javaClassToCppClass(env, waveformOptionsClassInstance, a);
 
     AndroidBitmapInfo  info;
@@ -299,8 +305,8 @@ extern "C" JNIEXPORT void JNICALL Java_libmedia_Media_00024internal_00024Wavefor
     if (!init) { // draw once
         stats_init(&stats);
         init = true;
-        MOMO.add("MOMO1", &MOMO1);
-        MOMO.add("MOMO2", &MOMO2);
+        MOMO.add("MONITOR_uint32_t", &MONITOR_uint32_t);
+        MOMO.add("MONITOR_bool", &MONITOR_bool);
     }
 
     if (WAVEFORMAUDIODATA != nullptr) {
@@ -308,10 +314,12 @@ extern "C" JNIEXPORT void JNICALL Java_libmedia_Media_00024internal_00024Wavefor
             __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,"AndroidBitmap_getInfo() failed ! error=%d", ret);
             return;
         }
-        MOMO1.add("INFO HEIGHT", &info.height);
-        MOMO1.add("INFO WIDTH", &info.width);
-        MOMO2.add("LINES", &WVO.drawLines);
-        MOMO2.add("HIGHLIGHT", &WVO.highlightSilence);
+        MONITOR_uint32_t.add("INFO HEIGHT", &info.height);
+        MONITOR_uint32_t.add("INFO WIDTH", &info.width);
+        MONITOR_bool.add("LINES", &WVO.drawLines);
+        MONITOR_bool.add("HIGHLIGHT", &WVO.highlightSilence);
+        MONITOR_bool.add("stretch screen height", &WVO.stretchToScreenHeight);
+        MONITOR_bool.add("stretch screen width", &WVO.stretchToScreenWidth);
         if (MOMO.changed()) {
 
             if ((ret = AndroidBitmap_lockPixels(env, bitmap, &pixels)) < 0) {
