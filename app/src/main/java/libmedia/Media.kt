@@ -311,7 +311,7 @@ class Media(private val activity: Activity) {
             init {
                 paint = Paint()
                 paint!!.color = Color.GREEN
-                paint!!.strokeWidth = 5f
+                paint!!.strokeWidth = 2f
                 paint!!.style = Paint.Style.STROKE
             }
 

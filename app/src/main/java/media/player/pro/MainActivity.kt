@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         media!!.init()
             .loadMediaAsset("FUNKY_HOUSE.raw")
             .loop(true)
-//            .play()
+            .play()
         val build = Builder(this)
         build
             .row().height(20)
@@ -61,8 +61,8 @@ class MainActivity : AppCompatActivity() {
                 media!!.WaveformView(
                     context = this,
                     height = build.currentColumn!!.sizeFromTop,
-                    width = build.currentColumn!!.sizeFromLeft
-//                media = media!!
+                    width = build.currentColumn!!.sizeFromLeft,
+                    media = media!!
                 )
             }
             .build()
