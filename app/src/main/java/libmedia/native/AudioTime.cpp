@@ -5,6 +5,7 @@
 #include <vector>
 #include <src/common/OboeDebug.h>
 #include "AudioTime.h"
+#include <MonitorPool.h>
 
 void check(AudioTime *pTime, SoundRecordingAudioData *pData) {
 //    AudioTimeCheck(pTime->nanoseconds, pTime->lastNanoseconds, ThisOrElse(pData->nanosecondsPerFrame, 1), 0, 999)
@@ -39,6 +40,8 @@ void AudioTime::update(uint64_t frame, SoundRecordingAudioData *AudioData) {
         if (mTimeCallback != nullptr) mTimeCallback->EndOfFile(this);
         EndOfFileCalled = true;
     }
+
+    // TODO: should we migrate this to use Monitor at the cost of information?
 
     previousFrame = currentFrame;
     currentFrame = frame;

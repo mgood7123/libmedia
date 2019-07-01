@@ -6,8 +6,10 @@ add_library (
         AndroidBitmap SHARED
         bitmap.cpp
         pixelTypes.cpp
+        ../waveform/timestats.cpp
 )
 
 target_link_libraries (
         AndroidBitmap
+        log
 )

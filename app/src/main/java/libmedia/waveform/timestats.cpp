@@ -8,7 +8,6 @@
 #define TIMESTATINTERNAL
 #include "timestats.h"
 
-#define  LOG_TAG    "timestats"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 
 /* Return current time in milliseconds */
@@ -33,7 +32,7 @@ stats_startFrame( struct Stats*  s )
 }
 
 void
-stats_endFrame( struct Stats*  s )
+stats_endFrame( struct Stats*  s, const char * LOG_TAG)
 {
     double now = now_ms();
     double renderTime = now - s->frameTime;

@@ -1,6 +1,7 @@
 package media.player.pro
 
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import liblayout.Builder
 import libmedia.Media
@@ -16,32 +17,35 @@ class MainActivity : AppCompatActivity() {
             .loop(true)
 //            .play()
         val build = Builder(this)
-        build.row(1) {
-//            libmedia.waveform.view.WaveformView(this).also {
-//                it.channels = 2
-//                it.sampleRate = 48000
-//                it.samples = media!!.samples
-//                Thread {
-//                    var currentFrame = 0
-//                    while (true) {
-//                        val previousFrame = currentFrame
-//                        currentFrame = media!!.currentFrame(build.currentColumn!!.sizeFromLeft)
-//                        if (currentFrame != previousFrame) {
-//                            runOnUiThread {
-//                                it.markerPosition = currentFrame
-//                            }
-//                        }
-//                    }
-//                }.start()
-//            }
-//        }.row(1) {
-            media!!.WaveformView(
-                context = this,
-                height = build.currentColumn!!.sizeFromTop,
-                width = build.currentColumn!!.sizeFromLeft
+        build
+            .row().height(20)
+            .column {
+                Button(this).also {
+                    it.text = "waveform draw Lines ${media!!.WaveformViewOptions.drawLines}"
+                    it.setOnClickListener { _ ->
+                        media!!.WaveformViewOptions.drawLines = !media!!.WaveformViewOptions.drawLines
+                        it.text = "waveform draw Lines ${media!!.WaveformViewOptions.drawLines}"
+                    }
+                }
+            }
+            .column {
+                Button(this).also {
+                    it.text = "waveform highlight Silence ${media!!.WaveformViewOptions.highlightSilence}"
+                    it.setOnClickListener { _ ->
+                        media!!.WaveformViewOptions.highlightSilence = !media!!.WaveformViewOptions.highlightSilence
+                        it.text = "waveform highlight Silence ${media!!.WaveformViewOptions.highlightSilence}"
+                    }
+                }
+            }
+            .row(1) {
+                media!!.WaveformView(
+                    context = this,
+                    height = build.currentColumn!!.sizeFromTop,
+                    width = build.currentColumn!!.sizeFromLeft
 //                media = media!!
-            )
-        }.build()
+                )
+            }.height(80)
+            .build()
     }
 
     public override fun onPause() {

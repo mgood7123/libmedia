@@ -195,6 +195,12 @@ class Media(private val activity: Activity) {
     private external fun Oboe_SampleRate(): Int
     private external fun Oboe_ChannelCount(): Int
 
+    inner class WaveformViewOptions__ {
+        var drawLines: Boolean = false
+        var highlightSilence: Boolean = false
+    }
+    val WaveformViewOptions = WaveformViewOptions__()
+
     private inner class internal {
         internal inner class WaveformView_ : ConstraintLayout {
 
@@ -276,8 +282,11 @@ class Media(private val activity: Activity) {
             private val mBitmap: Bitmap
             private val mStartTime: Long
 
-            // implementend by libwaveform.so
-            private external fun renderWaveform(bitmap: Bitmap, time_ms: Long)
+            private external fun renderWaveform(
+                bitmap: Bitmap,
+                time_ms: Long,
+                waveformViewOptions: WaveformViewOptions__
+            )
 
             init {
                 mBitmap = Bitmap.createBitmap(width_, height_, Bitmap.Config.RGB_565)
@@ -285,7 +294,7 @@ class Media(private val activity: Activity) {
             }
 
             override fun onDraw(canvas: Canvas) {
-                renderWaveform(mBitmap, System.currentTimeMillis() - mStartTime)
+                renderWaveform(mBitmap, System.currentTimeMillis() - mStartTime, WaveformViewOptions)
                 canvas.drawBitmap(mBitmap, 0f, 0f, null)
 //                canvas.drawLine()
                 // force a redraw, with a different time-based pattern.

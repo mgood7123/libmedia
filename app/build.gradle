@@ -25,8 +25,8 @@ android { // main settings for your application
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_PLATFORM=android-16', '-DANDROID_TOOLCHAIN=clang', '-DANDROID_ARM_NEON=TRUE', '-DANDROID_STL=c++_static'
-                cFlags '-O3', '-fsigned-char' // full optimization, char data type is signed
-                cppFlags '-fsigned-char', "-I${libmediaPath}/SDK/Superpowered"
+                cFlags '-O3', '-fsigned-char', '-Wall', '-Wno-unused-function'
+                cppFlags '-O3', '-fsigned-char', '-Wall', '-Wno-unused-function', '-std=c++17'
             }
         }
     }

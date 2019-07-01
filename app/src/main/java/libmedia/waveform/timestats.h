@@ -24,8 +24,9 @@ struct Stats {
     struct FrameStats  frames[ MAX_FRAME_STATS ];
 };
 
-extern void stats_init( Stats*  s );
-extern void stats_startFrame( Stats*  s );
-extern void stats_endFrame( Stats*  s );
+extern void stats_init(Stats*  s);
+extern void stats_startFrame(Stats*  s);
+extern void stats_endFrame(Stats*  s, const char * LOG_TAG);
+extern double now_ms(void);
 
 #endif //MEDIA_PLAYER_PRO_TIMESTATS_H

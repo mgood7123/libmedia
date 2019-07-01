@@ -15,15 +15,18 @@ public:
 
     AndroidBitmapInfo *canvasInfo;
     void *canvas = nullptr;
-    void setColor(uint8_t red, uint8_t green, uint8_t blue);;
     class Color {
     public:
         uint8_t red;
         uint8_t green;
         uint8_t blue;
+        void set(uint8_t red, uint8_t green, uint8_t blue);
         uint16_t get();
+        void save(Canvas canvas);
+        void restore(Canvas canvas);
+        void copy(Color oldColor);
     };
-    Color color;
+    Color color, colorSaved;
     class data {
     public:
         int size;
@@ -42,10 +45,15 @@ public:
     } data;
 
     void pixel(int row, int column);
-    void lineVertical(int row, int start, int end);
-    void lineHorizontal(int column, int start, int end);
+
+    void lineVertical(int column, int start, int end);
+
+    void lineHorizontal(int row, int start, int end);
+
     void lineCenteredVertical(int start, int end);
+
     void lineCenteredHorizontal(int start, int end);
+
     void rectangle(int row_start, int column_start, int row_end, int column_end);
 
     void rectangle(int row, int column, int size);
@@ -58,7 +66,12 @@ public:
 
     void flush();
 
+    void clear();
+
     bool buffered = false;
+
+    void line_segment(int x1, int y1, int x2, int y2);
+
 };
 
 #endif //MEDIA_PLAYER_PRO_BITMAP_H
