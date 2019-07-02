@@ -217,15 +217,18 @@ static void fill_waveform(AndroidBitmapInfo *info, void *pixels, bool highlightS
         AudioTools::clone(const_cast<int16_t *>(WAVEFORMAUDIODATA), SCALED, samples);
         __android_log_print(ANDROID_LOG_INFO,LOG_TAG,"scaling width");
         int16_t TIMESTRETCHED[info->width]; AudioTools::zero(TIMESTRETCHED, info->width);
-//        int16_t TIMESTRETCHEDL[info->width]; AudioTools::zero(TIMESTRETCHEDL, info->width);
-//        int16_t TIMESTRETCHEDR[info->width]; AudioTools::zero(TIMESTRETCHEDR, info->width);
-//        AudioTools::splitStereo(SCALED, TIMESTRETCHEDL, TIMESTRETCHEDR, samples);
-
         if (WVO.stretchToScreenWidth) TimeStretch::Shorten::test(SCALED, samples, TIMESTRETCHED, info->width);
         else AudioTools::clone(SCALED, TIMESTRETCHED, info->width);
         __android_log_print(ANDROID_LOG_INFO,LOG_TAG,"scaling height");
         if (WVO.stretchToScreenHeight) AudioTools::scale(TIMESTRETCHED, TIMESTRETCHED, info->width, static_cast<int16_t>(info->height));
-        else AudioTools::crop(SCALED, info->height, TIMESTRETCHED, info->width);
+        else {
+            if (!WVO.stretchToScreenWidth) AudioTools::crop(SCALED, info->height, TIMESTRETCHED, info->width);
+            else AudioTools::crop(TIMESTRETCHED, info->height, TIMESTRETCHED, info->width);
+        }
+//        int16_t TIMESTRETCHEDL[info->width]; AudioTools::zero(TIMESTRETCHEDL, info->width);
+//        int16_t TIMESTRETCHEDR[info->width]; AudioTools::zero(TIMESTRETCHEDR, info->width);
+//        AudioTools::splitStereo(TIMESTRETCHED, TIMESTRETCHEDL, TIMESTRETCHEDR, info->width);
+//        AudioTools::clone(TIMESTRETCHEDL, TIMESTRETCHED, info->width);
         __android_log_print(ANDROID_LOG_INFO,LOG_TAG,"drawing");
 
         Canvas canvas = Canvas(info, pixels);
@@ -240,16 +243,19 @@ static void fill_waveform(AndroidBitmapInfo *info, void *pixels, bool highlightS
             for (int16_t column = 0; column < info->width; column++) {
                 // highlight silence in green
                 // silence threshold: positive 1 to negative 1
-                if (WVO.highlightSilence && !(
+                if (WVO.highlightSilence) {
+                    if (!(
                         (TIMESTRETCHED[column] - (info->height/2)) > 1 &&
-                        (TIMESTRETCHED[column] - (info->height/2)) < -1)) {
-                    canvas.color.save(canvas);
-                    canvas.color.set(0, 255, 0);
-                    if (WVO.drawLines)
-                        canvas.line_segment(TIMESTRETCHED[column], column, TIMESTRETCHED[column+1], column+1);
-                    else
-                        canvas.pixel(TIMESTRETCHED[column], column);
-                    canvas.color.restore(canvas);
+                        (TIMESTRETCHED[column] - (info->height/2)) < -1)
+                    ) {
+                        canvas.color.save(canvas);
+                        canvas.color.set(0, 255, 0);
+                        if (WVO.drawLines)
+                            canvas.line_segment(TIMESTRETCHED[column], column, TIMESTRETCHED[column + 1], column + 1);
+                        else
+                            canvas.pixel(TIMESTRETCHED[column], column);
+                        canvas.color.restore(canvas);
+                    }
                 }
                 else {
                     if (WVO.drawLines)
