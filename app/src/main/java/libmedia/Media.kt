@@ -30,18 +30,20 @@ class Media(private val activity: Activity) {
         return this
     }
 
-    fun foreground(): Media {
-//        if (type == Type().Superpowered) Superpowered_onForeground()
+    var MEDIAbackground: Boolean = false
+
+    fun foreground(): Media
+    {
+        MEDIAbackground = false
         return this
     }
 
     fun background(): Media {
-//        if (type == Type().Superpowered) Superpowered_onBackground()
+        MEDIAbackground = true
         return this
     }
 
     fun destroy(): Media {
-//        if (type == Type().Superpowered) Superpowered_Cleanup()
         Oboe_Cleanup()
         return this
     }
@@ -196,10 +198,10 @@ class Media(private val activity: Activity) {
     private external fun Oboe_ChannelCount(): Int
 
     inner class WaveformViewOptions__ {
-        var drawLines: Boolean = false
+        var drawLines: Boolean = true
         var highlightSilence: Boolean = false
         var stretchToScreenHeight: Boolean = true;
-        var stretchToScreenWidth: Boolean = false;
+        var stretchToScreenWidth: Boolean = true;
     }
     val WaveformViewOptions = WaveformViewOptions__()
 
