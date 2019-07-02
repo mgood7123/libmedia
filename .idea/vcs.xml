@@ -2,5 +2,8 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/app/src/main/java/libmedia/resampler/ReSampler" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/app/src/main/java/libmedia/resampler/libsndfile" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/app/src/main/java/libmedia/resampler/r8brain" vcs="Git" />
   </component>
 </project>

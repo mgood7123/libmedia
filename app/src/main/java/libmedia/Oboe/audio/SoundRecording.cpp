@@ -15,6 +15,7 @@
  */
 
 #include "SoundRecording.h"
+#include "../../waveform/AudioTools.h"
 #include <src/common/OboeDebug.h>
 #include <cmath>
 
@@ -79,18 +80,22 @@ SoundRecording * SoundRecording::loadFromAssets(AAssetManager *assetManager, con
 
     // Load it into memory
     const int16_t *audioBuffer = static_cast<const int16_t*>(AAsset_getBuffer(asset));
-    WAVEFORMAUDIODATA = audioBuffer;
-
     if (audioBuffer == nullptr){
         LOGE("Could not get buffer for track");
         return nullptr;
     }
-
+    const int actualSampleRate = 44100;
+    const int actualChannelCount = 2;
     // There are 4 bytes per frame because
     // each sample is 2 bytes and
     // it's a stereo recording which has 2 samples per frame.
-    const uint64_t totalFrames = trackSize / (2 * mChannelCount);
+    const uint64_t totalFrames = trackSize / (2 * actualChannelCount);
     WAVEFORMAUDIODATATOTALFRAMES = totalFrames;
+    // format is 16 bit int, but resampler appears to take floating point...
+    // resample here
+
+    WAVEFORMAUDIODATA = audioBuffer;
+
     SoundRecordingAudioData * AudioData = new SoundRecordingAudioData(totalFrames, mChannelCount, SampleRate);
     AudioTime * allFrames = new AudioTime();
     allFrames->update(totalFrames, AudioData);

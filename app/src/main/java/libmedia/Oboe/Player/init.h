@@ -27,7 +27,7 @@ NATIVE(void, Oboe, Init)(JNIEnv *env, jobject type, jint sampleRate, jint frames
     streamBuilder.setFormat(oboe::AudioFormat::I16);
     streamBuilder.setChannelCount(oboe::ChannelCount::Stereo);
     // TODO: audio will go choppy if application is in background and device native sample rate does not match
-    streamBuilder.setSampleRate(44100);
+    streamBuilder.setSampleRate(sampleRate);
     oboe::Result result = streamBuilder.openStream(&stream);
     if (result != oboe::Result::OK) {
         LOGE("Oboe_Init: Failed to create AudioStream . Error: %s", oboe::convertToText(result));

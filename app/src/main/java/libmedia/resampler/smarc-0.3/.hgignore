@@ -1,0 +1,11 @@
+syntax: glob
+smarc
+*.o
+*~
+libsmarc*
+doc/html
+.project
+.cproject
+doc/build
+.settings/
+
