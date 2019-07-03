@@ -93,7 +93,17 @@ SoundRecording * SoundRecording::loadFromAssets(AAssetManager *assetManager, con
     WAVEFORMAUDIODATATOTALFRAMES = totalFrames;
     // format is 16 bit int, but resampler appears to take floating point...
     // resample here
-
+    // $resampler_path -i -r 48000 --noPeakChunk --doubleprecision --minphase --mt
+    extern int main(int argc, char * argv[]);
+    const char *argv[7];
+    argv[0] = "ReSampler";
+    argv[1] = "-i";
+    argv[2] = "/sdcard/ReSampler/00001313.raw";
+    argv[3] = "-o";
+    argv[4] = "/sdcard/ReSampler/00001313_48000.raw";
+    argv[5] = "-r";
+    argv[6] = "48000";
+    //main(7, const_cast<char **>(argv));
     WAVEFORMAUDIODATA = audioBuffer;
 
     SoundRecordingAudioData * AudioData = new SoundRecordingAudioData(totalFrames, mChannelCount, SampleRate);
