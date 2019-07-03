@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
         media = Media(this)
         media!!.init()
 //            .loadMediaAsset("FUNKY_HOUSE.raw")
-            .loadMediaAsset("00001313.raw")
+            .loadMediaAsset("00001313Upsampled.raw")
             .loop(true)
             .play()
         val build = Builder(this)
