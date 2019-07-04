@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.4.1)
 
+#set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -v -std=c++17")
 add_subdirectory (SDK/oboe)
 add_subdirectory (AndroidBitmap)
 #set(BUILD_SHARED_LIBS_SAVED "${BUILD_SHARED_LIBS}")
