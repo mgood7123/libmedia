@@ -1,23 +1,8 @@
 cmake_minimum_required(VERSION 3.4.1)
 
-#set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -v -std=c++17")
 add_subdirectory (SDK/oboe)
 add_subdirectory (AndroidBitmap)
-#set(BUILD_SHARED_LIBS_SAVED "${BUILD_SHARED_LIBS}")
-#set(BUILD_PROGRAMS_SAVED "${BUILD_PROGRAMS}")
-#set(BUILD_EXAMPLES_SAVED "${BUILD_EXAMPLES}")
-#set(BUILD_TESTING_SAVED "${BUILD_TESTING}")
-#set(BUILD_SHARED_LIBS ON)
-#set(BUILD_PROGRAMS OFF)
-#set(BUILD_EXAMPLES OFF)
-#set(BUILD_TESTING OFF)
-add_subdirectory (resampler/libsndfile)
-#set(BUILD_SHARED_LIBS "${BUILD_SHARED_LIBS_SAVED}")
-#set(BUILD_PROGRAMS "${BUILD_PROGRAMS_SAVED}")
-#set(BUILD_EXAMPLES "${BUILD_EXAMPLES_SAVED}")
-#set(BUILD_TESTING "${BUILD_TESTING_SAVED}")
-add_subdirectory (resampler/fftw-3.3.8)
 add_subdirectory (resampler/ReSampler)
 
 include_directories (SDK/oboe)
@@ -41,8 +26,6 @@ add_library (
 
 target_link_libraries (
         PlayerOboe
-        sndfile
-        fftw3
         ReSampler
         AndroidBitmap
         log
