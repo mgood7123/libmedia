@@ -95,15 +95,27 @@ SoundRecording * SoundRecording::loadFromAssets(AAssetManager *assetManager, con
     // resample here
     // $resampler_path -i -r 48000 --noPeakChunk --doubleprecision --minphase --mt
     extern int main(int argc, char * argv[]);
-    const char *argv[7];
-    argv[0] = "ReSampler";
-    argv[1] = "-i";
-    argv[2] = "/sdcard/ReSampler/00001313.raw";
-    argv[3] = "-o";
-    argv[4] = "/sdcard/ReSampler/00001313_48000.raw";
-    argv[5] = "-r";
-    argv[6] = "48000";
-    //main(7, const_cast<char **>(argv));
+    int argc1 = 2, argc2 = 2, argc3 = 10;
+    const char *argv1[10];
+    argv1[0] = "ReSampler";
+    argv1[1] = "--help";
+    const char *argv2[argc2];
+    argv2[0] = "ReSampler";
+    argv2[1] = "--version";
+    const char *argv3[argc3];
+    argv3[0] = "ReSampler";
+    argv3[1] = "-i";
+    argv3[2] = "/sdcard/ReSampler/00001313.wav";
+    argv3[3] = "-o";
+    argv3[4] = "/sdcard/ReSampler/00001313_48000.wav";
+    argv3[5] = "-r";
+    argv3[6] = "48000";
+    argv3[7] = "-b";
+    argv3[8] = "16";
+    argv3[9] = "--showStages";
+    main(argc1, const_cast<char **>(argv1));
+    main(argc2, const_cast<char **>(argv2));
+    main(argc3, const_cast<char **>(argv3));
     WAVEFORMAUDIODATA = audioBuffer;
 
     SoundRecordingAudioData * AudioData = new SoundRecordingAudioData(totalFrames, mChannelCount, SampleRate);
