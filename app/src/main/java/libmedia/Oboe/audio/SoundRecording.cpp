@@ -95,13 +95,17 @@ SoundRecording * SoundRecording::loadFromAssets(AAssetManager *assetManager, con
     // resample here
     // $resampler_path -i -r 48000 --noPeakChunk --doubleprecision --minphase --mt
     extern int main(int argc, char * argv[]);
-    int argc1 = 2, argc2 = 2, argc3 = 10;
-    const char *argv1[10];
+    const int argc1 = 2;
+    const char *argv1[argc1];
     argv1[0] = "ReSampler";
     argv1[1] = "--help";
+    main(argc1, const_cast<char **>(argv1));
+    const int argc2 = 2;
     const char *argv2[argc2];
     argv2[0] = "ReSampler";
     argv2[1] = "--version";
+    main(argc2, const_cast<char **>(argv2));
+    const int argc3 = 11;
     const char *argv3[argc3];
     argv3[0] = "ReSampler";
     argv3[1] = "-i";
@@ -113,9 +117,11 @@ SoundRecording * SoundRecording::loadFromAssets(AAssetManager *assetManager, con
     argv3[7] = "-b";
     argv3[8] = "16";
     argv3[9] = "--showStages";
-    main(argc1, const_cast<char **>(argv1));
-    main(argc2, const_cast<char **>(argv2));
+    argv3[10] = "--singleStage"; // Converter<float>::initSinglestage() srconvert.h:266 A/libc: Invalid address 0x7df8ce8000 passed to free: value not allocated
+    double s = now_ms();
     main(argc3, const_cast<char **>(argv3));
+    double e = now_ms();
+    LOGE("TIME took %G milliseconds", e - s);
     WAVEFORMAUDIODATA = audioBuffer;
 
     SoundRecordingAudioData * AudioData = new SoundRecordingAudioData(totalFrames, mChannelCount, SampleRate);
