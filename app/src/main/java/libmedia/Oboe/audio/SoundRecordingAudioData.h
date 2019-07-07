@@ -26,6 +26,8 @@ public:
         bool secondsPerFrameInitialized = false;
         bool minutesPerFrameInitialized = false;
         bool hoursPerFrameInitialized = false;
+        bool TimeTruncatedInitialized = false;
+        bool TimeUntruncatedInitialized = false;
     };
     Initializations *Initializations;
     double nanosecondsPerFrame = 0;
@@ -34,6 +36,8 @@ public:
     double secondsPerFrame = 0;
     double minutesPerFrame = 0;
     double hoursPerFrame = 0;
+    const char *TimeTruncated;
+    const char *TimeUntruncated;
 };
 
 #endif //MEDIA_PLAYER_PRO_SOUNDRECORDINGAUDIODATA_H

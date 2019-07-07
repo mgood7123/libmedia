@@ -18,8 +18,10 @@ import java.io.IOException
 
 @Suppress("unused")
 class Media(private val activity: Activity) {
+    lateinit var TEMPORARY_FILES_DIRECTORY: String
 
     fun `init`(): Media {
+        setTemporaryFilesDirectory(activity.filesDir.absolutePath)
         val myAudioMgr = activity.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val sampleRateStr = myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE)
         val defaultSampleRate = Integer.parseInt(sampleRateStr)
@@ -28,6 +30,12 @@ class Media(private val activity: Activity) {
         // library is loaded at application startup
         Oboe_Init(defaultSampleRate, defaultFramesPerBurst)
         return this
+    }
+
+    fun setTemporaryFilesDirectory(dir: String) {
+        TEMPORARY_FILES_DIRECTORY = dir
+        Log.e("Media", "setting Temporary Files Directory to $dir")
+        Oboe_SetTempDir(TEMPORARY_FILES_DIRECTORY)
     }
 
     var MEDIAbackground: Boolean = false
@@ -184,6 +192,7 @@ class Media(private val activity: Activity) {
 
     // Oboe
     private external fun Oboe_Init(sampleRate: Int, framesPerBurst: Int)
+    private external fun Oboe_SetTempDir(dir: String)
     private external fun Oboe_LoadTrackFromAssets(asset: String, assetManager: AssetManager)
     private external fun Oboe_Play()
     private external fun Oboe_Pause()

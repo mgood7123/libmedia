@@ -17,21 +17,6 @@ void check(AudioTime *pTime, SoundRecordingAudioData *pData) {
 }
 
 void AudioTime::update(uint64_t frame, SoundRecordingAudioData *AudioData) {
-    if (initializing) {
-        AudioData->nanosecondsPerFrame = nanoseconds;
-        AudioData->Initializations->nanosecondsPerFrameInitialized = true;
-        AudioData->microsecondsPerFrame = microseconds;
-        AudioData->Initializations->microsecondsPerFrameInitialized = true;
-        AudioData->millisecondsPerFrame = milliseconds;
-        AudioData->Initializations->millisecondsPerFrameInitialized = true;
-        AudioData->secondsPerFrame = seconds;
-        AudioData->Initializations->secondsPerFrameInitialized = true;
-        AudioData->minutesPerFrame = minutes;
-        AudioData->Initializations->minutesPerFrameInitialized = true;
-        AudioData->hoursPerFrame = hours;
-        AudioData->Initializations->hoursPerFrameInitialized = true;
-        return;
-    }
     if (StartOfFile) {
         if (mTimeCallback != nullptr) mTimeCallback->StartOfFile(this);
         StartOfFile = false;
@@ -112,12 +97,47 @@ void AudioTime::update(uint64_t frame, SoundRecordingAudioData *AudioData) {
                         !AudioData->Initializations->millisecondsPerFrameInitialized ||
                         !AudioData->Initializations->secondsPerFrameInitialized ||
                         !AudioData->Initializations->minutesPerFrameInitialized ||
-                        !AudioData->Initializations->hoursPerFrameInitialized
+                        !AudioData->Initializations->hoursPerFrameInitialized ||
+                        !AudioData->Initializations->TimeTruncatedInitialized ||
+                        !AudioData->Initializations->TimeUntruncatedInitialized
                 )
          ) {
-            initializing = true;
-            update(1, AudioData);
-            initializing = false;
+            AudioTime * X = new AudioTime();
+            X->initializing = true;
+            X->update(1, AudioData);
+            X->initializing = false;
+        } else {
+            AudioData->nanosecondsPerFrame = nanoseconds;
+            AudioData->Initializations->nanosecondsPerFrameInitialized = true;
+            AudioData->microsecondsPerFrame = microseconds;
+            AudioData->Initializations->microsecondsPerFrameInitialized = true;
+            AudioData->millisecondsPerFrame = milliseconds;
+            AudioData->Initializations->millisecondsPerFrameInitialized = true;
+            AudioData->secondsPerFrame = seconds;
+            AudioData->Initializations->secondsPerFrameInitialized = true;
+            AudioData->minutesPerFrame = minutes;
+            AudioData->Initializations->minutesPerFrameInitialized = true;
+            AudioData->hoursPerFrame = hours;
+            AudioData->Initializations->hoursPerFrameInitialized = true;
+            std::string str;
+            AudioTimeFormat(true, &str, hours);
+            AudioTimeFormat(true, &str, minutes);
+            AudioTimeFormat(true, &str, seconds);
+            AudioTimeFormat(true, &str, milliseconds);
+            AudioTimeFormat(true, &str, microseconds);
+            AudioTimeFormat(true, &str, nanoseconds);
+            AudioData->TimeTruncated = str.c_str();
+            AudioData->Initializations->TimeTruncatedInitialized = true;
+            std::string str2;
+            AudioTimeFormat(false, &str2, hours);
+            AudioTimeFormat(false, &str2, minutes);
+            AudioTimeFormat(false, &str2, seconds);
+            AudioTimeFormat(false, &str2, milliseconds);
+            AudioTimeFormat(false, &str2, microseconds);
+            AudioTimeFormat(false, &str2, nanoseconds);
+            AudioData->TimeUntruncated = str2.c_str();
+            AudioData->Initializations->TimeUntruncatedInitialized = true;
+            return;
         }
 
         // round down for callbacks

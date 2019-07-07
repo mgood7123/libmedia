@@ -18,6 +18,7 @@
 #include "../../waveform/AudioTools.h"
 #include <src/common/OboeDebug.h>
 #include <cmath>
+#include <native.h>
 
 extern AudioTime GlobalTime;
 
@@ -64,6 +65,12 @@ void SoundRecording::renderAudio(int16_t *targetData, int64_t totalFrames, Sound
 
 extern const int16_t *WAVEFORMAUDIODATA;
 extern uint64_t WAVEFORMAUDIODATATOTALFRAMES;
+std::string TEMPDIR;
+
+NATIVE(void, Oboe, SetTempDir)(JNIEnv *env, jobject type, jstring dir) {
+    jboolean val;
+    TEMPDIR = std::string(env->GetStringUTFChars(dir, &val));
+}
 
 SoundRecording * SoundRecording::loadFromAssets(AAssetManager *assetManager, const char *filename, int SampleRate, int mChannelCount) {
 
@@ -117,32 +124,26 @@ Pure upsampling does not make it sound any better
      */
     // $resampler_path -i -r 48000 --noPeakChunk --doubleprecision --minphase --mt
     extern int main(int argc, char * argv[]);
-    const int argc1 = 2;
-    const char *argv1[argc1];
-    argv1[0] = "ReSampler";
-    argv1[1] = "--help";
-    main(argc1, const_cast<char **>(argv1));
-    const int argc2 = 2;
-    const char *argv2[argc2];
-    argv2[0] = "ReSampler";
-    argv2[1] = "--version";
-    main(argc2, const_cast<char **>(argv2));
-    const int argc3 = 11;
-    const char *argv3[argc3];
-    argv3[0] = "ReSampler";
-    argv3[1] = "-i";
-    argv3[2] = "/sdcard/ReSampler/00001313.wav";
-    argv3[3] = "-o";
-    argv3[4] = "/sdcard/ReSampler/00001313_48000.wav";
-    argv3[5] = "-r";
-    argv3[6] = "48000";
-    argv3[7] = "-b";
-    argv3[8] = "16";
-    argv3[9] = "--showStages";
-    argv3[10] = "--singleStage"; // Converter<float>::initSinglestage() srconvert.h:266 A/libc: Invalid address 0x7df8ce8000 passed to free: value not allocated
+    const int argc = 12;
+    const char *argv[argc];
+    argv[0] = "ReSampler";
+    argv[1] = "-i";
+    argv[2] = "/sdcard/ReSampler/00001313.wav";
+    argv[3] = "-o";
+    argv[4] = static_cast<std::string>(TEMPDIR + "/00001313_48000.wav").c_str();
+    argv[5] = "-r";
+    argv[6] = "48000";
+    argv[7] = "-b";
+    argv[8] = "16";
+    argv[9] = "--showStages";
+//    argv[10] = "--singleStage";
+    argv[10] = "--multiStage";
+    argv[11] = "--noTempFile";
     double s = now_ms();
-//    main(argc3, const_cast<char **>(argv3));
+    LOGE("Started conversion at %G milliseconds", s);
+    main(argc, const_cast<char **>(argv));
     double e = now_ms();
+    LOGE("Ended conversion at %G milliseconds", e);
     LOGE("TIME took %G milliseconds", e - s);
     WAVEFORMAUDIODATA = audioBuffer;
 
@@ -150,17 +151,24 @@ Pure upsampling does not make it sound any better
     AudioTime * allFrames = new AudioTime();
     allFrames->update(totalFrames, AudioData);
     LOGD("Opened backing track");
+    LOGD("length in human time:                              %s", allFrames->format(true).c_str());
     LOGD("length in nanoseconds:                             %G", allFrames->nanosecondsTotal);
+    LOGD("length in microseconds:                            %G", allFrames->microsecondsTotal);
+    LOGD("length in milliseconds:                            %G", allFrames->millisecondsTotal);
+    LOGD("length in seconds:                                 %G", allFrames->secondsTotal);
+    LOGD("length in minutes:                                 %G", allFrames->minutesTotal);
+    LOGD("length in hours:                                   %G", allFrames->hoursTotal);
     LOGD("bytes:                                             %ld", trackSize);
     LOGD("frames:                                            %ld", totalFrames);
     LOGD("sample rate:                                       %d", SampleRate);
     LOGD("length of 1 frame at %d sample rate:", SampleRate);
-    LOGD("Nanoseconds:                                        %G", AudioData->nanosecondsPerFrame);
-    LOGD("Microseconds:                                       %G", AudioData->microsecondsPerFrame);
-    LOGD("Milliseconds:                                       %G", AudioData->millisecondsPerFrame);
-    LOGD("Seconds:                                            %G", AudioData->secondsPerFrame);
-    LOGD("Minutes:                                            %G", AudioData->minutesPerFrame);
-    LOGD("Hours:                                              %G", AudioData->hoursPerFrame);
+    LOGD("Human Time:                                        %s", AudioData->TimeTruncated);
+    LOGD("Nanoseconds:                                       %G", AudioData->nanosecondsPerFrame);
+    LOGD("Microseconds:                                      %G", AudioData->microsecondsPerFrame);
+    LOGD("Milliseconds:                                      %G", AudioData->millisecondsPerFrame);
+    LOGD("Seconds:                                           %G", AudioData->secondsPerFrame);
+    LOGD("Minutes:                                           %G", AudioData->minutesPerFrame);
+    LOGD("Hours:                                             %G", AudioData->hoursPerFrame);
 
 //    for(int i=0; i<totalFrames; i++) {
 //        float xpos=((float)i)*bitmapwidth/totalFrames;
