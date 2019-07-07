@@ -93,6 +93,28 @@ SoundRecording * SoundRecording::loadFromAssets(AAssetManager *assetManager, con
     WAVEFORMAUDIODATATOTALFRAMES = totalFrames;
     // format is 16 bit int, but resampler appears to take floating point...
     // resample here
+    /*
+Matthew Good, [07.07.19 03:25]
+so just to be clear, resampling libs offer LITTLE quality improvements over user implemented resampling algorithms right?
+
+Ivansuper, [07.07.19 03:26]
+Yeah, kind of
+
+Ivansuper, [07.07.19 03:27]
+You see, there is a human factor. When you bump up 8kHz to 92kHz, you will hear the algos "extra enhancers"
+
+Ivansuper, [07.07.19 03:27]
+Because someone may implement some kind of a "hi frequency reconstruction" algorithm
+
+Ivansuper, [07.07.19 03:28]
+And these kinds of tiny small extra features do make a certain library special
+
+Ivansuper, [07.07.19 03:29]
+But if you upsample 44100 to 88200, you won't hear any difference (I am confident 95%)
+
+Ivansuper, [07.07.19 03:30]
+Pure upsampling does not make it sound any better
+     */
     // $resampler_path -i -r 48000 --noPeakChunk --doubleprecision --minphase --mt
     extern int main(int argc, char * argv[]);
     const int argc1 = 2;
@@ -119,7 +141,7 @@ SoundRecording * SoundRecording::loadFromAssets(AAssetManager *assetManager, con
     argv3[9] = "--showStages";
     argv3[10] = "--singleStage"; // Converter<float>::initSinglestage() srconvert.h:266 A/libc: Invalid address 0x7df8ce8000 passed to free: value not allocated
     double s = now_ms();
-    main(argc3, const_cast<char **>(argv3));
+//    main(argc3, const_cast<char **>(argv3));
     double e = now_ms();
     LOGE("TIME took %G milliseconds", e - s);
     WAVEFORMAUDIODATA = audioBuffer;
