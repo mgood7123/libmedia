@@ -21,4 +21,14 @@ NATIVE(void, Oboe, LoadTrackFromAssets)(JNIEnv *env, jobject type, jstring asset
     Mixer.addTrack(currentAudioTrack);
 }
 
+NATIVE(void, Oboe, LoadTrackFromPath)(JNIEnv *env, jobject type, jstring path) {
+    jboolean val;
+    currentAudioTrack = SoundRecording::loadFromPath(
+            env->GetStringUTFChars(path, &val),
+            streamBuilder.getSampleRate(),
+            streamBuilder.getChannelCount()
+    );
+    Mixer.addTrack(currentAudioTrack);
+}
+
 #endif //MEDIA_PLAYER_PRO_LOAD_H

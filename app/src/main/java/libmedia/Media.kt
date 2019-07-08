@@ -7,10 +7,13 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.libperm.PermissionManager
 import java.io.IOException
@@ -18,40 +21,123 @@ import java.io.IOException
 
 @Suppress("unused")
 class Media(private val activity: Activity) {
-    lateinit var TEMPORARY_FILES_DIRECTORY: String
+    lateinit var currentTemporyMediaFilesDirectory: String
+    lateinit var audioManager: AudioManager
+    
+    private inner class FocusManager {
+        private var mAudioFocusChangeListener: AudioFocusChangeListenerImpl? = null
+        var hasFocus: Boolean = false
+        private var focusChanged: Boolean = false
+        private val TAG = "FocusManager"
+
+        fun request(): Boolean {
+            if (hasFocus) return true
+            mAudioFocusChangeListener = AudioFocusChangeListenerImpl()
+            val result = audioManager.requestAudioFocus(
+                mAudioFocusChangeListener,
+                AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN
+            )
+
+            when (result) {
+                AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> hasFocus = true
+                AudioManager.AUDIOFOCUS_REQUEST_FAILED -> hasFocus = false
+            }
+
+            val message = "Focus request " + if (hasFocus) "granted" else "failed"
+            Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
+            Log.i(TAG, message)
+            return hasFocus
+        }
+
+        fun release(): Boolean {
+            if (!hasFocus) return true
+            val result = audioManager.abandonAudioFocus(mAudioFocusChangeListener)
+            when (result) {
+                AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> hasFocus = false
+                AudioManager.AUDIOFOCUS_REQUEST_FAILED -> hasFocus = true
+            }
+            val message = "Abandon focus request " + if (!hasFocus) "granted" else "failed"
+            Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
+            Log.i(TAG, message)
+            return !hasFocus
+        }
+
+        private inner class AudioFocusChangeListenerImpl : AudioManager.OnAudioFocusChangeListener {
+
+            override fun onAudioFocusChange(focusChange: Int) {
+                focusChanged = true
+                Log.i(TAG, "Focus changed")
+
+                when (focusChange) {
+                    AudioManager.AUDIOFOCUS_GAIN -> {
+                        Log.i(TAG, "AUDIOFOCUS_GAIN")
+                        Toast.makeText(activity, "Focus GAINED", Toast.LENGTH_LONG).show()
+                        play()
+                    }
+                    AudioManager.AUDIOFOCUS_LOSS -> {
+                        Log.i(TAG, "AUDIOFOCUS_LOSS")
+                        Toast.makeText(activity, "Focus LOST", Toast.LENGTH_LONG).show()
+                        pause()
+                    }
+                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                        Log.i(TAG, "AUDIOFOCUS_LOSS_TRANSIENT")
+                        Toast.makeText(activity, "Focus LOST TRANSIENT", Toast.LENGTH_LONG).show()
+                    }
+                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
+                        Log.i(TAG, "AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK")
+                        Toast.makeText(activity, "Focus LOST TRANSIENT CAN DUCK", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        }
+    }
+    
+    private val focusManager = FocusManager()
 
     fun `init`(): Media {
-        setTemporaryFilesDirectory(activity.filesDir.absolutePath)
-        val myAudioMgr = activity.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        val sampleRateStr = myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE)
+        setTemporyMediaFilesDirectory(activity.filesDir.absolutePath)
+        audioManager = activity.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val sampleRateStr = audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE)
         val defaultSampleRate = Integer.parseInt(sampleRateStr)
-        val framesPerBurstStr = myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER)
+        val framesPerBurstStr = audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER)
         val defaultFramesPerBurst = Integer.parseInt(framesPerBurstStr)
         // library is loaded at application startup
         Oboe_Init(defaultSampleRate, defaultFramesPerBurst)
         return this
     }
 
-    fun setTemporaryFilesDirectory(dir: String) {
-        TEMPORARY_FILES_DIRECTORY = dir
-        Log.e("Media", "setting Temporary Files Directory to $dir")
-        Oboe_SetTempDir(TEMPORARY_FILES_DIRECTORY)
+    fun requestAudioFocus(): Media {
+        focusManager.request()
+        return this
     }
 
-    var MEDIAbackground: Boolean = false
+    fun releaseAudioFocus(): Media {
+        focusManager.release()
+        return this
+    }
+
+    fun setTemporyMediaFilesDirectory(dir: String): Media {
+        currentTemporyMediaFilesDirectory = dir
+        Log.e("Media", "setting Temporary Files Directory to $dir")
+        Oboe_SetTempDir(currentTemporyMediaFilesDirectory)
+        return this
+    }
+
+    var isInBackground: Boolean = false
 
     fun foreground(): Media
     {
-        MEDIAbackground = false
+        isInBackground = false
         return this
     }
 
     fun background(): Media {
-        MEDIAbackground = true
+        isInBackground = true
         return this
     }
 
     fun destroy(): Media {
+        focusManager.release()
         Oboe_Cleanup()
         return this
     }
@@ -68,16 +154,14 @@ class Media(private val activity: Activity) {
             Log.e("PlayerExample", "Close error.")
         }
         val path = activity.packageResourcePath         // get path to APK package
-//        if (type == Type().Superpowered) Superpowered_OpenFileRes(path, fileOffset, fileLength)         // open audio file from APK
         return this
     }
 
     fun loadMediaPath(path: String): Media {
-        val p = PermissionManager(activity).Permissions("android.permission.READ_EXTERNAL_STORAGE")
-        p.requestAllRemaining()
-        while (!p.checkAll()) Thread.sleep(1)
-//        if (type == Type().Superpowered) Superpowered_OpenFilePath(path)                            // open audio file from storage
-//        Oboe_LoadTrackFromAssets(activity.assets)
+//        val p = PermissionManager(activity).Permissions("android.permission.READ_EXTERNAL_STORAGE")
+//        p.requestAllRemaining()
+//        while (!p.checkAll()) Thread.sleep(1)
+        Oboe_LoadTrackFromPath(path)
         return this
     }
 
@@ -85,31 +169,60 @@ class Media(private val activity: Activity) {
         Oboe_LoadTrackFromAssets(asset, activity.assets)
         return this
     }
+    
+    class ListnerCallback {
+        var play: () -> Unit = {}
+        var pause: () -> Unit = {}
+        var stop: () -> Unit = {}
+    }
+    
+    val Listner = ListnerCallback()
+
+    var isPlaying = false
+    var isPaused = false
+    var isStopped = false
+    var isLooping = false
+
+    fun togglePlayback(): Media {
+        when {
+            isStopped || isPaused -> play()
+            isPlaying -> play()
+            else -> Log.e("LibMedia", "Unknown Playback State")
+        }
+        return this
+    }
 
     fun play(): Media {
-//        if (type == Type().Superpowered) {
-//            if (!Superpowered_IsPlaying()) Superpowered_Play()
-//        }
+        focusManager.request()
         Oboe_Play()
+        isPlaying = true
+        isPaused = false
+        isStopped = false
+        Listner.play()
         return this
     }
 
     fun pause(): Media {
-//        if (type == Type().Superpowered) {
-//            if (Superpowered_IsPlaying()) Superpowered_Pause()
-//        }
+        focusManager.release()
         Oboe_Pause()
+        isPlaying = false
+        isPaused = true
+        isStopped = false
+        Listner.pause()
         return this
     }
 
     fun stop(): Media {
-//        if (type == Type().Superpowered) Superpowered_Stop()
+        focusManager.release()
         Oboe_Stop()
+        isPlaying = false
+        isPaused = false
+        isStopped = true
+        Listner.stop()
         return this
     }
 
     fun loop(value: Boolean): Media {
-//        if (type == Type().Superpowered) Superpowered_Loop(value)
         Oboe_Loop(value)
         return this
     }
@@ -129,17 +242,13 @@ class Media(private val activity: Activity) {
     }
 
     private fun looperStart() {
-//        if (type == Type().Superpowered) {
-//            Superpowered_HasLooper(true)
-//            Superpowered_Looper(currentLooper!!.start, currentLooper!!.end)
-//        } {
-            Oboe_Looper(currentLooper!!.start, currentLooper!!.end, currentLooper!!.timing)
-//        }
+        Oboe_Looper(currentLooper!!.start, currentLooper!!.end, currentLooper!!.timing)
+        isLooping = true
     }
 
     private fun looperStop() {
-//        if (type == Type().Superpowered) Superpowered_HasLooper(false)
         currentLooper = null
+        isLooping = false
     }
 
     fun addLooper(name: String, start: Int, end: Int, timing: Int): Media = addLooper(
@@ -190,10 +299,10 @@ class Media(private val activity: Activity) {
 
     // Functions implemented in the native library.
 
-    // Oboe
     private external fun Oboe_Init(sampleRate: Int, framesPerBurst: Int)
     private external fun Oboe_SetTempDir(dir: String)
     private external fun Oboe_LoadTrackFromAssets(asset: String, assetManager: AssetManager)
+    private external fun Oboe_LoadTrackFromPath(path: String)
     private external fun Oboe_Play()
     private external fun Oboe_Pause()
     private external fun Oboe_Stop()
@@ -309,8 +418,6 @@ class Media(private val activity: Activity) {
             override fun onDraw(canvas: Canvas) {
                 renderWaveform(mBitmap, System.currentTimeMillis() - mStartTime, WaveformViewOptions)
                 canvas.drawBitmap(mBitmap, 0f, 0f, null)
-//                canvas.drawLine()
-                // force a redraw, with a different time-based pattern.
                 invalidate()
             }
         }
@@ -327,7 +434,6 @@ class Media(private val activity: Activity) {
             }
 
             override fun onDraw(canvas: Canvas) {
-                // TODO Auto-generated method stub
                 super.onDraw(canvas)
                 val offset: Float = 0f
                 canvas.drawRect(offset, 0f, offset, height_.toFloat(), paint!!)

@@ -14,8 +14,8 @@ class MainActivity : AppCompatActivity() {
         System.loadLibrary("PlayerOboe")
         media = Media(this)
         media!!.init()
-//            .loadMediaAsset("FUNKY_HOUSE.raw")
-            .loadMediaAsset("00001313Upsampled.raw")
+//            .loadMediaAsset("00001313Upsampled.raw")
+            .loadMediaPath("/sdcard/ReSampler/00001313.wav")
             .loop(true)
             .play()
         val build = Builder(this)
@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-            .row().height(60)
+            .row().height(40)
             .column {
                 media!!.WaveformView(
                     context = this,
@@ -66,6 +66,33 @@ class MainActivity : AppCompatActivity() {
                     width = build.currentColumn!!.sizeFromLeft,
                     media = media!!
                 )
+            }
+            .row().height(20)
+            .column {
+                Button(this).also {
+                    media!!.Listner.play = {
+                        it.text = "playing"
+                    }
+                    media!!.Listner.pause = {
+                        it.text = "paused"
+                    }
+                    media!!.Listner.stop = {
+                        it.text = "stopped"
+                    }
+                    it.setOnClickListener {
+                        if (media!!.isPlaying) media!!.pause()
+                        else media!!.play()
+                    }
+                    Thread {
+                        while (true) {
+                            when {
+                                media!!.isPlaying -> it.text = "playing"
+                                media!!.isPaused -> it.text = "paused"
+                                media!!.isStopped -> it.text = "stopped"
+                            }
+                        }
+                    }.start()
+                }
             }
             .build()
     }

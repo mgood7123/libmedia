@@ -28,6 +28,8 @@
 #include <src/common/OboeDebug.h>
 #include "SoundRecordingAudioData.h"
 
+extern AudioTime GlobalTime;
+
 class SoundRecording {
 
 public:
@@ -39,18 +41,20 @@ public:
         AudioData = audiodata;
     };
     void renderAudio(int16_t *targetData, int64_t numFrames, SoundRecording *AudioData);
-    void resetPlayHead() { mReadFrameIndex = 0; };
+    void resetPlayHead() { mReadFrameIndex = 0; GlobalTime.update(0, AudioData); };
     void seekTo(uint64_t frame) { mReadFrameIndex = frame; };
-    void setPlaying(bool isPlaying) { mIsPlaying = isPlaying; resetPlayHead(); };
+    void setPlaying(bool isPlaying) { mIsPlaying = isPlaying; };
     void setLooping(bool isLooping) { mIsLooping = isLooping; };
 
     static SoundRecording * loadFromAssets(AAssetManager *assetManager, const char * filename, int SampleRate, int mChannelCount);
+    static SoundRecording *loadFromPath(const char *filename, int SampleRate, int mChannelCount);
     int16_t* Audio = nullptr;
 private:
     uint64_t mReadFrameIndex = 0;
     int64_t mTotalFrames = 0;
     std::atomic<bool> mIsPlaying { false };
     std::atomic<bool> mIsLooping { false };
+
 };
 
 #endif //MEDIA_PLAYER_PRO_SOUNDRECORDING_H

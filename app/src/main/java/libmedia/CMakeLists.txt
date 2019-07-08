@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.4.1)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -v -std=c++17")
 add_subdirectory (SDK/oboe)
 add_subdirectory (AndroidBitmap)
-add_subdirectory (resampler/ReSampler)
+add_subdirectory (ReSampler)
 
 include_directories (SDK/oboe)
 include_directories (native)

@@ -22,11 +22,12 @@ NATIVE(void, Oboe, Init)(JNIEnv *env, jobject type, jint sampleRate, jint frames
     oboe::DefaultStreamValues::SampleRate = (int32_t) sampleRate;
     oboe::DefaultStreamValues::FramesPerBurst = (int32_t) framesPerBurst;
     streamBuilder.setDirection(oboe::Direction::Output);
+    // PerformanceMode MUST not be set to LowLatency in order to interact with external processors such as ViPER4Android
+    // however Oboe currently crashes if it is not set to LowLatency
     streamBuilder.setPerformanceMode(oboe::PerformanceMode::LowLatency);
-    streamBuilder.setSharingMode(oboe::SharingMode::Exclusive);
+    streamBuilder.setSharingMode(oboe::SharingMode::Shared);
     streamBuilder.setFormat(oboe::AudioFormat::I16);
     streamBuilder.setChannelCount(oboe::ChannelCount::Stereo);
-    // TODO: audio will go choppy if application is in background and device native sample rate does not match
     streamBuilder.setSampleRate(sampleRate);
     oboe::Result result = streamBuilder.openStream(&stream);
     if (result != oboe::Result::OK) {

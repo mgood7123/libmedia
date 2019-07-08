@@ -19,6 +19,13 @@
 #include <src/common/OboeDebug.h>
 #include <cmath>
 #include <native.h>
+#include <iostream>
+#include <fstream>
+#include <unistd.h>
+#include <asm/fcntl.h>
+#include <fcntl.h>
+#include <env.h>
+
 
 extern AudioTime GlobalTime;
 
@@ -72,6 +79,100 @@ NATIVE(void, Oboe, SetTempDir)(JNIEnv *env, jobject type, jstring dir) {
     TEMPDIR = std::string(env->GetStringUTFChars(dir, &val));
 }
 
+// reads a entire file
+size_t read__(char *file, char **p) {
+    int fd;
+    size_t len = 0;
+    char *o = NULL;
+    *p = NULL;
+    if (!(fd = open(file, O_RDONLY)))
+    {
+        std::cerr << "open() failure" << std::endl;
+        return 0;
+    }
+    len = static_cast<size_t>(lseek(fd, 0, SEEK_END));
+    lseek(fd, 0, 0);
+    if (!(o = static_cast<char *>(malloc(len)))) {
+        std::cerr << "failure to malloc()" << std::endl;
+    }
+    if ((read(fd, o, len)) == -1) {
+        std::cerr << "failure to read()" << std::endl;
+    }
+    int cl = close(fd);
+    if (cl < 0) {
+        std::cerr << "cannot close \"" << file << "\", returned " << cl << std::endl;
+        return 0;
+    }
+    *p = o;
+    return len;
+}
+
+SoundRecording * SoundRecording::loadFromPath(const char *filename, int SampleRate, int mChannelCount) {
+
+    const char * infile = filename;
+    // TODO: these MUST be build using libstring and env.h builders
+    extern int main(int argc, char * argv[]);
+    env_t argv = env__new();
+    argv = env__add(argv, "ReSampler");
+    argv = env__add(argv, "-i");
+    argv = env__add(argv, infile);
+    argv = env__add(argv, "-o");
+    argv = env__add(argv, static_cast<std::string>(TEMPDIR + "/INFILE.raw").c_str());
+    argv = env__add(argv, "-r");
+    argv = env__add(argv, std::to_string(SampleRate).c_str());
+    argv = env__add(argv, "-b");
+    argv = env__add(argv, "16");
+    argv = env__add(argv, "--showStages");
+    argv = env__add(argv, "-mt");
+    argv = env__add(argv, "--noTempFile");
+    double s = now_ms();
+    LOGE("Started conversion at %G milliseconds", s);
+    main(env__size(argv), argv);
+    double e = now_ms();
+    LOGE("Ended conversion at %G milliseconds", e);
+    LOGE("TIME took %G milliseconds", e - s);
+
+    // read the file into memory
+    char * in = nullptr;
+    size_t insize = 0;
+    char * out = nullptr;
+    size_t outsize = 0;
+    insize = read__(const_cast<char *>(infile), &in);
+    outsize = read__(const_cast<char *>(argv[4]), &out);
+
+    LOGE("%s file size: %zu", infile, insize);
+    LOGE("%s file size: %zu", argv[4], outsize);
+    env__free(argv);
+
+    const uint64_t totalFrames = outsize / (2 * mChannelCount);
+    WAVEFORMAUDIODATATOTALFRAMES = totalFrames;
+    WAVEFORMAUDIODATA = reinterpret_cast<const int16_t *>(out);
+
+    SoundRecordingAudioData * AudioData = new SoundRecordingAudioData(totalFrames, mChannelCount, SampleRate);
+    AudioTime * allFrames = new AudioTime();
+    allFrames->update(totalFrames, AudioData);
+    LOGD("Opened backing track");
+    LOGD("length in human time:                              %s", allFrames->format(true).c_str());
+    LOGD("length in nanoseconds:                             %G", allFrames->nanosecondsTotal);
+    LOGD("length in microseconds:                            %G", allFrames->microsecondsTotal);
+    LOGD("length in milliseconds:                            %G", allFrames->millisecondsTotal);
+    LOGD("length in seconds:                                 %G", allFrames->secondsTotal);
+    LOGD("length in minutes:                                 %G", allFrames->minutesTotal);
+    LOGD("length in hours:                                   %G", allFrames->hoursTotal);
+    LOGD("bytes:                                             %ld", outsize);
+    LOGD("frames:                                            %ld", totalFrames);
+    LOGD("sample rate:                                       %d", SampleRate);
+    LOGD("length of 1 frame at %d sample rate:", SampleRate);
+    LOGD("Human Time:                                        %s", AudioData->TimeTruncated);
+    LOGD("Nanoseconds:                                       %G", AudioData->nanosecondsPerFrame);
+    LOGD("Microseconds:                                      %G", AudioData->microsecondsPerFrame);
+    LOGD("Milliseconds:                                      %G", AudioData->millisecondsPerFrame);
+    LOGD("Seconds:                                           %G", AudioData->secondsPerFrame);
+    LOGD("Minutes:                                           %G", AudioData->minutesPerFrame);
+    LOGD("Hours:                                             %G", AudioData->hoursPerFrame);
+    return new SoundRecording(reinterpret_cast<int16_t *>(out), AudioData);
+}
+
 SoundRecording * SoundRecording::loadFromAssets(AAssetManager *assetManager, const char *filename, int SampleRate, int mChannelCount) {
 
     // Load the backing track
@@ -91,60 +192,11 @@ SoundRecording * SoundRecording::loadFromAssets(AAssetManager *assetManager, con
         LOGE("Could not get buffer for track");
         return nullptr;
     }
-    const int actualSampleRate = 44100;
+    const int actualSampleRate = 48000;
     const int actualChannelCount = 2;
-    // There are 4 bytes per frame because
-    // each sample is 2 bytes and
-    // it's a stereo recording which has 2 samples per frame.
+
     const uint64_t totalFrames = trackSize / (2 * actualChannelCount);
     WAVEFORMAUDIODATATOTALFRAMES = totalFrames;
-    // format is 16 bit int, but resampler appears to take floating point...
-    // resample here
-    /*
-Matthew Good, [07.07.19 03:25]
-so just to be clear, resampling libs offer LITTLE quality improvements over user implemented resampling algorithms right?
-
-Ivansuper, [07.07.19 03:26]
-Yeah, kind of
-
-Ivansuper, [07.07.19 03:27]
-You see, there is a human factor. When you bump up 8kHz to 92kHz, you will hear the algos "extra enhancers"
-
-Ivansuper, [07.07.19 03:27]
-Because someone may implement some kind of a "hi frequency reconstruction" algorithm
-
-Ivansuper, [07.07.19 03:28]
-And these kinds of tiny small extra features do make a certain library special
-
-Ivansuper, [07.07.19 03:29]
-But if you upsample 44100 to 88200, you won't hear any difference (I am confident 95%)
-
-Ivansuper, [07.07.19 03:30]
-Pure upsampling does not make it sound any better
-     */
-    // $resampler_path -i -r 48000 --noPeakChunk --doubleprecision --minphase --mt
-    extern int main(int argc, char * argv[]);
-    const int argc = 12;
-    const char *argv[argc];
-    argv[0] = "ReSampler";
-    argv[1] = "-i";
-    argv[2] = "/sdcard/ReSampler/00001313.wav";
-    argv[3] = "-o";
-    argv[4] = static_cast<std::string>(TEMPDIR + "/00001313_48000.wav").c_str();
-    argv[5] = "-r";
-    argv[6] = "48000";
-    argv[7] = "-b";
-    argv[8] = "16";
-    argv[9] = "--showStages";
-//    argv[10] = "--singleStage";
-    argv[10] = "--multiStage";
-    argv[11] = "--noTempFile";
-    double s = now_ms();
-    LOGE("Started conversion at %G milliseconds", s);
-    main(argc, const_cast<char **>(argv));
-    double e = now_ms();
-    LOGE("Ended conversion at %G milliseconds", e);
-    LOGE("TIME took %G milliseconds", e - s);
     WAVEFORMAUDIODATA = audioBuffer;
 
     SoundRecordingAudioData * AudioData = new SoundRecordingAudioData(totalFrames, mChannelCount, SampleRate);
@@ -169,11 +221,5 @@ Pure upsampling does not make it sound any better
     LOGD("Seconds:                                           %G", AudioData->secondsPerFrame);
     LOGD("Minutes:                                           %G", AudioData->minutesPerFrame);
     LOGD("Hours:                                             %G", AudioData->hoursPerFrame);
-
-//    for(int i=0; i<totalFrames; i++) {
-//        float xpos=((float)i)*bitmapwidth/totalFrames;
-//        float ypos=bitmapheight*(0.5f + audioBuffer[i]/maxValue);
-//        bitmap[ypos*bitmapwidth + xpos] = 0xffffffff;
-//    }
     return new SoundRecording(const_cast<int16_t *>(audioBuffer), AudioData);
 }
