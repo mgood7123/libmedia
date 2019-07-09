@@ -23,7 +23,7 @@ NATIVE(void, Oboe, Init)(JNIEnv *env, jobject type, jint sampleRate, jint frames
     oboe::DefaultStreamValues::FramesPerBurst = (int32_t) framesPerBurst;
     streamBuilder.setDirection(oboe::Direction::Output);
     // PerformanceMode MUST not be set to LowLatency in order to interact with external processors such as ViPER4Android
-    // however Oboe currently crashes if it is not set to LowLatency
+    // however Oboe (or something else) currently crashes if it is not set to LowLatency
     streamBuilder.setPerformanceMode(oboe::PerformanceMode::LowLatency);
     streamBuilder.setSharingMode(oboe::SharingMode::Shared);
     streamBuilder.setFormat(oboe::AudioFormat::I16);
