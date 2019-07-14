@@ -31,122 +31,7 @@
 #include "timestats.h"
 #include "../AndroidBitmap/bitmap.h"
 #include <MonitorPool.h>
-/*
-#define MONITOR_TYPES std::variant<monitor<bool*>*,monitor<uint32_t*>*>
 
-template <class TYPE> class monitor {
-public:
-    bool changed() {
-        bool changed = false;
-        for (unsigned int i = 0; i < a.size(); i++) {
-            TYPE c1 = static_cast<TYPE>(a[i].current);
-            TYPE c2 = static_cast<TYPE>(a[i].previous);
-            if (*c1 != *c2) {
-                *static_cast<TYPE>(a[i].previous) = *static_cast<TYPE>(a[i].current);
-                LOGE("VALUE CHANGED");
-                changed = true;
-            }
-        }
-        return changed;
-    }
-
-    bool exists(std::string IDENTIFIER) {
-        for (unsigned int i = 0; i < a.size(); i++)
-            if (a[i].IDENTIFIER == IDENTIFIER)
-                return true;
-        return false;
-    }
-
-    int indexOf(std::string IDENTIFIER) {
-        for (unsigned int i = 0; i < a.size(); i++)
-            if (a[i].IDENTIFIER == IDENTIFIER)
-                return i;
-        return -1;
-    }
-
-    void add(std::string IDENTIFIER, TYPE what) {
-        // could use exists but then it would loop twice
-        int index = indexOf(IDENTIFIER);
-        if (index != -1) {
-            a[index].current = what;
-        } else {
-            LOGE("ADDING VALUE TO MONITOR LIST");
-            mon m = mon();
-            m.IDENTIFIER = IDENTIFIER;
-            m.current = what;
-            m.previous = static_cast<TYPE>(malloc(1*sizeof(TYPE)));
-            a.push_front(m);
-        }
-    }
-
-private:
-    class mon {
-    public:
-        std::string IDENTIFIER = "";
-        TYPE current = 0;
-        TYPE previous = 0;
-    };
-    std::deque<mon> a = std::deque<mon>();
-};
-
-class monitorPool {
-public:
-
-    bool changed() {
-        bool changed = false;
-        for (unsigned int i = 0; i < a.size(); i++) {
-            if (c(i)) {
-                changed = true;
-            }
-        }
-        return changed;
-    }
-
-    bool exists(std::string IDENTIFIER) {
-        for (unsigned int i = 0; i < a.size(); i++)
-            if (a[i].IDENTIFIER == IDENTIFIER)
-                return true;
-        return false;
-    }
-
-    int indexOf(std::string IDENTIFIER) {
-        for (unsigned int i = 0; i < a.size(); i++)
-            if (a[i].IDENTIFIER == IDENTIFIER)
-                return i;
-        return -1;
-    }
-
-    void add(std::string IDENTIFIER, MONITOR_TYPES what) {
-        // could use exists but then it would loop twice
-        int index = indexOf(IDENTIFIER);
-        if (index != -1) {
-            a[index].m = what;
-        } else {
-            LOGE("ADDING VALUE TO MONITOR LIST");
-            mon m = mon();
-            m.IDENTIFIER = IDENTIFIER;
-            m.m = what;
-            a.push_front(m);
-        }
-    }
-
-    class mon {
-    public:
-        std::string IDENTIFIER = "";
-        MONITOR_TYPES m;
-    };
-
-    std::deque<mon> a = std::deque<mon>();
-    bool c(int index) {
-        return std::visit([](MONITOR_TYPES &&arg) {
-            if (std::holds_alternative<monitor<uint32_t*>*>(arg))
-                return std::get<monitor<uint32_t *>*>(arg)->changed();
-            else if (std::holds_alternative<monitor<bool*>*>(arg))
-                return std::get<monitor<bool *>*>(arg)->changed();
-        }, a[index].m);
-    }
-};
-*/
 MonitorPool MOMO;
 Monitor<uint32_t*> MONITOR_uint32_t;
 Monitor<bool*> MONITOR_bool;
@@ -168,108 +53,182 @@ public:
     bool highlightSilence = false;
     bool stretchToScreenHeight = true;
     bool stretchToScreenWidth = false;
+    // used internally to differentiate between stereo and mono
+    bool LEFT = true;
+    bool STEREO = true;
 } WVO;
 
-static void fill_waveform(AndroidBitmapInfo *info, void *pixels, bool highlightSilence = false)
-{
-    bool USESAMPLE = false;
-    __android_log_print(ANDROID_LOG_INFO,LOG_TAG,"rendering sound form (Waveform)");
-    __android_log_print(ANDROID_LOG_INFO,LOG_TAG,"HEIGHT is %d", info->height);
-    __android_log_print(ANDROID_LOG_INFO,LOG_TAG,"WIDTH is %d", info->width);
-    if (USESAMPLE) {
-        int samples = info->width;
-        samples = info->width;
-        int16_t SCALED[samples];
-        __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,"generating test sample");
-        int16_t outputData[samples];
-        for (int i = 0; i < samples; ++i)
-            outputData[i] = static_cast<int16_t>((info->height/2) * sin(i * (M_PI / 360)));
-        __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,"test sample generated");
-        AudioTools::clone(outputData, SCALED, samples);
-        __android_log_print(ANDROID_LOG_INFO,LOG_TAG,"scaling width");
-        int16_t TIMESTRETCHED[samples];
-        AudioTools::zero(TIMESTRETCHED, samples);
-        TimeStretch::Shorten::test(SCALED, samples, TIMESTRETCHED, info->width);
-        __android_log_print(ANDROID_LOG_INFO,LOG_TAG,"scaling height");
-        AudioTools::scale(TIMESTRETCHED, TIMESTRETCHED, samples, static_cast<int16_t>(info->height));
-
-        __android_log_print(ANDROID_LOG_INFO,LOG_TAG,"drawing");
-
-        if (info->format == ANDROID_BITMAP_FORMAT_RGBA_8888) {
-            __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,"BITMAP FORMAT RGBA_8888 UNSUPPORTED!");
-            return;
-        } else if (info->format == ANDROID_BITMAP_FORMAT_RGB_565) {
-            __android_log_print(ANDROID_LOG_INFO,LOG_TAG,"BITMAP FORMAT RGB_565");
-            for (int16_t column = 0; column < info->width; column++)
-                pixelDraw_RGB_565(info, pixels, TIMESTRETCHED[column], column, pixelColourRGB_565(255, 255, 255));
-        } else __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,"BITMAP FORMAT UNKNOWN: %d", info->format);
+static void fill_waveform_stereo(AndroidBitmapInfo *infoLeft, AndroidBitmapInfo *infoRight, void *pixelsLeft, void *pixelsRight, bool highlightSilence = false) {
+    uint32_t LH = 0;
+    uint32_t LW = 0;
+    uint32_t RH = 0;
+    uint32_t RW = 0;
+    if ((WVO.STEREO && WVO.LEFT) || !WVO.STEREO) {
+            LH = infoLeft->height;
+            LW = infoLeft->width;
+    }
+    if (WVO.STEREO && !WVO.LEFT) {
+        RH = infoRight->height;
+        RW = infoRight->width;
+    }
+    __android_log_print(ANDROID_LOG_INFO, LOG_TAG, "rendering sound form (Waveform)");
+    if ((WVO.STEREO && WVO.LEFT) || !WVO.STEREO) {
+        __android_log_print(ANDROID_LOG_INFO, LOG_TAG, "HEIGHT is %d", LH);
+        __android_log_print(ANDROID_LOG_INFO, LOG_TAG, "WIDTH is %d", LW);
+    }
+    if (WVO.STEREO && !WVO.LEFT) {
+        __android_log_print(ANDROID_LOG_INFO, LOG_TAG, "HEIGHT is %d", RH);
+        __android_log_print(ANDROID_LOG_INFO, LOG_TAG, "WIDTH is %d", RW);
+    }
+    uint64_t samples = WAVEFORMAUDIODATATOTALFRAMES;
+    if (WVO.STEREO)
+        samples /= 2;
+    int16_t L[samples];
+    int16_t R[samples];
+    int16_t min = 0;
+    int16_t max = 0;
+    for (int i = 0; i < WAVEFORMAUDIODATATOTALFRAMES; ++i) {
+        if (min > WAVEFORMAUDIODATA[i]) min = WAVEFORMAUDIODATA[i];
+        if (max < WAVEFORMAUDIODATA[i]) max = WAVEFORMAUDIODATA[i];
+    }
+    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, "min = %d", min);
+    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, "max = %d", max);
+    if (WVO.STEREO)
+        AudioTools::splitStereo(const_cast<int16_t *>(WAVEFORMAUDIODATA), L, R, samples * 2);
+    else
+        AudioTools::clone(const_cast<int16_t *>(WAVEFORMAUDIODATA), L, samples);
+    __android_log_print(ANDROID_LOG_INFO, LOG_TAG, "scaling width");
+    int16_t TIMESTRETCHEDL[LW];
+    AudioTools::zero(TIMESTRETCHEDL, LW);
+    int16_t TIMESTRETCHEDR[RW];
+    AudioTools::zero(TIMESTRETCHEDR, RW);
+    if (WVO.stretchToScreenWidth) {
+        if ((WVO.STEREO && WVO.LEFT) || !WVO.STEREO)
+            TimeStretch::Shorten::test(L, samples, TIMESTRETCHEDL, LW);
+        if (WVO.STEREO && !WVO.LEFT)
+                TimeStretch::Shorten::test(R, samples, TIMESTRETCHEDR, RW);
     } else {
-        uint64_t samples = WAVEFORMAUDIODATATOTALFRAMES;
-        int16_t SCALED[samples];
-        int16_t min = 0;
-        int16_t max = 0;
-        for (int i = 0; i < WAVEFORMAUDIODATATOTALFRAMES; ++i) {
-            if (min > WAVEFORMAUDIODATA[i]) min = WAVEFORMAUDIODATA[i];
-            if (max < WAVEFORMAUDIODATA[i]) max = WAVEFORMAUDIODATA[i];
+        if ((WVO.STEREO && WVO.LEFT) || !WVO.STEREO)
+            AudioTools::clone(L, TIMESTRETCHEDL, LW);
+        if (WVO.STEREO && !WVO.LEFT)
+            AudioTools::clone(R, TIMESTRETCHEDR, RW);
+    }
+    __android_log_print(ANDROID_LOG_INFO, LOG_TAG, "scaling height");
+    if (WVO.stretchToScreenHeight) {
+        if ((WVO.STEREO && WVO.LEFT) || !WVO.STEREO)
+            AudioTools::scale(TIMESTRETCHEDL, TIMESTRETCHEDL, LW, static_cast<int16_t>(LH));
+        if (WVO.STEREO && !WVO.LEFT)
+            AudioTools::scale(TIMESTRETCHEDR, TIMESTRETCHEDR, RW, static_cast<int16_t>(RH));
+    } else {
+        if (!WVO.stretchToScreenWidth) {
+            if ((WVO.STEREO && WVO.LEFT) || !WVO.STEREO)
+                AudioTools::crop(L, LH, TIMESTRETCHEDL, LW);
+            if (WVO.STEREO && !WVO.LEFT)
+                AudioTools::crop(R, RH, TIMESTRETCHEDR, RW);
+        } else {
+            if ((WVO.STEREO && WVO.LEFT) || !WVO.STEREO)
+                AudioTools::crop(TIMESTRETCHEDL, LH, TIMESTRETCHEDL, LW);
+            if (WVO.STEREO && !WVO.LEFT)
+                AudioTools::crop(TIMESTRETCHEDR, RH, TIMESTRETCHEDR, RW);
         }
-        __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,"min = %d", min);
-        __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,"max = %d", max);
-        AudioTools::clone(const_cast<int16_t *>(WAVEFORMAUDIODATA), SCALED, samples);
-        __android_log_print(ANDROID_LOG_INFO,LOG_TAG,"scaling width");
-        int16_t TIMESTRETCHED[info->width]; AudioTools::zero(TIMESTRETCHED, info->width);
-        if (WVO.stretchToScreenWidth) TimeStretch::Shorten::test(SCALED, samples, TIMESTRETCHED, info->width);
-        else AudioTools::clone(SCALED, TIMESTRETCHED, info->width);
-        __android_log_print(ANDROID_LOG_INFO,LOG_TAG,"scaling height");
-        if (WVO.stretchToScreenHeight) AudioTools::scale(TIMESTRETCHED, TIMESTRETCHED, info->width, static_cast<int16_t>(info->height));
-        else {
-            if (!WVO.stretchToScreenWidth) AudioTools::crop(SCALED, info->height, TIMESTRETCHED, info->width);
-            else AudioTools::crop(TIMESTRETCHED, info->height, TIMESTRETCHED, info->width);
-        }
-//        int16_t TIMESTRETCHEDL[info->width]; AudioTools::zero(TIMESTRETCHEDL, info->width);
-//        int16_t TIMESTRETCHEDR[info->width]; AudioTools::zero(TIMESTRETCHEDR, info->width);
-//        AudioTools::splitStereo(TIMESTRETCHED, TIMESTRETCHEDL, TIMESTRETCHEDR, info->width);
-//        AudioTools::clone(TIMESTRETCHEDL, TIMESTRETCHED, info->width);
-        __android_log_print(ANDROID_LOG_INFO,LOG_TAG,"drawing");
+    }
+//        AudioTools::splitStereo(TIMESTRETCHED, TIMESTRETCHEDL, TIMESTRETCHEDR, LW);
+//        AudioTools::clone(TIMESTRETCHEDL, TIMESTRETCHED, LW);
+    __android_log_print(ANDROID_LOG_INFO, LOG_TAG, "drawing");
 
-        Canvas canvas = Canvas(info, pixels);
-        canvas.clear();
-        canvas.buffered = false;
-        canvas.color.set(255, 0, 0);
-        if (info->format == ANDROID_BITMAP_FORMAT_RGBA_8888) {
-            __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,"BITMAP FORMAT RGBA_8888 UNSUPPORTED!");
-            return;
-        } else if (info->format == ANDROID_BITMAP_FORMAT_RGB_565) {
-            __android_log_print(ANDROID_LOG_INFO,LOG_TAG,"BITMAP FORMAT RGB_565");
-            for (int16_t column = 0; column < info->width; column++) {
+    Canvas canvasLeft = Canvas(infoLeft, pixelsLeft);
+    Canvas canvasRight = Canvas(infoRight, pixelsRight);
+    if ((WVO.STEREO && WVO.LEFT) || !WVO.STEREO)
+        canvasLeft.clear();
+    if (WVO.STEREO && !WVO.LEFT)
+        canvasRight.clear();
+    if ((WVO.STEREO && WVO.LEFT) || !WVO.STEREO)
+        canvasLeft.buffered = false;
+    if (WVO.STEREO && !WVO.LEFT)
+        canvasRight.buffered = false;
+    if ((WVO.STEREO && WVO.LEFT) || !WVO.STEREO)
+        canvasLeft.color.set(255, 0, 0);
+    if (WVO.STEREO && !WVO.LEFT)
+        canvasRight.color.set(255, 0, 0);
+    bool formatsupported = false;
+    if ((WVO.STEREO && WVO.LEFT) || !WVO.STEREO)
+        if (infoLeft->format == ANDROID_BITMAP_FORMAT_RGB_565)
+            formatsupported = true;
+    if (WVO.STEREO && !WVO.LEFT)
+        if (infoRight->format != ANDROID_BITMAP_FORMAT_RGB_565)
+            formatsupported = false;
+    if (formatsupported) {
+        __android_log_print(ANDROID_LOG_INFO, LOG_TAG, "BITMAP FORMAT RGB_565");
+        if ((WVO.STEREO && WVO.LEFT) || !WVO.STEREO) {
+            for (int16_t column = 0; column < LW; column++) {
                 // highlight silence in green
                 // silence threshold: positive 1 to negative 1
                 if (WVO.highlightSilence) {
                     if (!(
-                        (TIMESTRETCHED[column] - (info->height/2)) > 1 &&
-                        (TIMESTRETCHED[column] - (info->height/2)) < -1)
-                    ) {
-                        canvas.color.save(canvas);
-                        canvas.color.set(0, 255, 0);
+                            (TIMESTRETCHEDL[column] - (LH / 2)) > 1 &&
+                            (TIMESTRETCHEDL[column] - (LH / 2)) < -1)
+                            ) {
+                        canvasLeft.color.save(canvasLeft);
+                        canvasLeft.color.set(0, 255, 0);
                         if (WVO.drawLines)
-                            canvas.line_segment(TIMESTRETCHED[column], column, TIMESTRETCHED[column + 1], column + 1);
+                            canvasLeft.line_segment(TIMESTRETCHEDL[column], column, TIMESTRETCHEDL[column + 1],
+                                                    column + 1);
                         else
-                            canvas.pixel(TIMESTRETCHED[column], column);
-                        canvas.color.restore(canvas);
+                            canvasLeft.pixel(TIMESTRETCHEDL[column], column);
+                        canvasLeft.color.restore(canvasLeft);
                     }
-                }
-                else {
+                } else {
                     if (WVO.drawLines)
-                        canvas.line_segment(TIMESTRETCHED[column], column, TIMESTRETCHED[column+1], column+1);
+                        canvasLeft.line_segment(TIMESTRETCHEDL[column], column, TIMESTRETCHEDL[column + 1], column + 1);
                     else
-                        canvas.pixel(TIMESTRETCHED[column], column);
+                        canvasLeft.pixel(TIMESTRETCHEDL[column], column);
                 }
             }
-            canvas.flush();
-        } else __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,"BITMAP FORMAT UNKNOWN: %d", info->format);
+            canvasLeft.flush();
+        }
+        if (WVO.STEREO && !WVO.LEFT) {
+            for (int16_t column = 0; column < RW; column++) {
+                // highlight silence in green
+                // silence threshold: positive 1 to negative 1
+                if (WVO.highlightSilence) {
+                    if (!(
+                            (TIMESTRETCHEDR[column] - (LH / 2)) > 1 &&
+                            (TIMESTRETCHEDR[column] - (LH / 2)) < -1)
+                            ) {
+                        canvasRight.color.save(canvasRight);
+                        canvasRight.color.set(0, 255, 0);
+                        if (WVO.drawLines)
+                            canvasRight.line_segment(TIMESTRETCHEDR[column], column, TIMESTRETCHEDR[column + 1],
+                                                     column + 1);
+                        else
+                            canvasRight.pixel(TIMESTRETCHEDR[column], column);
+                        canvasRight.color.restore(canvasRight);
+                    }
+                } else {
+                    if (WVO.drawLines)
+                        canvasRight.line_segment(TIMESTRETCHEDR[column], column, TIMESTRETCHEDR[column + 1],
+                                                 column + 1);
+                    else
+                        canvasRight.pixel(TIMESTRETCHEDR[column], column);
+                }
+            }
+            canvasRight.flush();
+        }
+    } else {
+        if ((WVO.STEREO && WVO.LEFT) || !WVO.STEREO)
+            __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,"BITMAP FORMAT UNSUPPORTED: %d", infoLeft->format);
+        if (WVO.STEREO && !WVO.LEFT)
+            __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,"BITMAP FORMAT UNSUPPORTED: %d", infoRight->format);
     }
-
-    __android_log_print(ANDROID_LOG_INFO,LOG_TAG,"rendered sound form (Waveform): %d frames rendered", pixelFrames);
+    __android_log_print(ANDROID_LOG_INFO,LOG_TAG,"rendered sound form (Waveform)");
 }
+
+static void fill_waveform_mono(AndroidBitmapInfo *info, void *pixels) {
+    WVO.STEREO = false;
+    WVO.LEFT = true;
+    fill_waveform_stereo(info, nullptr, pixels, nullptr);
+}
+
 
 class javaClassToCppClassInformation {
 public:
@@ -283,7 +242,8 @@ public:
 };
 
 void javaClassToCppClass(JNIEnv * env, jobject clazz, std::deque<javaClassToCppClassInformation> items) {
-    jclass c = env->FindClass("libmedia/Media$WaveformViewOptions__");
+    // internal classes are accessed via $
+    jclass c = env->FindClass("libmedia/Media$Classes$WaveformViewOptions__");
     while (!items.empty()) {
         javaClassToCppClassInformation info = items.front();
         if (!strcmp(info.type, "bool")) {
@@ -294,7 +254,7 @@ void javaClassToCppClass(JNIEnv * env, jobject clazz, std::deque<javaClassToCppC
     }
 }
 
-extern "C" JNIEXPORT void JNICALL Java_libmedia_Media_00024internal_00024WaveformView_1_1_renderWaveform(JNIEnv * env, jobject  obj, jobject bitmap,  jlong  time_ms, jobject waveformOptionsClassInstance)
+extern "C" JNIEXPORT void JNICALL Java_libmedia_Media_00024Classes_00024WaveformView_1_1_renderWaveformMono(JNIEnv * env, jobject  obj, jobject bitmap, jlong  time_ms, jobject waveformOptionsClassInstance)
 {
     std::deque<javaClassToCppClassInformation> a = std::deque<javaClassToCppClassInformation>();
     a.push_front(javaClassToCppClassInformation("bool", "drawLines", &WVO.drawLines));
@@ -335,10 +295,84 @@ extern "C" JNIEXPORT void JNICALL Java_libmedia_Media_00024internal_00024Wavefor
             stats_startFrame(&stats);
 
             /* Now fill the values with a nice little waveform */
-            fill_waveform(&info, pixels);
+            fill_waveform_mono(&info, pixels);
             AndroidBitmap_unlockPixels(env, bitmap);
 
             stats_endFrame(&stats, LOG_TAG);
+        }
+    }
+}
+
+extern "C" JNIEXPORT void JNICALL Java_libmedia_Media_00024Classes_00024WaveformView_1_1_renderWaveformStereo(JNIEnv * env, jobject  obj, jobject bitmapLeft, jobject bitmapRight, jlong  time_ms, jobject waveformOptionsClassInstance)
+{
+    std::deque<javaClassToCppClassInformation> a = std::deque<javaClassToCppClassInformation>();
+    a.push_front(javaClassToCppClassInformation("bool", "drawLines", &WVO.drawLines));
+    a.push_front(javaClassToCppClassInformation("bool", "highlightSilence", &WVO.highlightSilence));
+    a.push_front(javaClassToCppClassInformation("bool", "stretchToScreenWidth", &WVO.stretchToScreenWidth));
+    a.push_front(javaClassToCppClassInformation("bool", "stretchToScreenHeight", &WVO.stretchToScreenHeight));
+    javaClassToCppClass(env, waveformOptionsClassInstance, a);
+
+    AndroidBitmapInfo  infoLeft;
+//    AndroidBitmapInfo  infoRight;
+    void*              pixelsLeft;
+//    void*              pixelsRight;
+    int                retLeft;
+//    int                retRight;
+    static Stats       statsLeft;
+//    static Stats       statsRight;
+    static bool         init = false;
+    if (!init) { // draw once
+        stats_init(&statsLeft);
+//        stats_init(&statsRight);
+        init = true;
+        MOMO.add("MONITOR_uint32_t", &MONITOR_uint32_t);
+        MOMO.add("MONITOR_bool", &MONITOR_bool);
+    }
+
+    if (WAVEFORMAUDIODATA != nullptr) {
+        if ((retLeft = AndroidBitmap_getInfo(env, bitmapLeft, &infoLeft)) < 0) {
+            __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,"AndroidBitmap_getInfo() failed ! error=%d", retLeft);
+            return;
+        }
+//        if ((retRight = AndroidBitmap_getInfo(env, bitmapRight, &infoRight)) < 0) {
+//            __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,"AndroidBitmap_getInfo() failed ! error=%d", retRight);
+//            return;
+//        }
+        MONITOR_uint32_t.add("INFO HEIGHT", &infoLeft.height);
+        MONITOR_uint32_t.add("INFO WIDTH", &infoLeft.width);
+//        MONITOR_uint32_t.add("INFO HEIGHT", &infoRight.height);
+//        MONITOR_uint32_t.add("INFO WIDTH", &infoRight.width);
+        MONITOR_bool.add("LINES", &WVO.drawLines);
+        MONITOR_bool.add("HIGHLIGHT", &WVO.highlightSilence);
+        MONITOR_bool.add("stretch screen height", &WVO.stretchToScreenHeight);
+        MONITOR_bool.add("stretch screen width", &WVO.stretchToScreenWidth);
+        if (MOMO.changed()) {
+
+            if ((retLeft = AndroidBitmap_lockPixels(env, bitmapLeft, &pixelsLeft)) < 0) {
+                __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,"AndroidBitmap_lockPixels() failed ! error=%d", retLeft);
+            }
+
+//            if ((retRight = AndroidBitmap_lockPixels(env, bitmapRight, &pixelsRight)) < 0) {
+//                __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,"AndroidBitmap_lockPixels() failed ! error=%d", retRight);
+//            }
+
+            WVO.LEFT = true;
+            stats_startFrame(&statsLeft);
+
+            /* Now fill the values with a nice little waveform */
+            fill_waveform_stereo(&infoLeft, nullptr, pixelsLeft, nullptr);
+            AndroidBitmap_unlockPixels(env, bitmapLeft);
+
+            stats_endFrame(&statsLeft, LOG_TAG);
+
+//            WVO.LEFT = false;
+//            stats_startFrame(&statsRight);
+
+            /* Now fill the values with a nice little waveform */
+//            fill_waveform_stereo(nullptr, &infoRight, nullptr, pixelsRight);
+//            AndroidBitmap_unlockPixels(env, bitmapRight);
+
+//            stats_endFrame(&statsLeft, LOG_TAG);
         }
     }
 }
