@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "gles3jni.h"
+#include "SDL.h"
 #include <EGL/egl.h>
 
 static const char VERTEX_SHADER[] =

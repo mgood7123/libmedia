@@ -49,16 +49,12 @@ WINUSERAPI
 ATOM
 WINAPI
 RegisterClassA(
-        _In_ CONST WNDCLASSA *lpWndClass) {
-    // TODO
-}
+        _In_ CONST WNDCLASSA *lpWndClass);
 WINUSERAPI
 ATOM
 WINAPI
 RegisterClassW(
-        _In_ CONST WNDCLASSW *lpWndClass) {
-    return RegisterClassA(reinterpret_cast<const WNDCLASSA *>(lpWndClass));
-}
+        _In_ CONST WNDCLASSW *lpWndClass);
 #ifdef UNICODE
 #define RegisterClass  RegisterClassW
 #else
@@ -70,17 +66,13 @@ BOOL
 WINAPI
 UnregisterClassA(
         _In_ LPCSTR lpClassName,
-        _In_opt_ HINSTANCE hInstance) {
-    // TODO
-}
+        _In_opt_ HINSTANCE hInstance);
 WINUSERAPI
 BOOL
 WINAPI
 UnregisterClassW(
         _In_ LPCWSTR lpClassName,
-        _In_opt_ HINSTANCE hInstance) {
-    // TODO
-}
+        _In_opt_ HINSTANCE hInstance);
 #ifdef UNICODE
 #define UnregisterClass  UnregisterClassW
 #else
@@ -94,9 +86,7 @@ WINAPI
 GetClassInfoA(
         _In_opt_ HINSTANCE hInstance,
         _In_ LPCSTR lpClassName,
-        _Out_ LPWNDCLASSA lpWndClass) {
-    // TODO
-}
+        _Out_ LPWNDCLASSA lpWndClass);
 _Success_(return)
 WINUSERAPI
 BOOL
@@ -104,9 +94,7 @@ WINAPI
 GetClassInfoW(
         _In_opt_ HINSTANCE hInstance,
         _In_ LPCWSTR lpClassName,
-        _Out_ LPWNDCLASSW lpWndClass) {
-    // TODO
-}
+        _Out_ LPWNDCLASSW lpWndClass);
 #ifdef UNICODE
 #define GetClassInfo  GetClassInfoW
 #else
@@ -208,25 +196,7 @@ CreateWindowExA(
         _In_opt_ HWND hWndParent,
         _In_opt_ HMENU hMenu,
         _In_opt_ HINSTANCE hInstance,
-        _In_opt_ LPVOID lpParam) {
-    // TODO: class support
-    CREATESTRUCTA a;
-    a.dwExStyle = dwExStyle;
-    a.lpszClass = lpClassName;
-    a.lpszName = lpWindowName;
-    a.x = X;
-    a.y = Y;
-    a.hInstance = hInstance;
-    a.hwndParent = hWndParent;
-    a.hMenu = hMenu;
-    a.lpCreateParams = lpParam;
-    a.cx = nWidth;
-    a.cy = nHeight;
-    a.style = dwStyle;
-    SendMessageA(hInstance, WM_CREATE, 0, 0);
-    return hInstance;
-
-}
+        _In_opt_ LPVOID lpParam);
 WINUSERAPI
 HWND
 WINAPI
@@ -242,21 +212,7 @@ CreateWindowExW(
         _In_opt_ HWND hWndParent,
         _In_opt_ HMENU hMenu,
         _In_opt_ HINSTANCE hInstance,
-        _In_opt_ LPVOID lpParam) {
-    return CreateWindowExA(
-            dwExStyle,
-            reinterpret_cast<LPCSTR>(lpClassName),
-            reinterpret_cast<LPCSTR>(lpWindowName),
-            dwStyle,
-            X,
-            Y,
-            nWidth,
-            nHeight,
-            hWndParent,
-            hMenu,
-            hInstance,
-            lpParam);
-}
+        _In_opt_ LPVOID lpParam);
 #ifdef UNICODE
 #define CreateWindowEx  CreateWindowExW
 #else

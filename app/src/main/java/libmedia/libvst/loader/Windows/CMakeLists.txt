@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.4.1)
 
-add_subdirectory(kernel)
+add_subdirectory(Kernel)
 
 add_library(Windows_API SHARED
         WindowsAPIMessage.cpp

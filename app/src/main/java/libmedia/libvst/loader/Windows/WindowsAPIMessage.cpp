@@ -9,8 +9,6 @@
 
 std::deque<struct tagMSG> WINDOWS_MESSAGE_QUEUE;
 
-extern LRESULT (*WndProc)(HWND, UINT, WPARAM, LPARAM);
-
 // IGNORE UNICODE FOR NOW
 
 WINUSERAPI
@@ -84,7 +82,7 @@ LRESULT
 WINAPI
 DispatchMessageA(
         _In_ CONST MSG *lpMsg) {
-    WndProc(lpMsg->hwnd, lpMsg->message, lpMsg->wParam, lpMsg->lParam);
+    return SendMessageA(lpMsg->hwnd, lpMsg->message, lpMsg->wParam, lpMsg->lParam);
 }
 
 WINUSERAPI
@@ -92,7 +90,7 @@ LRESULT
 WINAPI
 DispatchMessageW(
         _In_ CONST MSG *lpMsg) {
-    WndProc(lpMsg->hwnd, lpMsg->message, lpMsg->wParam, lpMsg->lParam);
+    return DispatchMessageA(lpMsg);
 }
 
 WINUSERAPI
@@ -208,6 +206,7 @@ WINAPI
 SetMessageExtraInfo(
         _In_ LPARAM lParam) {
     // TODO
+    return lParam;
 }
 
 WINUSERAPI
@@ -218,7 +217,8 @@ SendMessageA(
         _In_ UINT Msg,
         _Pre_maybenull_ _Post_valid_ WPARAM wParam,
         _Pre_maybenull_ _Post_valid_ LPARAM lParam) {
-    return static_cast<__MAIN_STRUCT*>(hWnd)->WINPROC(hWnd, Msg, wParam, lParam);
+    if (static_cast<PROCESS_MAIN_STRUCT*>(hWnd)->WINPROC == nullptr) return 0;
+    return static_cast<PROCESS_MAIN_STRUCT*>(hWnd)->WINPROC(hWnd, Msg, wParam, lParam);
 }
 WINUSERAPI
 LRESULT

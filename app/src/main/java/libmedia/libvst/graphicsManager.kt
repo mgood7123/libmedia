@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package libvst;
+package libvst
 
 // Wrapper for native library
 
-public class graphicsManager {
+object graphicsManager {
 
-     static {
-          System.loadLibrary("internal_loader");
-          load();
-     }
+    init {
+        System.loadLibrary("internal_loader")
+        load()
+    }
 
-     private static native void load();
-     public static native void create();
-     public static native void resize(int width, int height);
-     public static native void step();
-     public static native void destroy();
+    external fun load()
+    external fun create()
+    external fun resize(width: Int, height: Int)
+    external fun draw()
+    external fun destroy()
 }

@@ -87,12 +87,17 @@ typedef struct tagPOINT
 #undef WINABLEAPI
 #undef WINUSERAPI
 #undef WINAPI
+#undef APIENTRY
 #undef CALLBACK
 #define WINBASEAPI
 #define WINUSERAPI
 #define WINABLEAPI
 #define WINAPI
 #define CALLBACK
+#define APIENTRY
+#ifndef CALLBACKNATIVE
+#define CALLBACKNATIVE extern "C"
+#endif
 
 typedef CHAR *LPSTR;
 typedef const CHAR *LPCSTR;
@@ -131,6 +136,10 @@ typedef _Null_terminated_ WCHAR *NWPSTR, *PWSTR;
 typedef pthread_t tid;
 typedef DWORD pid;
 
+#define MAXIMUM_WAIT_OBJECTS 64     // Maximum number of wait objects
+#define MAXCHAR     0x7f
+#define MAXIMUM_SUSPEND_COUNT MAXCHAR // Maximum times thread can be suspended
+
 typedef VOID (CALLBACK* SENDASYNCPROC)(HWND, UINT, ULONG_PTR, LRESULT);
 typedef LRESULT (CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);
 
@@ -138,6 +147,10 @@ typedef DWORD (WINAPI *PTHREAD_START_ROUTINE)(
         LPVOID lpThreadParameter
 );
 typedef PTHREAD_START_ROUTINE LPTHREAD_START_ROUTINE;
+// pthread wrappers
+DWORD PROCESS_MAIN(LPVOID lpParameter);
+PVOID PTHREAD_MAIN(PVOID param);
+
 #define __drv_aliasesMem
 
 //
@@ -190,11 +203,11 @@ typedef PTHREAD_START_ROUTINE LPTHREAD_START_ROUTINE;
 #define STACK_SIZE_PARAM_IS_A_RESERVATION   0x00010000    // Threads only
 
 // memory size definitions
-// usage as follows: 4byte, 4kilobyte, 4megabyte, 4gigabyte
-constexpr std::size_t operator""byte(unsigned long long v) { return v; }
-constexpr std::size_t operator""kilobyte(unsigned long long v) { return 1024u * v; }
-constexpr std::size_t operator""megabyte(unsigned long long v) { return 1024u * 1024u * v; }
-constexpr std::size_t operator""gigabyte(unsigned long long v) { return 1024u * 1024u * 1024u * v; }
+// usage as follows: 4_byte, 4_kilobyte, 4_megabyte, 4_gigabyte
+constexpr std::size_t operator"" _byte(unsigned long long v) { return v; }
+constexpr std::size_t operator"" _kilobyte(unsigned long long v) { return 1024u * v; }
+constexpr std::size_t operator"" _megabyte(unsigned long long v) { return 1024u * 1024u * v; }
+constexpr std::size_t operator"" _gigabyte(unsigned long long v) { return 1024u * 1024u * 1024u * v; }
 
 template <typename SIZE>
 SIZE roundDown(SIZE value, SIZE size)

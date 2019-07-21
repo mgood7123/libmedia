@@ -22,27 +22,31 @@ CreateProcessA(
         _In_ LPSTARTUPINFOA lpStartupInfo,
         _Out_ LPPROCESS_INFORMATION lpProcessInformation
 ) {
-    // load process
-    // create a new thread
-    // invoke main() in a new thread
-    // return
+    if (lpProcessInformation == nullptr) return 0;
     PVOID APP = dlopen(lpApplicationName, RTLD_NOW);
     if (APP == nullptr) {
         return 0;
     } else {
-        __MAIN_STRUCT __MAIN__STRUCT;
-        functionPointerAssign4(DWORD, __MAIN__STRUCT.MAIN, dlsym(APP, "WinMain"), HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow);
-        functionPointerAssign4(LRESULT, __MAIN__STRUCT.WINPROC, dlsym(APP, "WinProc"), HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
-        __MAIN__STRUCT.lpProcessInformation = lpProcessInformation;
-        lpProcessInformation->hProcess = KERNEL.newHandle(ObjectTypeProcess, &__MAIN__STRUCT);
-        lpProcessInformation->dwProcessId = KERNEL.PID_LAST+=4;
-        lpProcessInformation->hThread = CreateThread(nullptr, 0,__MAIN, &__MAIN__STRUCT,0,&lpProcessInformation->dwThreadId);
+        PROCESS_MAIN_STRUCT * PROCESS_MAIN_STRUCT = new ::PROCESS_MAIN_STRUCT;
+        PVOID WM = dlsym(APP, "WinMain");
+        PVOID WP = dlsym(APP, "WinProc");
+        functionPointerAssign4(DWORD, PROCESS_MAIN_STRUCT->MAIN, WM, HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow);
+        if (PROCESS_MAIN_STRUCT->MAIN == nullptr) return 0;
+        functionPointerAssign4(LRESULT, PROCESS_MAIN_STRUCT->WINPROC, WP, HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+        PROCESS_MAIN_STRUCT->lpProcessInformation = new PROCESS_INFORMATION;
+        lpProcessInformation = PROCESS_MAIN_STRUCT->lpProcessInformation;
+        PROCESS_MAIN_STRUCT->lpProcessInformation->hProcess = KERNEL.newHandle(ObjectTypeProcess, PROCESS_MAIN_STRUCT);
+        PROCESS_MAIN_STRUCT->lpProcessInformation->dwProcessId = KERNEL.PID_LAST+=4;
+        PROCESS_MAIN_STRUCT->lpProcessInformation->hThread = CreateThread(nullptr, 0,PROCESS_MAIN, PROCESS_MAIN_STRUCT,0,&PROCESS_MAIN_STRUCT->lpProcessInformation->dwThreadId);
         return 1;
     }
 }
 
 // should we move this into KERNEL?
-DWORD __MAIN(LPVOID lpParameter) {
-    struct __MAIN_STRUCT * app = (struct __MAIN_STRUCT*) lpParameter;
-    return app->MAIN(app->lpProcessInformation->hProcess, nullptr, nullptr, 0);
+DWORD PROCESS_MAIN(LPVOID lpParameter) {
+    PROCESS_MAIN_STRUCT * app = (PROCESS_MAIN_STRUCT*) lpParameter;
+    DWORD ret = app->MAIN(app->lpProcessInformation->hProcess, nullptr, nullptr, 0);
+    delete app->lpProcessInformation;
+    delete app;
+    return ret;
 }

@@ -19,7 +19,7 @@
 #include <string.h>
 #include <time.h>
 
-#include "gles3jni.h"
+#include "SDL.h"
 
 const Vertex QUAD[4] = {
     // Square with diagonal < 2 so that it fits in a [-1 .. 1]^2 square
@@ -116,7 +116,7 @@ exit:
     return program;
 }
 
-static void printGlString(const char* name, GLenum s) {
+void printGlString(const char* name, GLenum s) {
     const char* v = (const char*)glGetString(s);
     ALOGV("GL %s: %s\n", name, v);
 }
@@ -235,7 +235,7 @@ void Renderer::render() {
 
 // ----------------------------------------------------------------------------
 
-static Renderer* g_renderer = NULL;
+Renderer* g_renderer = NULL;
 
 extern "C" {
     JNIEXPORT void JNICALL Java_com_android_gles3jni_GLES3JNILib_init(JNIEnv* env, jobject obj);
@@ -244,41 +244,7 @@ extern "C" {
 };
 
 #if !defined(DYNAMIC_ES3)
-static GLboolean gl3stubInit() {
+GLboolean gl3stubInit() {
     return GL_TRUE;
 }
 #endif
-
-extern "C" void GraphicsInit() {
-    if (g_renderer) {
-        delete g_renderer;
-        g_renderer = NULL;
-    }
-
-    printGlString("Version", GL_VERSION);
-    printGlString("Vendor", GL_VENDOR);
-    printGlString("Renderer", GL_RENDERER);
-    printGlString("Extensions", GL_EXTENSIONS);
-
-    const char* versionStr = (const char*)glGetString(GL_VERSION);
-    if (strstr(versionStr, "OpenGL ES 3.") && gl3stubInit()) {
-        g_renderer = createES3Renderer();
-    } else if (strstr(versionStr, "OpenGL ES 2.")) {
-//        g_renderer = createES2Renderer();
-        ALOGE("Unsupported OpenGL ES version");
-    } else {
-        ALOGE("Unsupported OpenGL ES version");
-    }
-}
-
-extern "C" void GraphicsResize(int width, int height) {
-    if (g_renderer) {
-        g_renderer->resize(width, height);
-    }
-}
-
-extern "C" void GraphicsStep() {
-    if (g_renderer) {
-        g_renderer->render();
-    }
-}

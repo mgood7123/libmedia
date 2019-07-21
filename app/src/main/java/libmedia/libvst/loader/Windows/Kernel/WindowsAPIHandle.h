@@ -9,19 +9,14 @@
 // Constants
 //
 #include "../WindowsAPIDefinitions.h"
+#include "WindowsAPIObject.h"
 
 #define INVALID_HANDLE_VALUE ((HANDLE)(LONG_PTR)-1)
 
 typedef class Handle {
 public:
-    Handle() {
-        invalidated = true;
-        object = nullptr;
-    }
-    ~Handle() {
-        invalidated = true;
-        object = nullptr;
-    }
+    Handle();
+    ~Handle();
     bool invalidated;
     Object * object;
 } Handle;

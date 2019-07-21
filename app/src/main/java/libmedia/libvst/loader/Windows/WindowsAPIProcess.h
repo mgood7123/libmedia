@@ -68,12 +68,11 @@ typedef STARTUPINFOA STARTUPINFO;
 typedef LPSTARTUPINFOA LPSTARTUPINFO;
 #endif // UNICODE
 
-DWORD __MAIN(LPVOID lpParameter);
-typedef struct __MAIN_STRUCT{
+typedef struct {
     functionPointerDeclare4(DWORD, MAIN, HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShowr);
     functionPointerDeclare4(LRESULT, WINPROC,HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
     LPPROCESS_INFORMATION lpProcessInformation;
-} __MAIN_STRUCT;
+} PROCESS_MAIN_STRUCT;
 
 WINBASEAPI
         BOOL

@@ -27,7 +27,7 @@ WINAPI
 CloseHandle(
         _In_ _Post_ptr_invalid_ HANDLE hObject
 ) {
-    if (!KERNEL.validHandle(hObject)) return 0;
+    if (!KERNEL.validateHandle(hObject)) return 0;
     Handle * h = KERNEL.getHandle(hObject);
     if (h->object->handles == 1) KERNEL.deleteObject(h->object);
     else h->object->handles--;
@@ -49,6 +49,7 @@ DuplicateHandle(
         _In_ DWORD dwOptions
 ) {
     // TODO: need to get threads and processes working in order to implement this function
+    return 0;
 }
 
 WINBASEAPI
@@ -67,7 +68,7 @@ CompareObjectHandles(
 
         if (h1->invalidated != h2->invalidated) return 0;
         if (h1->object != nullptr && h2->object != nullptr) {
-            if (!Object.compare(*h1->object, *h2->object)) return 0;
+            if (!Object::compare(*h1->object, *h2->object)) return 0;
         }
         return 1;
     }
@@ -82,7 +83,7 @@ GetHandleInformation(
         _In_ HANDLE hObject,
         _Out_ LPDWORD lpdwFlags
 ) {
-    if (KERNEL.validHandle(hObject)) {
+    if (KERNEL.validateHandle(hObject)) {
         // TODO
     }
     return 0;
@@ -97,8 +98,43 @@ SetHandleInformation(
         _In_ DWORD dwMask,
         _In_ DWORD dwFlags
 ) {
-    if (KERNEL.validHandle(hObject)) {
+    if (KERNEL.validateHandle(hObject)) {
         // TODO
     }
     return 0;
+}
+
+Handle::Handle() {
+    this->invalidated = true;
+    this->object = nullptr;
+}
+
+Handle::~Handle() {
+    this->invalidated = true;
+    this->object = nullptr;
+}
+
+bool Kernel::validateHandle(HANDLE hObject) {
+    if (hObject == nullptr) return 0;
+    Handle * h = this->getHandle(hObject);
+    if (h->object == nullptr) return 0;
+    return !h->invalidated;
+}
+
+HANDLE Kernel::newHandle(ObjectType type) {
+    return this->newHandle(type, nullptr);
+}
+
+HANDLE Kernel::newHandle(ObjectType type, PVOID resource) {
+    Handle * hObject = new Handle();
+    hObject->object = this->newObject(type, 0, resource);
+    assert(hObject->object != nullptr);
+    hObject->invalidated = false;
+    hObject->object->handles++;
+    assert(this->validateHandle(hObject));
+    return hObject;
+}
+
+Handle *Kernel::getHandle(HANDLE handle) {
+    return static_cast<Handle*>(handle);
 }

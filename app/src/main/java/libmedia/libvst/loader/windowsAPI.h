@@ -49,6 +49,10 @@ traditional behaviour of a process lifecycle:
 // or project specific include files
 //
 
-#include "Windows/WindowsAPIDefinitions.h"
+#include "Windows/Kernel/WindowsAPIKernel.h"
+#include "Windows/WindowsAPIHander.h"
+#include "Windows/WindowsAPIMessage.h"
+#include "Windows/WindowsAPIProcess.h"
+#include "Windows/WindowsAPIThread.h"
 
 #endif //MEDIA_PLAYER_PRO_WINDOWSAPI_H
