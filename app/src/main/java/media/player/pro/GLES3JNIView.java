@@ -18,7 +18,7 @@ package media.player.pro;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-import libvst.graphicsManager;
+import libvst.INTERNAL_APPLICATION_PRIVATE.graphicsManager;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
