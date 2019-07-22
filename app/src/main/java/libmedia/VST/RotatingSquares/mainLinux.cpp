@@ -2,7 +2,7 @@
 // Created by konek on 7/20/2019.
 //
 
-#include "../../libvst/API/VST.h"
+#include <VST.h>
 #include "SDL.h"
 #include <cstdlib>
 #include <string.h>

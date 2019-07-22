@@ -12,6 +12,7 @@ add_library(
 
 target_link_libraries(
         VSTRotatingSquares
+        WINAPI
         GLESv3
         android
         EGL

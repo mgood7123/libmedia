@@ -2,9 +2,9 @@
 // Created by konek on 7/20/2019.
 //
 
-#include "../../libvst/API/VST.h"
 #include "SDL.h"
-#include "../../libvst/loader/windowsAPI.h"
+#include <VST.h>
+#include <Windows/windows.h>
 #include <cstdlib>
 #include <string.h>
 
@@ -20,5 +20,15 @@ CALLBACKNATIVE int APIENTRY WinMain(_In_ HINSTANCE hInstance,
         _In_ int       nCmdShow)
 {
     ALOGV("WinMain Called");
-    return 1;
+//    MSG msg;
+//
+//    // Main message loop:
+//    ALOGV("starting message loop");
+//    while (GetMessage(&msg, nullptr, 0, 0))
+//    {
+//        ALOGV("dispatching message");
+//        DispatchMessage(&msg);
+//    }
+//    return (int) msg.wParam;
+    return 0;
 }
