@@ -1,0 +1,2 @@
+# libmedia
+[ALPHA] a media library that attempts to be a professional standard all in one audio tool for Android App Developers, includes: looper, waveform viewer, nanosecond/microsecond/millisecond/second/minute/hour level callbacks, RAW audio support, JAVA/kotlin callbacks, 99% C++, 1% kotlin for Media API (WIP: VST support: see https://github.com/mgood7123/AndroidCompositor for progress on GUI)
