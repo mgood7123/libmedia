@@ -8,7 +8,9 @@
 #include "../../waveform/TimeStretch.h"
 
 NATIVE(jint , Oboe, CurrentFrame) (JNIEnv *env, jobject thiz, jint width) {
-    return static_cast<jint>(
+    if (currentAudioTrack == NULL)
+        return 0;
+    else return static_cast<jint>(
         // GET CURRENT FRAME FROM THE WAVEFORM
         TimeStretch::Shorten::FrameToStretchedFrame(
             currentAudioTrack->AudioData->totalFrames, width, GlobalTime.currentFrame

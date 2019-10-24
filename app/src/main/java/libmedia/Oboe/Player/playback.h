@@ -7,39 +7,46 @@
 
 #include "core.h"
 
-
+// TODO: guard against playing without first loading an audio track, in multi track situations such as when using the
+//  Mixer, simply relying on currentAudioTrack is unreliable
 NATIVE(void, Oboe, Play)(JNIEnv *env, jobject type) {
-    LOGW("Oboe_Init: requesting Start");
-    oboe::Result result = stream->requestStart();
-    LOGW("Oboe_Init: requested Start");
-    if (result != oboe::Result::OK) {
-        LOGE("Oboe_Play: Failed to start AudioStream . Error: %s", oboe::convertToText(result));
-        return;
+    if (currentAudioTrack != NULL) {
+        LOGW("Oboe_Init: requesting Start");
+        oboe::Result result = stream->requestStart();
+        LOGW("Oboe_Init: requested Start");
+        if (result != oboe::Result::OK) {
+            LOGE("Oboe_Play: Failed to start AudioStream . Error: %s", oboe::convertToText(result));
+            return;
+        }
+        currentAudioTrack->setPlaying(true);
     }
-    currentAudioTrack->setPlaying(true);
 }
 
 NATIVE(void, Oboe, Pause)(JNIEnv *env, jobject type) {
-    LOGW("Oboe_Init: requesting Pause");
-    oboe::Result result = stream->requestPause();
-    LOGW("Oboe_Init: requested Pause");
-    if (result != oboe::Result::OK) {
-        LOGE("Oboe_Play: Failed to pause AudioStream . Error: %s", oboe::convertToText(result));
-        return;
+    if (currentAudioTrack != NULL) {
+        LOGW("Oboe_Init: requesting Pause");
+        oboe::Result result = stream->requestPause();
+        LOGW("Oboe_Init: requested Pause");
+        if (result != oboe::Result::OK) {
+            LOGE("Oboe_Play: Failed to pause AudioStream . Error: %s", oboe::convertToText(result));
+            return;
+        }
+        currentAudioTrack->setPlaying(false);
     }
-    currentAudioTrack->setPlaying(false);
 }
 
 NATIVE(void, Oboe, Stop)(JNIEnv *env, jobject type) {
-    LOGW("Oboe_Init: requesting Stop");
-    oboe::Result result = stream->requestStop();
-    LOGW("Oboe_Init: requested Stop");
-    if (result != oboe::Result::OK) {
-        LOGE("Oboe_Play: Failed to stop AudioStream . Error: %s", oboe::convertToText(result));
-        return;
+    if (currentAudioTrack != NULL) {
+        LOGW("Oboe_Init: requesting Stop");
+        oboe::Result result = stream->requestStop();
+        LOGW("Oboe_Init: requested Stop");
+        if (result != oboe::Result::OK) {
+            LOGE("Oboe_Play: Failed to stop AudioStream . Error: %s", oboe::convertToText(result));
+            return;
+        }
+        currentAudioTrack->setPlaying(true);
+        currentAudioTrack->resetPlayHead();
     }
-    currentAudioTrack->setPlaying(true);
-    currentAudioTrack->resetPlayHead();
 }
 
 #endif //MEDIA_PLAYER_PRO_PLAYBACK_H

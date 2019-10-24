@@ -7,15 +7,6 @@
 #include "AudioTime.h"
 #include <MonitorPool.h>
 
-void check(AudioTime *pTime, SoundRecordingAudioData *pData) {
-//    AudioTimeCheck(pTime->nanoseconds, pTime->lastNanoseconds, ThisOrElse(pData->nanosecondsPerFrame, 1), 0, 999)
-//    AudioTimeCheck(pTime->microseconds, pTime->lastMicroseconds, ThisOrElse(pData->microsecondsPerFrame, 1), 0, 999)
-//    AudioTimeCheck(pTime->milliseconds, pTime->lastMilliseconds, ThisOrElse(pData->millisecondsPerFrame, 1), 0, 999)
-//    AudioTimeCheck(pTime->seconds, pTime->lastSeconds, ThisOrElse(pData->secondsPerFrame, 1), 0, 60)
-//    AudioTimeCheck(pTime->minutes, pTime->lastMinutes, 1, 0, 60)
-//    AudioTimeCheck(pTime->hours, pTime->lastHours, 1, 0, 24)
-}
-
 void AudioTime::update(uint64_t frame, SoundRecordingAudioData *AudioData) {
     if (StartOfFile) {
         if (mTimeCallback != nullptr) mTimeCallback->StartOfFile(this);
@@ -227,11 +218,4 @@ uint64_t AudioTime::toFrame(double value, int type, SoundRecordingAudioData *Aud
     if (type == AudioTime::types().hours)
         return static_cast<uint64_t>(value * divisionValue().hours * AudioData->sampleRate);
     return 0;
-}
-
-void AUDIOTIMECHECK(char *name, int64_t now, int64_t last, int64_t increment, int64_t min, int64_t max) {
-    if (abs(now-last) > increment && (now != min && last != max)) {
-        LOGE("%s is %ld, expected %ld", name, now, last+increment);
-        exit(-1);
-    }
 }

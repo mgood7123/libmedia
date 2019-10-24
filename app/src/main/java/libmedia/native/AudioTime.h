@@ -15,11 +15,6 @@
 #include "../Oboe/audio/SoundRecordingAudioData.h"
 #include "../waveform/timestats.h"
 
-void AUDIOTIMECHECK(char * name, int64_t now, int64_t last, int64_t increment, int64_t min, int64_t max);
-
-#define AudioTimeCheck(now, last, increment, min, max) AUDIOTIMECHECK(#now, (now).count(), (last).count(), increment, min, max);
-#define AudioTimeThisOrElse(this, else) (this) == 0 ? (else) : (this)
-
 class AudioTime {
 public:
     double nanosecondsTotal = 0;

@@ -3,5 +3,6 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/app/src/main/java/libmedia/ReSampler-development" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/app/src/main/java/libmedia/VST/libvst/SDK/WinAPI" vcs="Git" />
   </component>
 </project>

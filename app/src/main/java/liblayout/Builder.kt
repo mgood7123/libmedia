@@ -546,7 +546,7 @@ class Builder(var maxHeight: Int?, var maxWidth: Int?) {
         Thread {
             Looper.prepare()
             while (activity != null && view != null) {
-                Log.e(
+                Log.w(
                     "AV",
                     "activity or view is null: activity is $activity and view is $view"
                 )
@@ -556,14 +556,14 @@ class Builder(var maxHeight: Int?, var maxWidth: Int?) {
                 Log.e("P", "view is not null")
                 if (useParent) {
                     while (view!!.parent == null) {
-                        Log.e("P", "view!!.parent is null")
+                        Log.w("P", "view!!.parent is null")
                         Thread.sleep(16)
                     }
                     Log.e("P", "parent not null")
                     while (
                         (view!!.parent as View).height == 0 && (view!!.parent as View).width == 0
                     ) {
-                        Log.e(
+                        Log.w(
                             "P",
                             "(view!!.parent as view).height is 0 and (view!!.parent as " +
                                     "View).width is 0"
@@ -582,7 +582,7 @@ class Builder(var maxHeight: Int?, var maxWidth: Int?) {
                     )
                 } else {
                     while (view!!.height == 0 && view!!.width == 0) {
-                        Log.e(
+                        Log.w(
                             "P",
                             "view!!.height is 0 and view!!.width is 0"
                         )
@@ -604,7 +604,7 @@ class Builder(var maxHeight: Int?, var maxWidth: Int?) {
                 while (
                     activityFrameLayout!!.height == 0 && activityFrameLayout!!.width == 0
                 ) {
-                    Log.e(
+                    Log.w(
                         "P",
                         "activityFrameLayout!!.height is 0 and activityFrameLayout!!.width is 0"
                     )

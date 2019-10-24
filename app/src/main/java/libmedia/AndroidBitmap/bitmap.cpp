@@ -13,8 +13,8 @@
 #define  LOG_TAG "libbitmap"
 
 Canvas::Canvas(AndroidBitmapInfo *info, void *pixels) {
-    canvas = pixels;
     canvasInfo = info;
+    canvas = pixels;
 }
 
 void Canvas::flush() {

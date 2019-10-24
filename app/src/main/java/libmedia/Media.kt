@@ -16,85 +16,322 @@ import android.view.View
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.libperm.PermissionManager
-import java.io.IOException
+import java.io.*
 
 
 @Suppress("unused")
 class Media(private val activity: Activity) {
-    lateinit var currentTemporyMediaFilesDirectory: String
-    lateinit var audioManager: AudioManager
-    
-    private inner class FocusManager {
-        private var mAudioFocusChangeListener: AudioFocusChangeListenerImpl? = null
-        var hasFocus: Boolean = false
-        private var focusChanged: Boolean = false
-        private val TAG = "FocusManager"
+    private val LOG_TAG = "libMedia"
+    inner class Classes {
 
-        fun request(): Boolean {
-            if (hasFocus) return true
-            mAudioFocusChangeListener = AudioFocusChangeListenerImpl()
-            val result = audioManager.requestAudioFocus(
-                mAudioFocusChangeListener,
-                AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN
-            )
+        inner class FocusManager {
+            private var mAudioFocusChangeListener: AudioFocusChangeListenerImpl? = null
+            var hasFocus: Boolean = false
+            private var focusChanged: Boolean = false
+            private val TAG = "FocusManager"
 
-            when (result) {
-                AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> hasFocus = true
-                AudioManager.AUDIOFOCUS_REQUEST_FAILED -> hasFocus = false
+            fun request(): Boolean {
+                if (hasFocus) return true
+                mAudioFocusChangeListener = AudioFocusChangeListenerImpl()
+                val result = audioManager.requestAudioFocus(
+                    mAudioFocusChangeListener,
+                    AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN
+                )
+
+                when (result) {
+                    AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> hasFocus = true
+                    AudioManager.AUDIOFOCUS_REQUEST_FAILED -> hasFocus = false
+                }
+
+                val message = "Focus request " + if (hasFocus) "granted" else "failed"
+                Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
+                Log.i(TAG, message)
+                return hasFocus
             }
 
-            val message = "Focus request " + if (hasFocus) "granted" else "failed"
-            Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
-            Log.i(TAG, message)
-            return hasFocus
-        }
-
-        fun release(): Boolean {
-            if (!hasFocus) return true
-            val result = audioManager.abandonAudioFocus(mAudioFocusChangeListener)
-            when (result) {
-                AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> hasFocus = false
-                AudioManager.AUDIOFOCUS_REQUEST_FAILED -> hasFocus = true
+            fun release(): Boolean {
+                if (!hasFocus) return true
+                val result = audioManager.abandonAudioFocus(mAudioFocusChangeListener)
+                when (result) {
+                    AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> hasFocus = false
+                    AudioManager.AUDIOFOCUS_REQUEST_FAILED -> hasFocus = true
+                }
+                val message = "Abandon focus request " + if (!hasFocus) "granted" else "failed"
+                Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
+                Log.i(TAG, message)
+                return !hasFocus
             }
-            val message = "Abandon focus request " + if (!hasFocus) "granted" else "failed"
-            Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
-            Log.i(TAG, message)
-            return !hasFocus
-        }
 
-        private inner class AudioFocusChangeListenerImpl : AudioManager.OnAudioFocusChangeListener {
+            private inner class AudioFocusChangeListenerImpl : AudioManager.OnAudioFocusChangeListener {
 
-            override fun onAudioFocusChange(focusChange: Int) {
-                focusChanged = true
-                Log.i(TAG, "Focus changed")
+                override fun onAudioFocusChange(focusChange: Int) {
+                    focusChanged = true
+                    Log.i(TAG, "Focus changed")
 
-                when (focusChange) {
-                    AudioManager.AUDIOFOCUS_GAIN -> {
-                        Log.i(TAG, "AUDIOFOCUS_GAIN")
-                        Toast.makeText(activity, "Focus GAINED", Toast.LENGTH_LONG).show()
-                        play()
-                    }
-                    AudioManager.AUDIOFOCUS_LOSS -> {
-                        Log.i(TAG, "AUDIOFOCUS_LOSS")
-                        Toast.makeText(activity, "Focus LOST", Toast.LENGTH_LONG).show()
-                        pause()
-                    }
-                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
-                        Log.i(TAG, "AUDIOFOCUS_LOSS_TRANSIENT")
-                        Toast.makeText(activity, "Focus LOST TRANSIENT", Toast.LENGTH_LONG).show()
-                    }
-                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
-                        Log.i(TAG, "AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK")
-                        Toast.makeText(activity, "Focus LOST TRANSIENT CAN DUCK", Toast.LENGTH_LONG).show()
+                    when (focusChange) {
+                        AudioManager.AUDIOFOCUS_GAIN -> {
+                            Log.i(TAG, "AUDIOFOCUS_GAIN")
+                            Toast.makeText(activity, "Focus GAINED", Toast.LENGTH_LONG).show()
+                            play()
+                        }
+                        AudioManager.AUDIOFOCUS_LOSS -> {
+                            Log.i(TAG, "AUDIOFOCUS_LOSS")
+                            Toast.makeText(activity, "Focus LOST", Toast.LENGTH_LONG).show()
+                            pause()
+                        }
+                        AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                            Log.i(TAG, "AUDIOFOCUS_LOSS_TRANSIENT")
+                            Toast.makeText(activity, "Focus LOST TRANSIENT", Toast.LENGTH_LONG).show()
+                        }
+                        AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
+                            Log.i(TAG, "AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK")
+                            Toast.makeText(activity, "Focus LOST TRANSIENT CAN DUCK", Toast.LENGTH_LONG).show()
+                        }
                     }
                 }
             }
         }
+
+        inner class assetsManager {
+
+            fun copyAssetFolder(assetManager: AssetManager): Boolean = copyAssetFolder(assetManager, null, ASSETS)
+
+            fun copyAssetFolder(
+                assetManager: AssetManager,
+                toPath: String
+            ): Boolean = copyAssetFolder(assetManager, null, toPath)
+
+            fun copyAssetFolder(
+                assetManager: AssetManager,
+                fromAssetPath: String?,
+                toPath: String
+            ): Boolean {
+                try {
+                    val files: Array<String>? = assetManager.list(if (fromAssetPath.isNullOrBlank()) "" else fromAssetPath)
+                    if (files == null) return false else if (files.isEmpty()) return false
+                    Log.i(LOG_TAG, "obtained a list of assets")
+                    File(toPath).mkdirs()
+                    var res = true
+                    for (file in files)
+                        if (file.contains("."))
+                            res = res and copyAsset(
+                                assetManager,
+                                if (fromAssetPath.isNullOrBlank()) file else "$fromAssetPath/$file",
+                                "$toPath/$file"
+                            )
+                        else
+                            res = res and copyAssetFolder(
+                                assetManager,
+                                if (fromAssetPath.isNullOrBlank()) file else "$fromAssetPath/$file",
+                                "$toPath/$file"
+                            )
+                    return res
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    return false
+                }
+
+            }
+
+            fun copyAsset(
+                assetManager: AssetManager,
+                fromAssetPath: String, toPath: String
+            ): Boolean {
+                var `in`: InputStream? = null
+                var out: OutputStream? = null
+                try {
+                    Log.i(LOG_TAG, "copying \"$fromAssetPath\" to \"$toPath\"")
+                    `in` = assetManager.open(fromAssetPath)
+                    File(toPath).createNewFile()
+                    out = FileOutputStream(toPath)
+                    copyFile(`in`!!, out)
+                    `in`.close()
+                    `in` = null
+                    out.flush()
+                    out.close()
+                    out = null
+                    return true
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    return false
+                }
+            }
+
+            @Throws(IOException::class)
+            fun copyFile(`in`: InputStream, out: OutputStream) {
+                val buffer = ByteArray(1024)
+                var read = `in`.read(buffer)
+                while (read != -1) {
+                    out.write(buffer, 0, read)
+                    read = `in`.read(buffer)
+                }
+            }
+        }
+
+        inner class ListnerCallback {
+            var play: () -> Unit = {}
+            var pause: () -> Unit = {}
+            var stop: () -> Unit = {}
+        }
+
+        inner class loop(var name: String, var start: Double, var end: Double, var timing: Int) {};
+
+        inner class LooperTiming() {
+            val nanoseconds = 1
+            val microseconds = 2
+            val milliseconds = 3
+            val seconds = 4
+            val minutes = 5
+            val hours = 6
+        }
+
+        inner class WaveformViewOptions__ {
+
+            var drawLines: Boolean = true
+            var highlightSilence: Boolean = false
+            var stretchToScreenHeight: Boolean = true;
+            var stretchToScreenWidth: Boolean = true;
+
+        }
+
+        inner class WaveformView_ : ConstraintLayout {
+
+            private var media: Media? = null
+            private var height_ = 0;
+            private var width_ = 0;
+
+            constructor(context: Context, height: Int, width: Int) :
+                    super(context) {
+                height_ = height
+                width_ = width
+                initView()
+            }
+
+            constructor(context: Context, height: Int, width: Int, media: Media) :
+                    super(context) {
+                height_ = height
+                width_ = width
+                this.media = media
+                initView()
+            }
+
+
+            constructor(context: Context, height: Int, width: Int, attrs: AttributeSet) :
+                    super(context, attrs) {
+                height_ = height
+                width_ = width
+                initView()
+            }
+
+            constructor(context: Context, height: Int, width: Int, media: Media, attrs: AttributeSet) :
+                    super(context, attrs) {
+                height_ = height
+                width_ = width
+                this.media = media
+                initView()
+            }
+
+
+            constructor(context: Context, height: Int, width: Int, attrs: AttributeSet, defStyleAttr: Int) :
+                    super(context, attrs, defStyleAttr) {
+                height_ = height
+                width_ = width
+                initView()
+            }
+
+            constructor(
+                context: Context,
+                height: Int,
+                width: Int,
+                media: Media,
+                attrs: AttributeSet,
+                defStyleAttr: Int
+            ) :
+                    super(context, attrs, defStyleAttr) {
+                height_ = height
+                width_ = width
+                this.media = media
+                initView()
+            }
+
+            fun initView() {
+                addView(
+                    WaveformView__(context, width_, height_)
+                )
+                if (media != null) addView(
+                    MyView__(context, height_).also {
+                        Thread {
+                            var currentFrame = 0
+                            while (true) {
+                                val previousFrame = currentFrame
+                                currentFrame = currentFrame(width_)
+                                if (currentFrame != previousFrame) {
+                                    activity.runOnUiThread {
+                                        it.left = currentFrame
+                                    }
+                                }
+                            }
+                        }.start()
+                    }
+                )
+            }
+        }
+
+        private inner class WaveformView__(context: Context, width_: Int, height_: Int) : View(context) {
+
+            private val mBitmapLeft: Bitmap
+//            private val mBitmapRight: Bitmap
+            private val mStartTime: Long
+
+            private external fun renderWaveformMono(bitmap: Bitmap, time_ms: Long, waveformViewOptions: WaveformViewOptions__)
+            private external fun renderWaveformStereo(bitmapLeft: Bitmap, bitmapRight: Bitmap?, time_ms: Long, waveformViewOptions: WaveformViewOptions__)
+
+            init {
+                mBitmapLeft = Bitmap.createBitmap(width_, height_, Bitmap.Config.RGB_565)
+//                mBitmapRight = Bitmap.createBitmap(width_, height_, Bitmap.Config.RGB_565)
+                mStartTime = System.currentTimeMillis()
+            }
+
+            override fun onDraw(canvas: Canvas) {
+//                renderWaveformMono(mBitmapLeft, System.currentTimeMillis() - mStartTime, WaveformViewOptions)
+                renderWaveformStereo(mBitmapLeft, null, System.currentTimeMillis() - mStartTime, WaveformViewOptions)
+                canvas.drawBitmap(mBitmapLeft, 0f, 0f, null)
+//                canvas.drawBitmap(mBitmapRight, 0f, 0f, null)
+                invalidate()
+            }
+        }
+
+        inner class MyView__(context: Context, val height_: Int) : View(context) {
+
+            var paint: Paint? = null
+
+            init {
+                paint = Paint()
+                paint!!.color = Color.GREEN
+                paint!!.strokeWidth = 2f
+                paint!!.style = Paint.Style.STROKE
+            }
+
+            override fun onDraw(canvas: Canvas) {
+                super.onDraw(canvas)
+                val offset: Float = 0f
+                canvas.drawRect(offset, 0f, offset, height_.toFloat(), paint!!)
+            }
+        }
     }
-    
-    private val focusManager = FocusManager()
+    val classes = Classes()
+
+    // TODO: vst support (plugins): generator, effects, graphical
+
+    lateinit var currentTemporyMediaFilesDirectory: String
+    lateinit var audioManager: AudioManager
+    private val focusManager = classes.FocusManager()
+    lateinit var ASSETS: String
 
     fun `init`(): Media {
+        ASSETS = activity.filesDir.absolutePath + "/ASSETS"
+        Log.i(LOG_TAG, "copying assets folder")
+        classes.assetsManager().copyAssetFolder(activity.assets)
         setTemporyMediaFilesDirectory(activity.filesDir.absolutePath)
         audioManager = activity.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val sampleRateStr = audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE)
@@ -118,7 +355,7 @@ class Media(private val activity: Activity) {
 
     fun setTemporyMediaFilesDirectory(dir: String): Media {
         currentTemporyMediaFilesDirectory = dir
-        Log.e("Media", "setting Temporary Files Directory to $dir")
+        Log.e(LOG_TAG, "setting Temporary Files Directory to $dir")
         Oboe_SetTempDir(currentTemporyMediaFilesDirectory)
         return this
     }
@@ -151,7 +388,7 @@ class Media(private val activity: Activity) {
         try {
             fd.parcelFileDescriptor.close()
         } catch (e: IOException) {
-            Log.e("PlayerExample", "Close error.")
+            Log.e(LOG_TAG, "Close error.")
         }
         val path = activity.packageResourcePath         // get path to APK package
         return this
@@ -169,25 +406,24 @@ class Media(private val activity: Activity) {
         Oboe_LoadTrackFromAssets(asset, activity.assets)
         return this
     }
-    
-    class ListnerCallback {
-        var play: () -> Unit = {}
-        var pause: () -> Unit = {}
-        var stop: () -> Unit = {}
+
+    fun loadMediaAssetAsFile(asset: String): Media {
+        Oboe_LoadTrackFromPath("$ASSETS/$asset")
+        return this
     }
-    
-    val Listner = ListnerCallback()
+
+    val Listner = classes.ListnerCallback()
 
     var isPlaying = false
     var isPaused = false
-    var isStopped = false
+    var isStopped = true
     var isLooping = false
 
     fun togglePlayback(): Media {
         when {
             isStopped || isPaused -> play()
             isPlaying -> play()
-            else -> Log.e("LibMedia", "Unknown Playback State")
+            else -> Log.e(LOG_TAG, "Unknown Playback State")
         }
         return this
     }
@@ -227,20 +463,10 @@ class Media(private val activity: Activity) {
         return this
     }
 
-    private data class loop(var name: String, var start: Double, var end: Double, var timing: Int);
-    private val looper: MutableList<loop> = mutableListOf()
-    private var currentLooper: loop? = null
+    private val looper: MutableList<Classes.loop> = mutableListOf()
+    private var currentLooper: Classes.loop? = null
     private var stopLooper = true
-
-    class LooperTiming() {
-        val nanoseconds = 1
-        val microseconds = 2
-        val milliseconds = 3
-        val seconds = 4
-        val minutes = 5
-        val hours = 6
-    }
-
+    
     private fun looperStart() {
         Oboe_Looper(currentLooper!!.start, currentLooper!!.end, currentLooper!!.timing)
         isLooping = true
@@ -259,7 +485,7 @@ class Media(private val activity: Activity) {
     )
 
     fun addLooper(name: String, start: Double, end: Double, timing: Int): Media {
-        looper.add(loop(name, start, end, timing))
+        looper.add(classes.loop(name, start, end, timing))
         return this
     }
 
@@ -271,7 +497,7 @@ class Media(private val activity: Activity) {
                 currentLooper = l
                 looperStart()
             }
-            else Log.e("Media", "Looper not found: $name")
+            else Log.e(LOG_TAG, "Looper not found: $name")
         }
         return this
     }
@@ -279,10 +505,10 @@ class Media(private val activity: Activity) {
     fun currentFrame(width: Int): Int = Oboe_CurrentFrame(width);
 
     fun WaveformView(context: Context, height: Int, width: Int): ConstraintLayout =
-        internal().WaveformView_(context, height, width)
+        classes.WaveformView_(context, height, width)
 
     fun WaveformView(context: Context, height: Int, width: Int, media: Media): ConstraintLayout =
-        internal().WaveformView_(context, height, width, media)
+        classes.WaveformView_(context, height, width, media)
 
 
     val samples: ShortArray get() {
@@ -315,130 +541,5 @@ class Media(private val activity: Activity) {
     private external fun Oboe_SampleRate(): Int
     private external fun Oboe_ChannelCount(): Int
 
-    inner class WaveformViewOptions__ {
-        var drawLines: Boolean = true
-        var highlightSilence: Boolean = false
-        var stretchToScreenHeight: Boolean = true;
-        var stretchToScreenWidth: Boolean = true;
-    }
-    val WaveformViewOptions = WaveformViewOptions__()
-
-    private inner class internal {
-        internal inner class WaveformView_ : ConstraintLayout {
-
-            private var media: Media? = null
-            private var height_ = 0;
-            private var width_ = 0;
-
-            constructor(context: Context, height: Int, width: Int) :
-                    super(context) {
-                height_ = height
-                width_ = width
-                initView()
-            }
-            constructor(context: Context, height: Int, width: Int, media: Media) :
-                    super(context) {
-                height_ = height
-                width_ = width
-                this.media = media
-                initView()
-            }
-
-
-
-            constructor(context: Context, height: Int, width: Int, attrs: AttributeSet) :
-                    super(context, attrs) {
-                height_ = height
-                width_ = width
-                initView()
-            }
-            constructor(context: Context, height: Int, width: Int, media: Media, attrs: AttributeSet) :
-                    super(context, attrs) {
-                height_ = height
-                width_ = width
-                this.media = media
-                initView()
-            }
-
-
-
-            constructor(context: Context, height: Int, width: Int, attrs: AttributeSet, defStyleAttr: Int) :
-                    super(context, attrs, defStyleAttr) {
-                height_ = height
-                width_ = width
-                initView()
-            }
-            constructor(context: Context, height: Int, width: Int, media: Media, attrs: AttributeSet, defStyleAttr: Int) :
-                    super(context, attrs, defStyleAttr) {
-                height_ = height
-                width_ = width
-                this.media = media
-                initView()
-            }
-
-            fun initView() {
-                addView(
-                    WaveformView__(context, width_, height_)
-                )
-                if (media != null) addView(
-                    MyView__(context, height_).also {
-                        Thread {
-                            var currentFrame = 0
-                            while (true) {
-                                val previousFrame = currentFrame
-                                currentFrame = currentFrame(width_)
-                                if (currentFrame != previousFrame) {
-                                    activity.runOnUiThread {
-                                        it.left = currentFrame
-                                    }
-                                }
-                            }
-                        }.start()
-                    }
-                )
-            }
-        }
-
-        private inner class WaveformView__(context: Context, width_: Int, height_: Int) : View(context) {
-
-            private val mBitmap: Bitmap
-            private val mStartTime: Long
-
-            private external fun renderWaveform(
-                bitmap: Bitmap,
-                time_ms: Long,
-                waveformViewOptions: WaveformViewOptions__
-            )
-
-            init {
-                mBitmap = Bitmap.createBitmap(width_, height_, Bitmap.Config.RGB_565)
-                mStartTime = System.currentTimeMillis()
-            }
-
-            override fun onDraw(canvas: Canvas) {
-                renderWaveform(mBitmap, System.currentTimeMillis() - mStartTime, WaveformViewOptions)
-                canvas.drawBitmap(mBitmap, 0f, 0f, null)
-                invalidate()
-            }
-        }
-
-        internal inner class MyView__(context: Context, val height_: Int) : View(context) {
-
-            internal var paint: Paint? = null
-
-            init {
-                paint = Paint()
-                paint!!.color = Color.GREEN
-                paint!!.strokeWidth = 2f
-                paint!!.style = Paint.Style.STROKE
-            }
-
-            override fun onDraw(canvas: Canvas) {
-                super.onDraw(canvas)
-                val offset: Float = 0f
-                canvas.drawRect(offset, 0f, offset, height_.toFloat(), paint!!)
-            }
-
-        }
-    }
+    val WaveformViewOptions = classes.WaveformViewOptions__()
 }

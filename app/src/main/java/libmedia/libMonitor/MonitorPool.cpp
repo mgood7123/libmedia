@@ -48,5 +48,6 @@ bool MonitorPool::c(int index) {
             return std::get<Monitor<uint32_t *>*>(arg)->changed();
         else if (std::holds_alternative<Monitor<bool*>*>(arg))
             return std::get<Monitor<bool *>*>(arg)->changed();
+        else return false;
     }, a[index].m);
 }

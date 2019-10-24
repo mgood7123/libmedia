@@ -16,6 +16,8 @@
 
 #include "SoundRecording.h"
 #include "../../waveform/AudioTools.h"
+#include "../../shell/env.h"
+#include "../../shell/regex_str.h"
 #include <src/common/OboeDebug.h>
 #include <cmath>
 #include <native.h>
@@ -24,8 +26,6 @@
 #include <unistd.h>
 #include <asm/fcntl.h>
 #include <fcntl.h>
-#include <env.h>
-
 
 extern AudioTime GlobalTime;
 
@@ -72,59 +72,35 @@ void SoundRecording::renderAudio(int16_t *targetData, int64_t totalFrames, Sound
 
 extern const int16_t *WAVEFORMAUDIODATA;
 extern uint64_t WAVEFORMAUDIODATATOTALFRAMES;
-std::string TEMPDIR;
+char * TEMPDIR;
 
 NATIVE(void, Oboe, SetTempDir)(JNIEnv *env, jobject type, jstring dir) {
     jboolean val;
-    TEMPDIR = std::string(env->GetStringUTFChars(dir, &val));
+    TEMPDIR = const_cast<char *>(env->GetStringUTFChars(dir, &val));
 }
 
-// reads a entire file
-size_t read__(char *file, char **p) {
-    int fd;
-    size_t len = 0;
-    char *o = NULL;
-    *p = NULL;
-    if (!(fd = open(file, O_RDONLY)))
-    {
-        std::cerr << "open() failure" << std::endl;
-        return 0;
-    }
-    len = static_cast<size_t>(lseek(fd, 0, SEEK_END));
-    lseek(fd, 0, 0);
-    if (!(o = static_cast<char *>(malloc(len)))) {
-        std::cerr << "failure to malloc()" << std::endl;
-    }
-    if ((read(fd, o, len)) == -1) {
-        std::cerr << "failure to read()" << std::endl;
-    }
-    int cl = close(fd);
-    if (cl < 0) {
-        std::cerr << "cannot close \"" << file << "\", returned " << cl << std::endl;
-        return 0;
-    }
-    *p = o;
-    return len;
-}
-
-SoundRecording * SoundRecording::loadFromPath(const char *filename, int SampleRate, int mChannelCount) {
-
-    const char * infile = filename;
-    // TODO: these MUST be build using libstring and env.h builders
+void resample(int inSampleRate, int outSampleRate, const char * inFilename, char ** out, size_t * outsize) {
     extern int main(int argc, char * argv[]);
+    str_new(outfile);
+    str_insert_string(outfile, TEMPDIR);
+    str_insert_string(outfile, "/INFILE.raw");
     env_t argv = env__new();
-    argv = env__add(argv, "ReSampler");
-    argv = env__add(argv, "-i");
-    argv = env__add(argv, infile);
-    argv = env__add(argv, "-o");
-    argv = env__add(argv, static_cast<std::string>(TEMPDIR + "/INFILE.raw").c_str());
-    argv = env__add(argv, "-r");
-    argv = env__add(argv, std::to_string(SampleRate).c_str());
-    argv = env__add(argv, "-b");
-    argv = env__add(argv, "16");
-    argv = env__add(argv, "--showStages");
-    argv = env__add(argv, "-mt");
-    argv = env__add(argv, "--noTempFile");
+    argv = env__add_allow_duplicates(argv, "ReSampler");
+    argv = env__add_allow_duplicates(argv, "-i");
+    argv = env__add_allow_duplicates(argv, inFilename);
+    argv = env__add_allow_duplicates(argv, "--raw-input");
+    argv = env__add_allow_duplicates(argv, std::to_string(inSampleRate).c_str());
+    argv = env__add_allow_duplicates(argv, "16");
+    argv = env__add_allow_duplicates(argv, "2");
+    argv = env__add_allow_duplicates(argv, "-o");
+    argv = env__add_allow_duplicates(argv, outfile.string);
+    argv = env__add_allow_duplicates(argv, "-r");
+    argv = env__add_allow_duplicates(argv, std::to_string(outSampleRate).c_str());
+    argv = env__add_allow_duplicates(argv, "-b");
+    argv = env__add_allow_duplicates(argv, "16"); // argv[13]
+    argv = env__add_allow_duplicates(argv, "--showStages");
+    argv = env__add_allow_duplicates(argv, "-mt");
+    argv = env__add_allow_duplicates(argv, "--noTempFile");
     double s = now_ms();
     LOGE("Started conversion at %G milliseconds", s);
     main(env__size(argv), argv);
@@ -133,16 +109,17 @@ SoundRecording * SoundRecording::loadFromPath(const char *filename, int SampleRa
     LOGE("TIME took %G milliseconds", e - s);
 
     // read the file into memory
-    char * in = nullptr;
-    size_t insize = 0;
+    *outsize = read__(const_cast<char *>(outfile.string), out);
+
+    LOGE("%s file size: %zu", outfile.string, *outsize);
+    str_free(outfile);
+    env__free(argv);
+}
+
+SoundRecording * SoundRecording::loadFromPath(const char *filename, int SampleRate, int mChannelCount) {
     char * out = nullptr;
     size_t outsize = 0;
-    insize = read__(const_cast<char *>(infile), &in);
-    outsize = read__(const_cast<char *>(argv[4]), &out);
-
-    LOGE("%s file size: %zu", infile, insize);
-    LOGE("%s file size: %zu", argv[4], outsize);
-    env__free(argv);
+    resample(SampleRate, 48000, filename, &out, &outsize);
 
     const uint64_t totalFrames = outsize / (2 * mChannelCount);
     WAVEFORMAUDIODATATOTALFRAMES = totalFrames;

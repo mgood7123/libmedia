@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.4.1)
-include_directories(SDK/include)
-add_subdirectory(SDK/src/Windows)
+include_directories(SDK/WinAPI/include)
+add_subdirectory(SDK/WinAPI)
 add_library(internal_loader SHARED INTERNAL_APPLICATION_PRIVATE/internal_loader.cpp)
-target_link_libraries(internal_loader log WINAPI)
+target_link_libraries(internal_loader log WINAPI EGL GLESv3)

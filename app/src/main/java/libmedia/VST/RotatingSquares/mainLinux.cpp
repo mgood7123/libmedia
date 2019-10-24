@@ -19,21 +19,27 @@ CALLBACKNATIVE VST_FUNCTION_CREATE {
         g_renderer = NULL;
     }
 
+    const char* versionStr = (const char*)glGetString(GL_VERSION);
+    if (versionStr == nullptr) {
+        ALOGE("No OpenGL ES version returned");
+        return VST_RETURN_STOP;
+    }
+
     printGlString("Version", GL_VERSION);
     printGlString("Vendor", GL_VENDOR);
     printGlString("Renderer", GL_RENDERER);
     printGlString("Extensions", GL_EXTENSIONS);
 
-    const char* versionStr = (const char*)glGetString(GL_VERSION);
     if (strstr(versionStr, "OpenGL ES 3.") && gl3stubInit()) {
         g_renderer = createES3Renderer();
+        return VST_RETURN_CONTINUE;
     } else if (strstr(versionStr, "OpenGL ES 2.")) {
         g_renderer = createES2Renderer();
-        ALOGE("Unsupported OpenGL ES version");
+        return VST_RETURN_CONTINUE;
     } else {
         ALOGE("Unsupported OpenGL ES version");
+        return VST_RETURN_STOP;
     }
-    return VST_RETURN_CONTINUE;
 }
 
 CALLBACKNATIVE VST_FUNCTION_RESIZE {
@@ -50,4 +56,8 @@ CALLBACKNATIVE VST_FUNCTION_DRAW {
         return VST_RETURN_CONTINUE;
     }
     return VST_RETURN_STOP;
+}
+
+CALLBACKNATIVE VST_FUNCTION_DESTROY {
+    return VST_RETURN_CONTINUE;
 }

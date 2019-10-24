@@ -11,9 +11,8 @@
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 
 /* Return current time in milliseconds */
-double now_ms(void)
-{
-    struct timeval tv = {0}; // zero init struct
+double now_ms(void) {
+    struct timeval tv = {0};
     gettimeofday(&tv, NULL);
     return tv.tv_sec*1000. + tv.tv_usec/1000.;
 }

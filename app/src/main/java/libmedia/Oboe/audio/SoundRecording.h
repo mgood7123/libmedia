@@ -24,6 +24,7 @@
 #include <atomic>
 
 #include <android/asset_manager.h>
+#include <android/asset_manager_jni.h>
 #include <AudioTime.h>
 #include <src/common/OboeDebug.h>
 #include "SoundRecordingAudioData.h"
