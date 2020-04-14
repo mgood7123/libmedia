@@ -26,7 +26,7 @@
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
 #include <AudioTime.h>
-#include <src/common/OboeDebug.h>
+#include <OboeDebug.h>
 #include "SoundRecordingAudioData.h"
 
 extern AudioTime GlobalTime;
@@ -50,11 +50,16 @@ public:
     static SoundRecording * loadFromAssets(AAssetManager *assetManager, const char * filename, int SampleRate, int mChannelCount);
     static SoundRecording *loadFromPath(const char *filename, int SampleRate, int mChannelCount);
     int16_t* Audio = nullptr;
-private:
+
+    bool isOscillator = false;
+//    bool isOscillator = true;
+
     uint64_t mReadFrameIndex = 0;
     int64_t mTotalFrames = 0;
     std::atomic<bool> mIsPlaying { false };
     std::atomic<bool> mIsLooping { false };
+
+private:
 
 };
 

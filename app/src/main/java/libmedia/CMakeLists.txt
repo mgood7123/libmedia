@@ -1,12 +1,9 @@
 cmake_minimum_required(VERSION 3.4.1)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-add_subdirectory (SDK/oboe)
 add_subdirectory (AndroidBitmap)
 add_subdirectory (ReSampler-development)
-add_subdirectory (VST)
-
-include_directories (SDK/oboe)
+#add_subdirectory (../../../../../../../AndroidStudioProjects/CCodeTesting/app/src/main/cpp/LIB_GD)
+#add_subdirectory (libwaveform)
 include_directories (native)
 include_directories (libMonitor)
 include_directories (ReSampler-development)
@@ -30,11 +27,11 @@ add_library (
 
 target_link_libraries (
         PlayerOboe
+        aaudio
         ReSampler
         AndroidBitmap
         log
         android
-        oboe
         jnigraphics
         m
 )

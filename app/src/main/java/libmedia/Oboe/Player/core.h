@@ -5,22 +5,21 @@
 #ifndef MEDIA_PLAYER_PRO_CORE_H
 #define MEDIA_PLAYER_PRO_CORE_H
 
-#include <include/oboe/Oboe.h>
-#include <src/common/OboeDebug.h>
+#include <OboeDebug.h>
 #include <native.h>
 #include "../AudioEngine.h"
 #include <android/asset_manager_jni.h>
 
 
-oboe::AudioStream *stream {nullptr};
-oboe::AudioStreamBuilder streamBuilder;
 AudioEngine AudioEngine;
+AudioTime GlobalTime;
 Mixer Mixer;
 AAssetManager *mAssetManager {nullptr};
-
 SoundRecording *currentAudioTrack {nullptr};
+
 #include "internal/looper.h"
 Looper Looper;
+
 #include "internal/callback.h"
 CALLBACK CALLBACK;
 

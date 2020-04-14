@@ -7,7 +7,7 @@
 
 
 #include <android/log.h>
-#include "../SDK/oboe/src/common/OboeDebug.h"
+#include <OboeDebug.h>
 
 #include <string>
 #include <variant>

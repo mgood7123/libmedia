@@ -3,7 +3,7 @@
 //
 
 #include <vector>
-#include <src/common/OboeDebug.h>
+#include <OboeDebug.h>
 #include "AudioTime.h"
 #include <MonitorPool.h>
 

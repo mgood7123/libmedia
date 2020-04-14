@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
+// THIS FILE IS MODIFIED
+
 #include "SoundRecording.h"
 #include "../../waveform/AudioTools.h"
 #include "../../shell/env.h"
 #include "../../shell/regex_str.h"
-#include <src/common/OboeDebug.h>
+#include <OboeDebug.h>
 #include <cmath>
 #include <native.h>
 #include <iostream>
@@ -39,12 +41,12 @@ void SoundRecording::renderAudio(int16_t *targetData, int64_t totalFrames, Sound
             mIsPlaying = false;
         }
 
-//        LOGW("SoundRecording::renderAudio: rendering %d frames with data", totalFrames);
+//        LOGW("SoundRecording::renderAudio: rendering %ld frames with data", totalFrames);
 
         if (mReadFrameIndex == 0) {
             GlobalTime.StartOfFile = true;
             GlobalTime.update(mReadFrameIndex, AudioData);
-//            LOGW("SoundRecording::renderAudio: AudioTime in milliseconds = %lld", GlobalTime.milliseconds.count());
+//            LOGW("SoundRecording::renderAudio: AudioTime in milliseconds = %lld", GlobalTime.milliseconds);
         }
         for (int i = 0; i < totalFrames; ++i) {
             for (int j = 0; j < AudioData->channelCount; ++j) {
@@ -58,8 +60,8 @@ void SoundRecording::renderAudio(int16_t *targetData, int64_t totalFrames, Sound
             } else {
                 GlobalTime.update(mReadFrameIndex, AudioData);
             }
-//            LOGW("SoundRecording::renderAudio: mReadFrameIndex = %d", mReadFrameIndex);
-//            LOGW("SoundRecording::renderAudio: AudioTime in milliseconds = %lld", GlobalTime.milliseconds.count());
+//            LOGW("SoundRecording::renderAudio: mReadFrameIndex = %ld", mReadFrameIndex);
+//            LOGW("SoundRecording::renderAudio: AudioTime in milliseconds = %lld", GlobalTime.milliseconds);
         }
     } else {
 //        LOGW("SoundRecording::renderAudio: rendering %d frames with zero", totalFrames);
@@ -117,7 +119,7 @@ void resample(int inSampleRate, int outSampleRate, const char * inFilename, char
 }
 
 SoundRecording * SoundRecording::loadFromPath(const char *filename, int SampleRate, int mChannelCount) {
-    char * out = nullptr;
+    char * out = nullptr; /* this should be int16 */
     size_t outsize = 0;
     resample(SampleRate, 48000, filename, &out, &outsize);
 

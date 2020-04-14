@@ -33,4 +33,4 @@ void Mixer::renderAudio(int16_t *audioData, int32_t numFrames) {
 
 void Mixer::addTrack(SoundRecording *renderer){
     mTracks[mNextFreeTrackIndex++] = renderer;
-};
+}

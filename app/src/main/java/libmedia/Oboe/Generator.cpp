@@ -1,19 +1,150 @@
-//
-// Created by macropreprocessor on 17/06/19.
-//
+/*
+ * Copyright 2018 Deniz A. Atlihan
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-#include <include/oboe/Oboe.h>
-#include <src/common/OboeDebug.h>
+
 #include "Generator.h"
 
-void Generator::Static(void * audioData, int32_t numFrames) {
-    // We requested AudioFormat::Float so we assume we got it. For production code always check what format
-    // the stream has and cast to the appropriate type.
-    auto *outputData = static_cast<float *>(audioData);
-    const float amplitude = 0.2f;
-    LOGW("AudioEngine::onAudioReady: FILLING outputData with static for %d frames", numFrames);
-    for (int i = 0; i < numFrames; ++i){
-        outputData[i] = ((float)drand48() - 0.5f) * 2 * amplitude;
+void Generator::SetGeneratorSampleFrequency(int freq) {
+    sampleFrequency = freq;
+    phaseSumSine = (float)(2.0f * M_PI*waveFrequency)/sampleFrequency;
+    samplesInHalfPeriode =  (int)(sampleFrequency/(2.0f*waveFrequency));
+}
+
+void Generator::SetGeneratorWaveFreqeuncy(float freq) {
+    waveFrequency = freq;
+    phaseSumSine = (float)(2.0f * M_PI*waveFrequency)/sampleFrequency;
+    samplesInHalfPeriode =  (int)(sampleFrequency/(2.0f*waveFrequency));
+}
+
+void Generator::SetGeneratorWaveOn(bool on) {
+    // isOn = on;
+    isWaveOn_.store(on);
+}
+
+void Generator::Generate(float *audioData, int32_t numFrames) {
+    switch (waveType) {
+        case Square:
+            GenerateSquareWave(audioData, numFrames);
+            break;
+        case Sawtooth:
+            GenerateSawtoohWave(audioData, numFrames);
+            break;
+        case Triangular:
+            GenerateTriangularWave(audioData, numFrames);
+            break;
+        default:
+            GenerateSineWave(audioData, numFrames);
+            break;
     }
-    LOGW("AudioEngine::onAudioReady: FILLED");
+}
+
+void Generator::GenerateSineWave(float *audioData, int32_t numFrames){
+
+    if (!isWaveOn_.load()){
+        phase = 0;
+    }
+    for (int i = 0; i < numFrames; i++) {
+        //if(isOn) {
+        if (isWaveOn_.load()) {
+            audioData[i] = (float) sin(phase)*volume;
+            phase += phaseSumSine;
+            if (phase > 2 * M_PI){
+                phase -= 2 * M_PI;
+            }
+        }else {
+            audioData[i] = 0;
+        }
+    }
+}
+
+void Generator::GenerateSquareWave(float *audioData, int32_t numFrames) {
+
+    if (!isWaveOn_.load()){
+        phase = 0;
+        j=0;
+    }
+    for (int i = 0; i < numFrames; i++) {
+        //if(isOn) {
+        if (isWaveOn_.load()) {
+            if(j<=samplesInHalfPeriode) {
+                audioData[i] = volume;
+            }else {
+                audioData[i] = 0;
+            }
+            j++;
+            if(j>=2*samplesInHalfPeriode) {
+                j=0;
+            }
+        }else {
+            audioData[i] = 0;
+        }
+    }
+}
+
+void Generator::GenerateSawtoohWave(float *audioData, int32_t numFrames) {
+
+    if (!isWaveOn_.load()){
+        phase = 0;
+        j=0;
+    }
+    for (int i = 0; i < numFrames; i++) {
+        //if(isOn) {
+        if (isWaveOn_.load()) {
+            audioData[i] = (volume/(2.0f*samplesInHalfPeriode))*j;
+            j++;
+            if(j>=2*samplesInHalfPeriode) {
+                __android_log_print(ANDROID_LOG_ERROR, "GenerateSawtoohWave", "j %d",
+                                    j);
+                j=0;
+            }
+        }else {
+            audioData[i] = 0;
+        }
+    }
+}
+
+void Generator::GenerateTriangularWave(float *audioData, int32_t numFrames) {
+
+    if (!isWaveOn_.load()){
+        phase = 0;
+        j=0;
+    }
+    for (int i = 0; i < numFrames; i++) {
+        //if(isOn) {
+        if (isWaveOn_.load()) {
+            if(j<=samplesInHalfPeriode) {
+                audioData[i] = (volume/((float)samplesInHalfPeriode))*j;
+            }else {
+                audioData[i] = volume-((volume/((float)samplesInHalfPeriode))*(j-samplesInHalfPeriode));
+            }
+            j++;
+            if(j>=2*samplesInHalfPeriode) {
+                j=0;
+            }
+        }else {
+            audioData[i] = 0;
+        }
+    }
+}
+
+
+void Generator::SetGeneratorWaveVolume(float vol) {
+    volume = vol;
+}
+
+void Generator::SetGeneratorWaveType(int waveType_) {
+    waveType = (WaveType)waveType_;
 }

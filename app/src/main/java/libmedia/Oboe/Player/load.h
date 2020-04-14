@@ -14,8 +14,8 @@ NATIVE(void, Oboe, LoadTrackFromAssets)(JNIEnv *env, jobject type, jstring asset
     currentAudioTrack = SoundRecording::loadFromAssets(
             mAssetManager,
             a,
-            streamBuilder.getSampleRate(),
-            streamBuilder.getChannelCount()
+            AudioEngine.sampleRate,
+            AudioEngine.channelCount
     );
     env->ReleaseStringUTFChars(asset, a);
     Mixer.addTrack(currentAudioTrack);
@@ -25,8 +25,8 @@ NATIVE(void, Oboe, LoadTrackFromPath)(JNIEnv *env, jobject type, jstring path) {
     jboolean val;
     currentAudioTrack = SoundRecording::loadFromPath(
             env->GetStringUTFChars(path, &val),
-            streamBuilder.getSampleRate(),
-            streamBuilder.getChannelCount()
+            AudioEngine.sampleRate,
+            AudioEngine.channelCount
     );
     Mixer.addTrack(currentAudioTrack);
 }

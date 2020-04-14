@@ -36,5 +36,4 @@ private:
     uint8_t mNextFreeTrackIndex = 0;
 };
 
-
 #endif //MEDIA_PLAYER_PRO_MIXER_H
