@@ -2,18 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/app/src/main/java/libmedia/Oboe/Player/Oscillator/qdsp" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/app/src/main/java/libmedia/Oboe/Q" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/app/src/main/java/libmedia/Oboe/Synths/Q" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/app/src/main/java/libmedia/Oboe/Synths/Q/q_io/external/portaudio" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/app/src/main/java/libmedia/Oboe/Synths/Q/q_io/external/portmidi" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/app/src/main/java/libmedia/Oboe/Synths/infra" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/app/src/main/java/libmedia/Oboe/dsp/DSP-Synthesis-Library" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/app/src/main/java/libmedia/ReSampler-development" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/app/src/main/java/libmedia/SDK/oboeLatest" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/app/src/main/java/libmedia/VST/libvst/SDK/WinAPI" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/app/src/main/java/libmedia/libwaveform/audiowaveform" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/app/src/main/java/libmedia/libwaveform/gtest/googletest-src" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/app/src/main/java/libmedia/libwaveform/libgd" vcs="Git" />
   </component>
 </project>
