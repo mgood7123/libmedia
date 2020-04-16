@@ -83,7 +83,7 @@ int reverseBool(int val) {
     else return val;
 }
 
-size_t read__(char *file, char **p) {
+size_t read__(const char *file, char **p) {
     int fd;
     size_t len = 0;
     char *o = NULL;
@@ -110,7 +110,9 @@ size_t read__(char *file, char **p) {
     return len;
 }
 
-char * filetostring(char * file) {
+
+
+char * filetostring(const char * file) {
     char * buf;
     size_t size;
     size = read__(file, &buf);

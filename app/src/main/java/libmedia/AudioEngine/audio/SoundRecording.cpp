@@ -41,30 +41,25 @@ void SoundRecording::renderAudio(int16_t *targetData, int64_t totalFrames, Sound
             mIsPlaying = false;
         }
 
-//        LOGW("SoundRecording::renderAudio: rendering %ld frames with data", totalFrames);
-
         if (mReadFrameIndex == 0) {
             GlobalTime.StartOfFile = true;
-            GlobalTime.update(mReadFrameIndex, AudioData);
-//            LOGW("SoundRecording::renderAudio: AudioTime in milliseconds = %lld", GlobalTime.milliseconds);
+//            GlobalTime.update(mReadFrameIndex, AudioData);
         }
         for (int i = 0; i < totalFrames; ++i) {
             for (int j = 0; j < AudioData->channelCount; ++j) {
                 targetData[(i * AudioData->channelCount) + j] = Audio->Audio[(mReadFrameIndex * AudioData->channelCount) + j];
             }
+
             // Increment and handle wraparound
             if (++mReadFrameIndex >= mTotalFrames) {
                 GlobalTime.EndOfFile = true;
-                GlobalTime.update(mReadFrameIndex, AudioData);
+//                GlobalTime.update(mReadFrameIndex, AudioData);
                 mReadFrameIndex = 0;
             } else {
-                GlobalTime.update(mReadFrameIndex, AudioData);
+//                GlobalTime.update(mReadFrameIndex, AudioData);
             }
-//            LOGW("SoundRecording::renderAudio: mReadFrameIndex = %ld", mReadFrameIndex);
-//            LOGW("SoundRecording::renderAudio: AudioTime in milliseconds = %lld", GlobalTime.milliseconds);
         }
     } else {
-//        LOGW("SoundRecording::renderAudio: rendering %d frames with zero", totalFrames);
         // fill with zeros to output silence
         for (int i = 0; i < totalFrames * AudioData->channelCount; ++i) {
             targetData[i] = 0;
@@ -111,7 +106,7 @@ void resample(int inSampleRate, int outSampleRate, const char * inFilename, char
     LOGE("TIME took %G milliseconds", e - s);
 
     // read the file into memory
-    *outsize = read__(const_cast<char *>(outfile.string), out);
+    *outsize = read__(const_cast<const char *>(outfile.string), out);
 
     LOGE("%s file size: %zu", outfile.string, *outsize);
     str_free(outfile);

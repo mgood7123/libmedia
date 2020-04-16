@@ -12,7 +12,7 @@
 #include <cmath>
 #include <jni.h>
 #include <android/bitmap.h>
-#include "../Oboe/audio/SoundRecordingAudioData.h"
+#include "../AudioEngine/audio/SoundRecordingAudioData.h"
 #include "../waveform/timestats.h"
 
 class AudioTime {

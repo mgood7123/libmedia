@@ -11,18 +11,16 @@ class MainActivity : AppCompatActivity() {
     var media: Media? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        System.loadLibrary("PlayerOboe")
+        System.loadLibrary("AudioEngine")
         println("android.os.Environment.getExternalStorageDirectory().getPath() = ${android.os.Environment.getExternalStorageDirectory().getPath()}")
         println("getFilesDir().getPath() = ${getFilesDir().getPath()}")
         media = Media(this)
         media!!.init()
             .loadMediaAssetAsFile("00001313_48000.raw")
-//            .loadMediaPath("${media!!.ASSETS}/00001313_48000.raw")
             .loop(true)
-//            .play()
         val build = Builder(this)
         build
-            .row().height(20)
+            .row().height(5)
             .column {
                 Button(this).also {
                     it.text = "waveform draw Lines ${media!!.WaveformViewOptions.drawLines}"
@@ -41,7 +39,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-            .row().height(20)
+            .row().height(5)
             .column {
                 Button(this).also {
                     it.text = "waveform stretch to screen height ${media!!.WaveformViewOptions.stretchToScreenHeight}"
@@ -60,7 +58,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-            .row().height(40)
+            .row().height(60)
             .column {
                 media!!.WaveformView(
                     context = this,
@@ -69,7 +67,59 @@ class MainActivity : AppCompatActivity() {
                     media = media!!
                 )
             }
-            .row().height(20)
+            .row().height(1).column {
+                UpdatingTextView(this).also {
+                    it.addOnFirstDrawAction {
+                        it.text = "underruns: 0"
+                    }
+                    it.addOnDrawAction {
+                        it.text = "underruns: ${media!!.Oboe_underrunCount()}"
+                    }
+                }
+            }
+            .row().height(1).column {
+                UpdatingTextView(this).also {
+                    it.addOnFirstDrawAction {
+                        it.text = "frames per burst: 0"
+                    }
+                    it.addOnDrawAction {
+                        it.text = "frames per burst: ${media!!.Oboe_framesPerBurst()}"
+                    }
+                }
+            }
+            .row().height(1).column {
+                UpdatingTextView(this).also {
+                    it.addOnFirstDrawAction {
+                        it.text = "buffer size: 0"
+                    }
+                    it.addOnDrawAction {
+                        it.text = "buffer size: ${media!!.Oboe_bufferSize()}"
+                    }
+                }
+            }
+            .row().height(1).column {
+                UpdatingTextView(this).also {
+                    it.addOnFirstDrawAction {
+                        it.text = "buffer capacity: 0"
+                    }
+                    it.addOnDrawAction {
+                        it.text = "buffer capacity: ${media!!.Oboe_bufferCapacity()}"
+                    }
+                }
+            }
+            .row().height(1).column {
+                UpdatingTextView(this).also {
+                    it.addOnFirstDrawAction {
+                        it.text = "frame bursts in buffer: 0"
+                    }
+                    it.addOnDrawAction {
+                        it.text = "frame bursts in buffer: ${
+                        media!!.Oboe_bufferCapacity() / media!!.Oboe_framesPerBurst()
+                        }"
+                    }
+                }
+            }
+            .row().height(5)
             .column {
                 Button(this).also {
                     media!!.Listner.play = {
@@ -106,7 +156,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         media!!.destroy()
+        super.onDestroy()
     }
 }

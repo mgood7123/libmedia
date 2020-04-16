@@ -31,6 +31,19 @@ public:
         return changed;
     }
 
+    bool changed(std::string IDENTIFIER) {
+        unsigned int i = indexOf(IDENTIFIER);
+        if (i == -1) return false;
+        TYPE c1 = static_cast<TYPE>(a[i].current);
+        TYPE c2 = static_cast<TYPE>(a[i].previous);
+        if (*c1 != *c2) {
+            *static_cast<TYPE>(a[i].previous) = *static_cast<TYPE>(a[i].current);
+            LOGE("VALUE CHANGED");
+            return true;
+        }
+        return false;
+    }
+
     bool exists(std::string IDENTIFIER) {
         for (unsigned int i = 0; i < a.size(); i++)
             if (a[i].IDENTIFIER == IDENTIFIER)
@@ -57,6 +70,18 @@ public:
             m.current = what;
             m.previous = static_cast<TYPE>(malloc(1*sizeof(TYPE)));
             a.push_front(m);
+        }
+    }
+
+    void remove(std::string IDENTIFIER) {
+        // could use exists but then it would loop twice
+        int index = indexOf(IDENTIFIER);
+        if (index != -1) {
+            return;
+        } else {
+            // TODO: improve
+            LOGE("REMOVING VALUE FROM MONITOR LIST");
+            free(a[index].previous);
         }
     }
 

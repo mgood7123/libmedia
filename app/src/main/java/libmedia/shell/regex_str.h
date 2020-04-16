@@ -577,9 +577,9 @@ extern void str_output_append(struct regex_string * str, const char * file);
 }
 
 // reads a entire file
-extern size_t read__(char *file, char **p);
+extern size_t read__(const char *file, char **p);
 
-extern char * filetostring(char * file);
+extern char * filetostring(const char * file);
 
 #define str_include(str, file) { \
 	char * string = filetostring(file); \

@@ -565,6 +565,12 @@ class Media(private val activity: Activity) {
 
     // Functions implemented in the native library.
 
+    external fun Oboe_underrunCount(): Int
+    external fun Oboe_previousUnderrunCount(): Int
+    external fun Oboe_framesPerBurst(): Int
+    external fun Oboe_bufferSize(): Int
+    external fun Oboe_bufferCapacity(): Int
+
     private external fun Oboe_Init(sampleRate: Int, framesPerBurst: Int)
     private external fun Oboe_SetTempDir(dir: String)
     private external fun Oboe_LoadTrackFromAssets(asset: String, assetManager: AssetManager)
