@@ -6,6 +6,7 @@
 #define MEDIA_PLAYER_PRO_SOUNDRECORDINGAUDIODATA_H
 
 #include <cstdint>
+#include <AudioTime.h>
 
 class SoundRecordingAudioData {
 public:
@@ -14,7 +15,6 @@ public:
         Initializations = new class Initializations();
     }
 
-public:
     const uint64_t totalFrames;
     int32_t channelCount;
     int32_t sampleRate;
@@ -26,18 +26,35 @@ public:
         bool secondsPerFrameInitialized = false;
         bool minutesPerFrameInitialized = false;
         bool hoursPerFrameInitialized = false;
-        bool TimeTruncatedInitialized = false;
-        bool TimeUntruncatedInitialized = false;
+        bool daysPerFrameInitialized = false;
+        bool weeksPerFrameInitialized = false;
+        bool monthsPerFrameInitialized = false;
+        bool yearsPerFrameInitialized = false;
+        bool ShouldInitialize = false;
     };
     Initializations *Initializations;
-    double nanosecondsPerFrame = 0;
-    double microsecondsPerFrame = 0;
-    double millisecondsPerFrame = 0;
-    double secondsPerFrame = 0;
-    double minutesPerFrame = 0;
-    double hoursPerFrame = 0;
-    const char *TimeTruncated;
-    const char *TimeUntruncated;
+    uint64_t nanosecondsPerFrame = 0;
+    uint64_t microsecondsPerFrame = 0;
+    uint64_t millisecondsPerFrame = 0;
+    uint64_t secondsPerFrame = 0;
+    uint64_t minutesPerFrame = 0;
+    uint64_t hoursPerFrame = 0;
+    uint64_t daysPerFrame = 0;
+    uint64_t weeksPerFrame = 0;
+    uint64_t monthsPerFrame = 0;
+    uint64_t yearsPerFrame = 0;
+    char * TimeHumanized;
+    char * TimeNormal;
+    char * TimeHumanizedPerFrame;
+    char * TimeNormalPerFrame;
+
+    std::chrono::nanoseconds function_duration__formatNANO = std::chrono::nanoseconds(0);
+    std::chrono::microseconds function_duration__formatMICRO = std::chrono::microseconds(0);
+    std::chrono::milliseconds function_duration__formatMILLI = std::chrono::milliseconds(0);
+    std::chrono::nanoseconds function_duration__ChronoNANO = std::chrono::nanoseconds(0);
+    std::chrono::microseconds function_duration__ChronoMICRO = std::chrono::microseconds(0);
+    std::chrono::milliseconds function_duration__ChronoMILLI = std::chrono::milliseconds(0);
+
 };
 
 #endif //MEDIA_PLAYER_PRO_SOUNDRECORDINGAUDIODATA_H

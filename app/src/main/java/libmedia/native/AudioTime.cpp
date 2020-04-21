@@ -5,9 +5,9 @@
 #include <vector>
 #include <OboeDebug.h>
 #include "AudioTime.h"
-#include <MonitorPool.h>
 
 void AudioTime::update(uint64_t frame, SoundRecordingAudioData *AudioData) {
+
     if (StartOfFile) {
         if (mTimeCallback != nullptr) mTimeCallback->StartOfFile(this);
         StartOfFile = false;
@@ -24,156 +24,189 @@ void AudioTime::update(uint64_t frame, SoundRecordingAudioData *AudioData) {
     totalFrames = frame;
     if (currentFrame != previousFrame) if (mTimeCallback != nullptr) mTimeCallback->frame(this);
 
-    nanosecondsTotal =
-            (static_cast<double>(frame) * divisionValue().nanoseconds) / static_cast<double>(AudioData->sampleRate);
-    nanosecondsPrevious = nanoseconds;
-    nanoseconds =
-            (static_cast<double>(frame) * divisionValue().nanoseconds) / static_cast<double>(AudioData->sampleRate);
+    std::chrono::steady_clock::time_point start, end;
+    if (includeTimingInformation) start = std::chrono::steady_clock::now();
 
-    microsecondsTotal =
-            (static_cast<double>(frame) * divisionValue().microseconds) / static_cast<double>(AudioData->sampleRate);
-    microsecondsPrevious = microseconds;
-    microseconds =
-            (static_cast<double>(frame) * divisionValue().microseconds) / static_cast<double>(AudioData->sampleRate);
-    if (microseconds != static_cast<double>(0)) {
-        if (microseconds < divisionValue().seconds) microseconds = static_cast<double>(0);
-        else nanoseconds -= trunc(microseconds) * divisionValue().milliseconds;
-    }
+    // duration::time is unsigned, while chrono::time is signed
 
-    millisecondsTotal =
-            (static_cast<double>(frame) * divisionValue().milliseconds) / static_cast<double>(AudioData->sampleRate);
-    millisecondsPrevious = milliseconds;
-    milliseconds =
-            (static_cast<double>(frame) * divisionValue().milliseconds) / static_cast<double>(AudioData->sampleRate);
-    if (milliseconds != static_cast<double>(0)) {
-        if (milliseconds < divisionValue().seconds) milliseconds = static_cast<double>(0);
-        else microseconds -= trunc(milliseconds) * divisionValue().milliseconds;
-    }
+    duration::nanoseconds nanoseconds = duration::nanoseconds ((static_cast<AudioTime_Format>(frame) * divisionValue().nanoseconds) / static_cast<AudioTime_Format>(AudioData->sampleRate));
+    this->nanosecondsPrevious = this->nanoseconds;
+    this->nanosecondsTotal = nanoseconds.count();
 
-    secondsTotal = static_cast<double>(frame) / static_cast<double>(AudioData->sampleRate);
-    secondsPrevious = seconds;
-    seconds = static_cast<double>(frame) / static_cast<double>(AudioData->sampleRate);
-    if (seconds != static_cast<double>(0)) {
-        if (seconds < divisionValue().seconds) seconds = static_cast<double>(0);
-        else milliseconds -= trunc(seconds) * divisionValue().milliseconds;
-    }
+    duration::microseconds microseconds = std::chrono::duration_cast<duration::microseconds>(nanoseconds);
+    this->microsecondsPrevious = this->microseconds;
+    this->microsecondsTotal = microseconds.count();
+    nanoseconds -= std::chrono::duration_cast<duration::nanoseconds>(microseconds);
+    this->nanoseconds = nanoseconds.count();
 
-    minutesTotal = (static_cast<double>(frame) / static_cast<double>(AudioData->sampleRate)) / divisionValue().minutes;
-    minutesPrevious = minutes;
-    minutes = (static_cast<double>(frame) / static_cast<double>(AudioData->sampleRate)) / divisionValue().minutes;
-    if (minutes != static_cast<double>(0)) {
-        if (minutes < divisionValue().seconds) minutes = static_cast<double>(0);
-        else{
-            seconds = (minutes - trunc(minutes)) * divisionValue().minutes;
-        }
-    }
+    duration::milliseconds milliseconds = std::chrono::duration_cast<duration::milliseconds>(microseconds);
+    this->millisecondsPrevious = this->milliseconds;
+    this->millisecondsTotal = milliseconds.count();
+    microseconds -= std::chrono::duration_cast<duration::milliseconds>(microseconds);
+    this->microseconds = microseconds.count();
 
-    hoursTotal = (static_cast<double>(frame) / static_cast<double>(AudioData->sampleRate)) / divisionValue().hours;
-    hoursPrevious = hours;
-    hours = (static_cast<double>(frame) / static_cast<double>(AudioData->sampleRate)) / divisionValue().hours;
-    if (hours != static_cast<double>(0)) {
-        if (hours < divisionValue().seconds) hours = static_cast<double>(0);
-        else minutes = (hours - trunc(hours)) * divisionValue().minutes;
-    }
+    duration::seconds seconds = std::chrono::duration_cast<duration::seconds>(milliseconds);
+    this->secondsPrevious = this->seconds;
+    this->secondsTotal = seconds.count();
+    milliseconds -= std::chrono::duration_cast<duration::milliseconds>(seconds);
+    this->milliseconds = milliseconds.count();
 
-    // wrap tp zero
-    if (hours == static_cast<double>(24)) hours = static_cast<double>(0);
+    duration::minutes minutes = std::chrono::duration_cast<duration::minutes>(seconds);
+    this->minutesPrevious = this->minutes;
+    this->minutesTotal = minutes.count();
+    seconds -= std::chrono::duration_cast<duration::seconds>(minutes);
+    this->seconds = seconds.count();
+
+    duration::hours hours = std::chrono::duration_cast<duration::hours>(minutes);
+    this->hoursPrevious = this->hours;
+    this->hoursTotal = hours.count();
+    minutes -= std::chrono::duration_cast<duration::minutes>(hours);
+    this->minutes = minutes.count();
+
+//    typedef date::days days;
+//    typedef date::weeks weeks;
+//    typedef date::months months;
+//    typedef date::years years;
+
+    duration::days days = std::chrono::duration_cast<duration::days>(hours);
+    this->daysPrevious = this->days;
+    this->daysTotal = days.count();
+    hours -= std::chrono::duration_cast<duration::hours>(days);
+    this->hours = hours.count();
+
+    duration::weeks weeks = std::chrono::duration_cast<duration::weeks>(days);
+    this->weeksPrevious = this->weeks;
+    this->weeksTotal = weeks.count();
+    days -= std::chrono::duration_cast<duration::days>(weeks);
+    this->days = days.count();
+
+    duration::months months = std::chrono::duration_cast<duration::months>(weeks);
+    this->monthsPrevious = this->months;
+    this->monthsTotal = months.count();
+    weeks -= std::chrono::duration_cast<duration::weeks>(months);
+    this->weeks = weeks.count();
+
+    duration::years years = std::chrono::duration_cast<duration::years>(months);
+    this->yearsPrevious = this->years;
+    this->yearsTotal = years.count();
+    this->years = this->yearsTotal;
+    months -= std::chrono::duration_cast<duration::months>(years);
+    this->months = months.count();
+
+    if (includeTimingInformation) end = std::chrono::steady_clock::now();
 
     if (AudioData != nullptr) {
-        if (
-                !initializing &&
-                (
-                        !AudioData->Initializations->nanosecondsPerFrameInitialized ||
-                        !AudioData->Initializations->microsecondsPerFrameInitialized ||
-                        !AudioData->Initializations->millisecondsPerFrameInitialized ||
-                        !AudioData->Initializations->secondsPerFrameInitialized ||
-                        !AudioData->Initializations->minutesPerFrameInitialized ||
-                        !AudioData->Initializations->hoursPerFrameInitialized ||
-                        !AudioData->Initializations->TimeTruncatedInitialized ||
-                        !AudioData->Initializations->TimeUntruncatedInitialized
-                )
-         ) {
-            AudioTime * X = new AudioTime();
-            X->initializing = true;
-            X->update(1, AudioData);
-            X->initializing = false;
-        } else {
-            AudioData->nanosecondsPerFrame = nanoseconds;
+        if (includeTimingInformation) {
+            AudioData->function_duration__ChronoNANO = std::chrono::duration_cast<std::chrono::nanoseconds>(
+                    end - start);
+            AudioData->function_duration__ChronoMICRO = std::chrono::duration_cast<std::chrono::microseconds>(
+                    AudioData->function_duration__ChronoNANO);
+            AudioData->function_duration__ChronoMILLI = std::chrono::duration_cast<std::chrono::milliseconds>(
+                    AudioData->function_duration__ChronoMICRO);
+        }
+        if (AudioData->Initializations->ShouldInitialize) {
+            AudioData->nanosecondsPerFrame = nanoseconds.count();
             AudioData->Initializations->nanosecondsPerFrameInitialized = true;
-            AudioData->microsecondsPerFrame = microseconds;
+            AudioData->microsecondsPerFrame = microseconds.count();
             AudioData->Initializations->microsecondsPerFrameInitialized = true;
-            AudioData->millisecondsPerFrame = milliseconds;
+            AudioData->millisecondsPerFrame = milliseconds.count();
             AudioData->Initializations->millisecondsPerFrameInitialized = true;
-            AudioData->secondsPerFrame = seconds;
+            AudioData->secondsPerFrame = seconds.count();
             AudioData->Initializations->secondsPerFrameInitialized = true;
-            AudioData->minutesPerFrame = minutes;
+            AudioData->minutesPerFrame = minutes.count();
             AudioData->Initializations->minutesPerFrameInitialized = true;
-            AudioData->hoursPerFrame = hours;
+            AudioData->hoursPerFrame = hours.count();
             AudioData->Initializations->hoursPerFrameInitialized = true;
-            std::string str;
-            AudioTimeFormat(true, &str, hours);
-            AudioTimeFormat(true, &str, minutes);
-            AudioTimeFormat(true, &str, seconds);
-            AudioTimeFormat(true, &str, milliseconds);
-            AudioTimeFormat(true, &str, microseconds);
-            AudioTimeFormat(true, &str, nanoseconds);
-            AudioData->TimeTruncated = str.c_str();
-            AudioData->Initializations->TimeTruncatedInitialized = true;
-            std::string str2;
-            AudioTimeFormat(false, &str2, hours);
-            AudioTimeFormat(false, &str2, minutes);
-            AudioTimeFormat(false, &str2, seconds);
-            AudioTimeFormat(false, &str2, milliseconds);
-            AudioTimeFormat(false, &str2, microseconds);
-            AudioTimeFormat(false, &str2, nanoseconds);
-            AudioData->TimeUntruncated = str2.c_str();
-            AudioData->Initializations->TimeUntruncatedInitialized = true;
-            return;
+            AudioData->daysPerFrame = days.count();
+            AudioData->Initializations->daysPerFrameInitialized = true;
+            AudioData->weeksPerFrame = weeks.count();
+            AudioData->Initializations->weeksPerFrameInitialized = true;
+            AudioData->monthsPerFrame = months.count();
+            AudioData->Initializations->monthsPerFrameInitialized = true;
+            AudioData->yearsPerFrame = years.count();
+            AudioData->Initializations->yearsPerFrameInitialized = true;
+            AudioData->TimeHumanizedPerFrame = format(true, AudioData);
+            AudioData->TimeNormalPerFrame = format(false, AudioData);
+            AudioData->Initializations->ShouldInitialize = false;
+        }
+        AudioData->TimeHumanized = format(true, AudioData);
+        AudioData->TimeNormal = format(false, AudioData);
+
+        if (EndOfFile) {
+            EndOfFile = false;
+            EndOfFileCalled = false;
         }
 
-        // round down for callbacks
-
-        if (floor(nanoseconds) != floor(nanosecondsPrevious)) {
-            if (EndOfFile) {
-                EndOfFile = false;
-                EndOfFileCalled = false;
+        if (executeCallbacks) {
+            if (this->nanoseconds != this->nanosecondsPrevious) {
+                if (mTimeCallback != nullptr) {
+                    if (!(this->nanoseconds % 100)) mTimeCallback->nanosecondHundreth(this);
+                    if (!(this->nanoseconds % 10)) mTimeCallback->nanosecondTenth(this);
+                    mTimeCallback->nanosecond(this);
+                }
             }
-            if (mTimeCallback != nullptr) {
-                if (!(static_cast<int>(floor(nanoseconds)) % 100)) mTimeCallback->nanosecondHundreth(this);
-                if (!(static_cast<int>(floor(nanoseconds)) % 10)) mTimeCallback->nanosecondTenth(this);
-                mTimeCallback->nanosecond(this);
+            if (this->microseconds != this->microsecondsPrevious) {
+                if (mTimeCallback != nullptr) {
+                    if (!(this->microseconds % 100)) mTimeCallback->microsecondHundreth(this);
+                    if (!(this->microseconds % 10)) mTimeCallback->microsecondTenth(this);
+                    mTimeCallback->microsecond(this);
+                }
             }
-        }
-        if (floor(microseconds) != floor(microsecondsPrevious)) {
-            if (mTimeCallback != nullptr) {
-                if (!(static_cast<int>(floor(microseconds)) % 100)) mTimeCallback->microsecondHundreth(this);
-                if (!(static_cast<int>(floor(microseconds)) % 10)) mTimeCallback->microsecondTenth(this);
-                mTimeCallback->microsecond(this);
+            if (this->milliseconds != this->millisecondsPrevious) {
+                if (mTimeCallback != nullptr) {
+                    if (!(this->milliseconds % 100)) mTimeCallback->millisecondHundreth(this);
+                    if (!(this->milliseconds % 10)) mTimeCallback->millisecondTenth(this);
+                    mTimeCallback->millisecond(this);
+                }
             }
-        }
-        if (floor(milliseconds) != floor(millisecondsPrevious)) {
-            if (mTimeCallback != nullptr) {
-                if (!(static_cast<int>(floor(milliseconds)) % 100)) mTimeCallback->millisecondHundreth(this);
-                if (!(static_cast<int>(floor(milliseconds)) % 10)) mTimeCallback->millisecondTenth(this);
-                mTimeCallback->millisecond(this);
+            if (this->seconds != this->secondsPrevious) {
+                if (mTimeCallback != nullptr) {
+                    if (!(this->seconds % 100)) mTimeCallback->secondHundreth(this);
+                    if (!(this->seconds % 10)) mTimeCallback->secondTenth(this);
+                    mTimeCallback->second(this);
+                }
             }
-        }
-        if (floor(seconds) != floor(secondsPrevious)) {
-            if (mTimeCallback != nullptr) {
-                if (!(static_cast<int>(floor(seconds)) % 10)) mTimeCallback->secondTenth(this);
-                mTimeCallback->second(this);
+            if (this->minutes != this->minutesPrevious) {
+                if (mTimeCallback != nullptr) {
+                    if (!(this->minutes % 100)) mTimeCallback->minuteHundreth(this);
+                    if (!(this->minutes % 10)) mTimeCallback->minuteTenth(this);
+                    mTimeCallback->minute(this);
+                }
             }
-        }
-        if (floor(minutes) != floor(minutesPrevious)) {
-            if (mTimeCallback != nullptr) {
-                if (!(static_cast<int>(floor(minutes)) % 10)) mTimeCallback->minuteTenth(this);
-                mTimeCallback->minute(this);
+            if (this->hours != this->hoursPrevious) {
+                if (mTimeCallback != nullptr) {
+                    if (!(this->hours % 100)) mTimeCallback->hourHundreth(this);
+                    if (!(this->hours % 10)) mTimeCallback->hourTenth(this);
+                    mTimeCallback->hour(this);
+                }
             }
-        }
-        if (floor(hours) != floor(hoursPrevious)) {
-            if (mTimeCallback != nullptr) {
-                if (!(static_cast<int>(floor(hours)) % 10)) mTimeCallback->hourTenth(this);
-                mTimeCallback->hour(this);
+            if (this->days != this->daysPrevious) {
+                if (mTimeCallback != nullptr) {
+                    if (!(this->days % 100)) mTimeCallback->dayHundreth(this);
+                    if (!(this->days % 10)) mTimeCallback->dayTenth(this);
+                    mTimeCallback->day(this);
+                }
+            }
+            if (this->weeks != this->weeksPrevious) {
+                if (mTimeCallback != nullptr) {
+                    if (!(this->weeks % 100)) mTimeCallback->weekHundreth(this);
+                    if (!(this->weeks % 10)) mTimeCallback->weekTenth(this);
+                    mTimeCallback->week(this);
+                }
+            }
+            if (this->months != this->monthsPrevious) {
+                if (mTimeCallback != nullptr) {
+                    if (!(this->months % 100)) mTimeCallback->monthHundreth(this);
+                    if (!(this->months % 10)) mTimeCallback->monthTenth(this);
+                    mTimeCallback->month(this);
+                }
+            }
+            if (this->years != this->yearsPrevious) {
+                if (mTimeCallback != nullptr) {
+                    if (!(this->years % 100)) mTimeCallback->yearHundreth(this);
+                    if (!(this->years % 10)) mTimeCallback->yearTenth(this);
+                    mTimeCallback->year(this);
+                }
             }
         }
     }
@@ -185,37 +218,79 @@ void AudioTime::setCallback(JNIEnv * ENV, jobject THIS, AudioTime::Callback *tim
     pThis = THIS;
 }
 
-void AudioTime::AudioTimeFormat(bool truncate, std::string *string, double type) {
-    if (type != 0) {
-        if ((*string).length() != 0) *string += ":";
-        if (truncate) *string += std::to_string(static_cast<uint64_t>(trunc(type)));
-        else *string += std::to_string(type);
+// use pre-allocated buffer to improve performance
+// years:months:weeks:days:hours:minutes:seconds:milliseconds:microseconds:nanoseconds
+
+char format_buffer[35];
+bool buffer_set = false;
+
+size_t pointer; // to track format_buffer memset/memcpy
+
+char * AudioTime::format(bool include_human_time_markings) {
+    return format(include_human_time_markings, nullptr);
+}
+
+char * AudioTime::format(bool include_human_time_markings, SoundRecordingAudioData * AudioData) {
+    int pointer = 0;
+    if (!buffer_set) {
+        char * buf = "0000:00:00:00:00:00:00:000:000:000"; // 35 chars long including null-term
+        for (int i = 0; i != 36; i++) format_buffer[i] = buf[i]; // break after copying null-term
+        buffer_set = true;
     }
+    std::chrono::steady_clock::time_point start, end;
+    if (includeTimingInformation) start = std::chrono::steady_clock::now();
+    ATM(include_human_time_markings, format_buffer, pointer, years, 4);
+    format_buffer[pointer++] = ':';
+    ATM(include_human_time_markings, format_buffer, pointer, months, 2);
+    format_buffer[pointer++] = ':';
+    ATM(include_human_time_markings, format_buffer, pointer, weeks, 2);
+    format_buffer[pointer++] = ':';
+    ATM(include_human_time_markings, format_buffer, pointer, days, 2);
+    format_buffer[pointer++] = ':';
+    ATM(include_human_time_markings, format_buffer, pointer, hours, 2);
+    format_buffer[pointer++] = ':';
+    ATM(include_human_time_markings, format_buffer, pointer, minutes, 2);
+    format_buffer[pointer++] = ':';
+    ATM(include_human_time_markings, format_buffer, pointer, seconds, 2);
+    format_buffer[pointer++] = ':';
+    ATM(include_human_time_markings, format_buffer, pointer, milliseconds, 3);
+    format_buffer[pointer++] = ':';
+    ATM(include_human_time_markings, format_buffer, pointer, microseconds, 3);
+    format_buffer[pointer++] = ':';
+    ATM(include_human_time_markings, format_buffer, pointer, nanoseconds, 3);
+    if (includeTimingInformation) end = std::chrono::steady_clock::now();
+    // Calculating total time taken by the function.
+    if (AudioData != nullptr && includeTimingInformation) {
+        AudioData->function_duration__formatNANO = std::chrono::duration_cast<std::chrono::nanoseconds>(
+                end - start);
+        AudioData->function_duration__formatMICRO = std::chrono::duration_cast<std::chrono::microseconds>(
+                AudioData->function_duration__formatNANO);
+        AudioData->function_duration__formatMILLI = std::chrono::duration_cast<std::chrono::milliseconds>(
+                AudioData->function_duration__formatMICRO);
+    }
+    return format_buffer;
 }
 
-std::string AudioTime::format(bool truncate) {
-    std::string str;
-    AudioTimeFormat(truncate, &str, hours);
-    AudioTimeFormat(truncate, &str, minutes);
-    AudioTimeFormat(truncate, &str, seconds);
-    AudioTimeFormat(truncate, &str, milliseconds);
-    AudioTimeFormat(truncate, &str, microseconds);
-    AudioTimeFormat(truncate, &str, nanoseconds);
-    return str;
-}
-
-uint64_t AudioTime::toFrame(double value, int type, SoundRecordingAudioData *AudioData) {
+uint64_t AudioTime::toFrame(AudioTime_Format value, int type, SoundRecordingAudioData *AudioData) {
     if (type == AudioTime::types().nanoseconds)
-        return static_cast<uint64_t>((value * AudioData->sampleRate) / divisionValue().nanoseconds);
+        return ((value * AudioData->sampleRate) / divisionValue().nanoseconds);
     if (type == AudioTime::types().microseconds)
-        return static_cast<uint64_t>((value * AudioData->sampleRate) / divisionValue().microseconds);
+        return ((value * AudioData->sampleRate) / divisionValue().microseconds);
     if (type == AudioTime::types().milliseconds)
-        return static_cast<uint64_t>((value * AudioData->sampleRate) / divisionValue().milliseconds);
+        return ((value * AudioData->sampleRate) / divisionValue().milliseconds);
     if (type == AudioTime::types().seconds)
-        return static_cast<uint64_t>(value * AudioData->sampleRate);
+        return (value * AudioData->sampleRate);
     if (type == AudioTime::types().minutes)
-        return static_cast<uint64_t>(value * divisionValue().minutes * AudioData->sampleRate);
+        return (value * divisionValue().minutes * AudioData->sampleRate);
     if (type == AudioTime::types().hours)
-        return static_cast<uint64_t>(value * divisionValue().hours * AudioData->sampleRate);
+        return (value * divisionValue().hours * AudioData->sampleRate);
+    if (type == AudioTime::types().days)
+        return (value * divisionValue().days * AudioData->sampleRate);
+    if (type == AudioTime::types().weeks)
+        return (value * divisionValue().weeks * AudioData->sampleRate);
+    if (type == AudioTime::types().months)
+        return (value * divisionValue().months * AudioData->sampleRate);
+    if (type == AudioTime::types().years)
+        return (value * divisionValue().years * AudioData->sampleRate);
     return 0;
 }

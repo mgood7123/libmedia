@@ -201,6 +201,15 @@ struct QNode * load_asm(struct Queue **qq);
 	(y).prev_type = NULL; \
 	STR_SETUP_STRUCT_INIT(y);
 
+#define str_malloc__fast(y, z) \
+	(y).string = (char*)malloc(z); \
+	memset((y).string, 0, z); \
+	(y).malloced = z; \
+	(y).len = 0; \
+	(y).index = 0; \
+	(y).type = STR_TYPE_EMPTY; \
+	(y).prev_type = NULL; \
+
 #define str_mallocr(y, z) \
 	str_malloc_((y), z); \
 	str_malloc_((y).escaped, z); \
@@ -215,8 +224,15 @@ struct QNode * load_asm(struct Queue **qq);
 	struct regex_string y; \
 	str_mallocr((y), z);
 
+#define str_malloc_fast(y, z) \
+	struct regex_string y; \
+	str_malloc__fast((y), z);
+
 #define str_new(str) \
 	str_malloc(str, 1) \
+
+#define str_new_fast(str) \
+	str_malloc_fast(str, 1) \
 
 #define str_free_(y) \
 	memset((y).string, 0, (y).malloced); \
@@ -229,6 +245,16 @@ struct QNode * load_asm(struct Queue **qq);
 	(y).prev_type = NULL; \
 	STR_SETUP_STRUCT_INIT((y));
 
+#define str_free__fast(y) \
+	memset((y).string, 0, (y).malloced); \
+	free((y).string); \
+	(y).string = NULL; \
+	(y).malloced = 0; \
+	(y).len = 0; \
+	(y).index = 0; \
+	(y).type = STR_TYPE_EMPTY; \
+	(y).prev_type = NULL; \
+
 #define str_free(y) \
 	{ \
 		str_free_((y)); \
@@ -240,6 +266,8 @@ struct QNode * load_asm(struct Queue **qq);
 		str_free_((y).reverse); \
 		str_free_((y).indented); \
 	}
+
+#define str_free_fast(y) str_free__fast((y));
 
 #define str_reset_(str) { \
 	str_free_((str)) \
@@ -292,6 +320,14 @@ struct QNode * load_asm(struct Queue **qq);
 	(str).len = strlen((str).string); \
 	store_asm(&((str).prev_type), (str).type); \
 	AUTOTYPE((str), ch); \
+}
+
+#define str_insert_char_fast(str, ch) { \
+	str_realloc((str), (str).malloced+2); \
+	(str).string[(str).index] = ch; \
+	(str).index++; \
+	(str).string[(str).index] = 0; \
+	(str).len = strlen((str).string); \
 }
 
 #define str_insert_char_reverse(str, ch) { \
@@ -359,13 +395,12 @@ extern int STR_INDENT_SIZE;
 	} \
 }
 
-#define str_insert_string2(str, string) { \
-	const unsigned char * s = reinterpret_cast<const unsigned char *>(string); \
-	const unsigned int size = strlen(string); \
-	int c; \
+#define str_insert_string_fast(str, string_) { \
+	const unsigned int str_insert_string_fast_TMP_DATA_size = strlen(string_); \
+	const unsigned char * str_insert_string_fast_TMP_DATA_s = reinterpret_cast<const unsigned char *>(string_); \
 	int i; \
-	for (i = 0; i < size; ++i) { \
-		str_insert_char((str), s[i]); \
+	for (i = 0; i < str_insert_string_fast_TMP_DATA_size; ++i) { \
+	    str_insert_char_fast(str, str_insert_string_fast_TMP_DATA_s[i]); \
 	} \
 }
 
@@ -382,14 +417,14 @@ extern int STR_INDENT_SIZE;
 
 #define str_insert_int2(str, integer) { \
 	str_int2string(j, integer); \
-	str_insert_string2((str), j); \
+	str_insert_string_fast((str), j); \
 	free(j); \
 }
 
 #define str_insert_indent_info(str) { \
-	str_insert_string2((str), "/* indent level: "); \
+	str_insert_string_fast((str), "/* indent level: "); \
 	str_insert_int2((str), STR_INDENT_LEVEL); \
-	str_insert_string2((str), " */"); \
+	str_insert_string_fast((str), " */"); \
 }
 
 #define str_insert_string(str, string) { \
@@ -397,7 +432,7 @@ extern int STR_INDENT_SIZE;
 	const unsigned int size = strlen(string); \
 	int c; \
 	unsigned char uch; \
-	str_insert_string2((str).c_define, "#define \""); \
+	str_insert_string_fast((str).c_define, "#define \""); \
 	int i; \
 	for (i = 0; i < size; ++i) { \
 		c = s[i]; \
@@ -546,11 +581,17 @@ extern int STR_INDENT_SIZE;
 	str_insert_char((str).c_string, '"'); \
 }
 
+void str_copy(struct regex_string * str, const char * string);
+
+#define str_copy(str, cpy) \
+    char cpy[str.malloced]; \
+    memcpy(cpy, str.string, str.malloced);
+
 extern int reverseBool(int val);
 
-extern void str_output(struct regex_string * str, const char * file);
+void str_output(struct regex_string * str, const char * file);
 
-extern void str_output_append(struct regex_string * str, const char * file);
+void str_output_append(struct regex_string * str, const char * file);
 
 #define str_output(str, file) { \
 	FILE * stream = stdout; \

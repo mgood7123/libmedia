@@ -41,7 +41,7 @@ public:
     {
         AudioData = audiodata;
     };
-    void renderAudio(int16_t *targetData, int64_t numFrames, SoundRecording *AudioData);
+    void renderAudio(int16_t *targetData, uint64_t numFrames, SoundRecording *AudioData);
     void resetPlayHead() { mReadFrameIndex = 0; GlobalTime.update(0, AudioData); };
     void seekTo(uint64_t frame) { mReadFrameIndex = frame; };
     void setPlaying(bool isPlaying) { mIsPlaying = isPlaying; };
@@ -55,11 +55,13 @@ public:
 //    bool isOscillator = true;
 
     uint64_t mReadFrameIndex = 0;
-    int64_t mTotalFrames = 0;
+    uint64_t mTotalFrames = 0;
     std::atomic<bool> mIsPlaying { false };
     std::atomic<bool> mIsLooping { false };
 
-private:
+    std::chrono::nanoseconds function_duration__renderAudioNANO = std::chrono::nanoseconds(0);
+    std::chrono::microseconds function_duration__renderAudioMICRO = std::chrono::microseconds(0);
+    std::chrono::milliseconds function_duration__renderAudioMILLI = std::chrono::milliseconds(0);
 
 };
 

@@ -8,8 +8,8 @@
 class Looper {
 public:
     bool looperEnabled = false;
-    double start = 0;
-    double end = 0;
+    AudioTime_Format start = 0;
+    AudioTime_Format end = 0;
     int type = 0;
 };
 

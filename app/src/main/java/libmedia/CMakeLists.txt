@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.4.1)
 add_subdirectory (AndroidBitmap)
 add_subdirectory (ReSampler-development)
 include_directories (native)
+include_directories (date/include)
 include_directories (libMonitor)
 include_directories (ReSampler-development)
 
@@ -10,6 +11,7 @@ add_library (
         AudioEngine SHARED
         shell/env.cpp
         shell/regex_str.cpp
+#        libMonitor/Monitor.cpp
         libMonitor/MonitorPool.cpp
         native/AudioTime.cpp
         AudioEngine/Generator.cpp

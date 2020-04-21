@@ -18,7 +18,7 @@ android { // main settings for your application
 
         externalNativeBuild {
             cmake {
-                cppFlags "-std=c++17"
+                cppFlags "-std=c++17 -DANDROID_STL=libc++_shared"
             }
         }
 

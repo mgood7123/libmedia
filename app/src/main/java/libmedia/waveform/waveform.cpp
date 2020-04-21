@@ -41,7 +41,6 @@ Monitor<bool*> MONITOR_bool;
 /* We're going to perform computations for every pixel of the target
  * bitmap. floating-point operations are very slow on ARMv5, and not
  * too bad on ARMv7 with the exception of trigonometric functions.
- *
  */
 
 const int16_t *WAVEFORMAUDIODATA = nullptr;

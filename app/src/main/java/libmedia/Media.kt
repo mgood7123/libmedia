@@ -173,7 +173,7 @@ class Media(private val activity: Activity) {
             var stop: () -> Unit = {}
         }
 
-        inner class loop(var name: String, var start: Double, var end: Double, var timing: Int) {};
+        inner class loop(var name: String, var start: Long, var end: Long, var timing: Int) {};
 
         inner class LooperTiming() {
             val nanoseconds = 1
@@ -519,12 +519,12 @@ class Media(private val activity: Activity) {
 
     fun addLooper(name: String, start: Int, end: Int, timing: Int): Media = addLooper(
         name,
-        start.toDouble(),
-        end.toDouble(),
+        start.toLong(),
+        end.toLong(),
         timing
     )
 
-    fun addLooper(name: String, start: Double, end: Double, timing: Int): Media {
+    fun addLooper(name: String, start: Long, end: Long, timing: Int): Media {
         looper.add(classes.loop(name, start, end, timing))
         return this
     }
@@ -570,6 +570,17 @@ class Media(private val activity: Activity) {
     external fun Oboe_framesPerBurst(): Int
     external fun Oboe_bufferSize(): Int
     external fun Oboe_bufferCapacity(): Int
+    external fun Oboe_getCurrentTime(): String
+    external fun Oboe_getAudioTimingNANO(): Long
+    external fun Oboe_getAudioTimingMICRO(): Long
+    external fun Oboe_getAudioTimingMILLI(): Long
+    external fun Oboe_getAudioTimingFormatNANO(): Long
+    external fun Oboe_getAudioTimingFormatMICRO(): Long
+    external fun Oboe_getAudioTimingFormatMILLI(): Long
+    external fun Oboe_getAudioTimingChronoNANO(): Long
+    external fun Oboe_getAudioTimingChronoMICRO(): Long
+    external fun Oboe_getAudioTimingChronoMILLI(): Long
+    external fun Oboe_getCurrentFrame(): Long
 
     private external fun Oboe_Init(sampleRate: Int, framesPerBurst: Int)
     private external fun Oboe_SetTempDir(dir: String)
@@ -579,7 +590,7 @@ class Media(private val activity: Activity) {
     private external fun Oboe_Pause()
     private external fun Oboe_Stop()
     private external fun Oboe_Loop(value: Boolean)
-    private external fun Oboe_Looper(start: Double, end: Double, timing: Int)
+    private external fun Oboe_Looper(start: Long, end: Long, timing: Int)
     private external fun Oboe_CurrentFrame(width: Int): Int
     private external fun Oboe_Cleanup()
     private external fun Oboe_SampleIndex(index: Long): Short

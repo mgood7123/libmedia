@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-            .row().height(60)
+            .row().height(70)
             .column {
                 media!!.WaveformView(
                     context = this,
@@ -67,59 +67,49 @@ class MainActivity : AppCompatActivity() {
                     media = media!!
                 )
             }
-            .row().height(1).column {
+            .row().height(10).column {
                 UpdatingTextView(this).also {
                     it.addOnFirstDrawAction {
-                        it.text = "underruns: 0"
+                        it.text = "Time:                      0\n" +
+                                "current frame :                0\n" +
+                                "Audio Timing NANO :            0\n" +
+                                "Audio Timing MICRO:            0\n" +
+                                "Audio Timing MILLI:            0\n" +
+                                "Audio Timing Format NANO :     0\n" +
+                                "Audio Timing Format MICRO:     0\n" +
+                                "Audio Timing Format MILLI:     0\n" +
+                                "Audio Timing Chrono NANO :     0\n" +
+                                "Audio Timing Chrono MICRO:     0\n" +
+                                "Audio Timing Chrono MILLI:     0\n" +
+                                "underruns:                     0\n" +
+                                "buffer size:                   0\n" +
+                                "buffer capacity:               0\n" +
+                                "frame bursts in buffer:        0\n" +
+                                "frames per burst:              0"
                     }
                     it.addOnDrawAction {
-                        it.text = "underruns: ${media!!.Oboe_underrunCount()}"
+                        it.text = "Time:                      ${media!!.Oboe_getCurrentTime()}\n" +
+                                "current frame :                ${media!!.Oboe_getCurrentFrame()}\n" +
+                                "Audio Timing NANO :            ${media!!.Oboe_getAudioTimingNANO()}\n" +
+                                "Audio Timing MICRO:            ${media!!.Oboe_getAudioTimingMICRO()}\n" +
+                                "Audio Timing MILLI:            ${media!!.Oboe_getAudioTimingMILLI()}\n" +
+                                "Audio Timing Format NANO :     ${media!!.Oboe_getAudioTimingFormatNANO()}\n" +
+                                "Audio Timing Format MICRO:     ${media!!.Oboe_getAudioTimingFormatMICRO()}\n" +
+                                "Audio Timing Format MILLI:     ${media!!.Oboe_getAudioTimingFormatMILLI()}\n" +
+                                "Audio Timing Chrono NANO :     ${media!!.Oboe_getAudioTimingChronoNANO()}\n" +
+                                "Audio Timing Chrono MICRO:     ${media!!.Oboe_getAudioTimingChronoMICRO()}\n" +
+                                "Audio Timing Chrono MILLI:     ${media!!.Oboe_getAudioTimingChronoMILLI()}\n" +
+                                "underruns:                     ${media!!.Oboe_underrunCount()}\n" +
+                                "buffer size:                   ${media!!.Oboe_bufferSize()}\n" +
+                                "buffer capacity:               ${media!!.Oboe_bufferCapacity()}\n" +
+                                "frame bursts in buffer:        ${
+                                media!!.Oboe_bufferCapacity() / media!!.Oboe_framesPerBurst()
+                                }\n" +
+                                "frames per burst:              ${media!!.Oboe_framesPerBurst()}"
                     }
                 }
             }
-            .row().height(1).column {
-                UpdatingTextView(this).also {
-                    it.addOnFirstDrawAction {
-                        it.text = "frames per burst: 0"
-                    }
-                    it.addOnDrawAction {
-                        it.text = "frames per burst: ${media!!.Oboe_framesPerBurst()}"
-                    }
-                }
-            }
-            .row().height(1).column {
-                UpdatingTextView(this).also {
-                    it.addOnFirstDrawAction {
-                        it.text = "buffer size: 0"
-                    }
-                    it.addOnDrawAction {
-                        it.text = "buffer size: ${media!!.Oboe_bufferSize()}"
-                    }
-                }
-            }
-            .row().height(1).column {
-                UpdatingTextView(this).also {
-                    it.addOnFirstDrawAction {
-                        it.text = "buffer capacity: 0"
-                    }
-                    it.addOnDrawAction {
-                        it.text = "buffer capacity: ${media!!.Oboe_bufferCapacity()}"
-                    }
-                }
-            }
-            .row().height(1).column {
-                UpdatingTextView(this).also {
-                    it.addOnFirstDrawAction {
-                        it.text = "frame bursts in buffer: 0"
-                    }
-                    it.addOnDrawAction {
-                        it.text = "frame bursts in buffer: ${
-                        media!!.Oboe_bufferCapacity() / media!!.Oboe_framesPerBurst()
-                        }"
-                    }
-                }
-            }
-            .row().height(5)
+            .row().height(10)
             .column {
                 Button(this).also {
                     media!!.Listner.play = {
