@@ -233,7 +233,7 @@ char * AudioTime::format(bool include_human_time_markings) {
 char * AudioTime::format(bool include_human_time_markings, SoundRecordingAudioData * AudioData) {
     int pointer = 0;
     if (!buffer_set) {
-        char * buf = "0000:00:00:00:00:00:00:000:000:000"; // 35 chars long including null-term
+        const char * buf = "0000:00:00:00:00:00:00:000:000:000"; // 35 chars long including null-term
         for (int i = 0; i != 36; i++) format_buffer[i] = buf[i]; // break after copying null-term
         buffer_set = true;
     }
