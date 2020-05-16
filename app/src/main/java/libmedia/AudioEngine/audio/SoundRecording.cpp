@@ -268,12 +268,6 @@ void FFMPEG_GEN_AUDIO_WAVEFORM(const char * inFilename, bool isRaw, const char *
     LOGD("waveform written to: %s", outFilename);
 };
 
-clock__declare__print_timing_information_function(print_time) {
-    AudioTime x = AudioTime();
-    x.calculateNanoseconds(clock__calculate__nanoseconds(start, end).count());
-    printf("\n\n%s took %lu minutes, %lu seconds, %lu milliseconds, %lu microseconds, and %lu nanoseconds to execute\n\n", executed_function, x.minutes, x.seconds, x.milliseconds, x.microseconds, x.nanoseconds);
-};
-
 void resample(const char * inFilename, int inSampleRate, int mChannelCount, int16_t ** out, size_t * outsize, int outSampleRate) {
     if (inSampleRate == outSampleRate) {
         LOGD("input and output sample rates are the same, resampling is not required");
@@ -289,22 +283,26 @@ void resample(const char * inFilename, int inSampleRate, int mChannelCount, int1
         LOGD("OUTFILE = %s", outFilename);
 
         LOGD("RESAMPLING");
-        clock__time__code__block(SOX__RESAMPLE(inFilename, inSampleRate, outFilename, outSampleRate, mChannelCount), print_time);
+        clock__time__code__block(SOX__RESAMPLE(inFilename, inSampleRate, outFilename, outSampleRate, mChannelCount), core_print_time);
 
         LOGD("GENERATING WAVEFORM");
-        const char * ar = std::to_string(outSampleRate).c_str();
-        const char * ac = std::to_string(mChannelCount).c_str();
-        clock__time__code__block(FFMPEG_GEN_AUDIO_WAVEFORM(outFilename, true, ar, ac), print_time);
+        // std::string is scope allocated and will deallocate its string upon leaving the scope
+        // this includes std::string("X").c_str(); // std::string("X") has a tmp scope of a single call
+
+        std::string ar = std::to_string(outSampleRate);
+        std::string ac = std::to_string(mChannelCount);
+
+        clock__time__code__block(FFMPEG_GEN_AUDIO_WAVEFORM(outFilename, true, ar.c_str(), ac.c_str()), core_print_time);
 
         LOGD("READING OUTPUT FILE");
-        clock__time__code__block(*outsize = read__(outFilename, reinterpret_cast<char **>(out)), print_time);
+        clock__time__code__block(*outsize = read__(outFilename, reinterpret_cast<char **>(out)), core_print_time);
     }
 }
 
 SoundRecording * SoundRecording::loadFromPath(const char *filename, int SampleRate, int mChannelCount) {
     int16_t * out = nullptr; /* signed 16 bit int */
     size_t outsize = 0;
-    clock__time__code__block(resample(filename, 44100, mChannelCount, &out, &outsize, SampleRate), print_time);
+    clock__time__code__block(resample(filename, 44100, mChannelCount, &out, &outsize, SampleRate), core_print_time);
 
     const uint64_t totalFrames = outsize / (2 * mChannelCount);
     WAVEFORMAUDIODATATOTALFRAMES = totalFrames;

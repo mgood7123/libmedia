@@ -5,6 +5,7 @@
 #ifndef MEDIA_PLAYER_PRO_LOAD_H
 #define MEDIA_PLAYER_PRO_LOAD_H
 
+#include <timer.h>
 #include "core.h"
 
 NATIVE(void, Oboe, LoadTrackFromAssets)(JNIEnv *env, jobject type, jstring asset, jobject jAssetManager) {
@@ -23,11 +24,7 @@ NATIVE(void, Oboe, LoadTrackFromAssets)(JNIEnv *env, jobject type, jstring asset
 
 NATIVE(void, Oboe, LoadTrackFromPath)(JNIEnv *env, jobject type, jstring path) {
     jboolean val;
-    currentAudioTrack = SoundRecording::loadFromPath(
-            env->GetStringUTFChars(path, &val),
-            AudioEngine.sampleRate,
-            AudioEngine.channelCount
-    );
+    clock__time__code__block(currentAudioTrack = SoundRecording::loadFromPath(env->GetStringUTFChars(path, &val), AudioEngine.sampleRate, AudioEngine.channelCount), core_print_time);
     Mixer.addTrack(currentAudioTrack);
 }
 

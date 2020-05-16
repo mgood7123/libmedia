@@ -305,3 +305,9 @@ uint64_t AudioTime::toFrame(AudioTime_Format value, int type, SoundRecordingAudi
         return (value * divisionValue().years * AudioData->sampleRate);
     return 0;
 }
+
+clock__declare__print_timing_information_function(core_print_time) {
+    AudioTime x = AudioTime();
+    x.calculateNanoseconds(clock__calculate__nanoseconds(start, end).count());
+    printf("\n\n%s took %lu minutes, %lu seconds, %lu milliseconds, %lu microseconds, and %lu nanoseconds to execute\n\n", executed_function, x.minutes, x.seconds, x.milliseconds, x.microseconds, x.nanoseconds);
+};

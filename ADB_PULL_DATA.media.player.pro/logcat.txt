@@ -1,371 +1,357 @@
 --------- beginning of main
-[38;5;40m05-16 19:10:41.908  3756  3756 I edia.player.pr: Late-enabling -Xcheck:jni[0m
-[38;5;166m05-16 19:10:42.119  3756  3756 W GraphicsEnvironment: driver package 'com.samsung.gpudriver.S8MaliG71_90' not installed[0m
-[38;5;75m05-16 19:10:42.127  3756  3778 D vndksupport: Loading /vendor/lib64/egl/libGLES_mali.so from current namespace instead of sphal namespace.[0m
-[38;5;75m05-16 19:10:42.144  3756  3778 D libEGL  : loaded /vendor/lib64/egl/libGLES_mali.so[0m
-[38;5;166m05-16 19:10:42.177  3756  3756 W edia.player.pr: Accessing hidden method Landroid/graphics/drawable/Drawable;->getOpticalInsets()Landroid/graphics/Insets; (light greylist, linking)[0m
-[38;5;166m05-16 19:10:42.177  3756  3756 W edia.player.pr: Accessing hidden field Landroid/graphics/Insets;->left:I (light greylist, linking)[0m
-[38;5;166m05-16 19:10:42.177  3756  3756 W edia.player.pr: Accessing hidden field Landroid/graphics/Insets;->right:I (light greylist, linking)[0m
-[38;5;166m05-16 19:10:42.177  3756  3756 W edia.player.pr: Accessing hidden field Landroid/graphics/Insets;->top:I (light greylist, linking)[0m
-[38;5;166m05-16 19:10:42.177  3756  3756 W edia.player.pr: Accessing hidden field Landroid/graphics/Insets;->bottom:I (light greylist, linking)[0m
-[38;5;166m05-16 19:10:42.213  3756  3756 W edia.player.pr: Accessing hidden method Landroid/view/View;->getAccessibilityDelegate()Landroid/view/View$AccessibilityDelegate; (light greylist, linking)[0m
-[38;5;166m05-16 19:10:42.244  3756  3756 W edia.player.pr: Accessing hidden method Landroid/view/View;->computeFitSystemWindows(Landroid/graphics/Rect;Landroid/graphics/Rect;)Z (light greylist, reflection)[0m
-[38;5;166m05-16 19:10:42.245  3756  3756 W edia.player.pr: Accessing hidden method Landroid/view/ViewGroup;->makeOptionalFitsSystemWindows()V (light greylist, reflection)[0m
-[38;5;166m05-16 19:10:42.251  3756  3756 W edia.player.pr: Accessing hidden method Landroid/widget/TextView;->getTextDirectionHeuristic()Landroid/text/TextDirectionHeuristic; (light greylist, linking)[0m
-[38;5;40m05-16 19:10:42.318  3756  3756 I Terminal Controller: starting TerminalControllerService and binding to activity[0m
-[38;5;231m05-16 19:10:42.322  3756  3756 V TERMINAL: opening ptmx (master) device[0m
-[38;5;231m05-16 19:10:42.322  3756  3756 V TERMINAL: opened ptmx (master) device: 40[0m
-[38;5;231m05-16 19:10:42.322  3756  3756 V TERMINAL: opening /dev/pts/0 (slave) device[0m
-[38;5;231m05-16 19:10:42.322  3756  3756 V TERMINAL: opened /dev/pts/0 (slave) device: 41[0m
-[38;5;231m05-16 19:10:42.322  3756  3756 V TERMINAL: duping current stdin (fd 0), stdout (fd 1), and stderr (fd 2) to /dev/pts/0 (slave) device: 41[0m
-[38;5;231m05-16 19:10:42.323  3756  3756 V TERMINAL: returning ptmx (master) device: 40[0m
-[38;5;40m05-16 19:10:42.327  3756  3756 I Terminal Controller: started TerminalControllerService and binded to activity[0m
-[38;5;40m05-16 19:10:42.331  3756  3756 I System.out: android.os.Environment.getExternalStorageDirectory().getPath() = /storage/emulated/0[0m
-[38;5;40m05-16 19:10:42.331  3756  3756 I System.out: getFilesDir().getPath() = /data/user/0/media.player.pro/files[0m
-[38;5;40m05-16 19:10:42.387  3756  3756 I libMedia: copying assets folder[0m
-[38;5;40m05-16 19:10:42.389  3756  3756 I libMedia: obtained a list of assets[0m
-[38;5;40m05-16 19:10:42.390  3756  3756 I libMedia: copying "00001313Upsampled.raw" to "/data/user/0/media.player.pro/files/ASSETS/00001313Upsampled.raw"[0m
-[38;5;40m05-16 19:10:42.492  3756  3756 I libMedia: copying "00001313_44100.raw" to "/data/user/0/media.player.pro/files/ASSETS/00001313_44100.raw"[0m
-[38;5;40m05-16 19:10:42.568  3756  3756 I libMedia: copying "00001313_44100.wav" to "/data/user/0/media.player.pro/files/ASSETS/00001313_44100.wav"[0m
-[38;5;40m05-16 19:10:42.619  3756  3756 I libMedia: copying "00001313_48000.raw" to "/data/user/0/media.player.pro/files/ASSETS/00001313_48000.raw"[0m
-[38;5;40m05-16 19:10:42.705  3756  3756 I libMedia: copying "00001313_48000.wav" to "/data/user/0/media.player.pro/files/ASSETS/00001313_48000.wav"[0m
-[38;5;40m05-16 19:10:42.760  3756  3756 I libMedia: copying "CLAP.raw" to "/data/user/0/media.player.pro/files/ASSETS/CLAP.raw"[0m
-[38;5;40m05-16 19:10:42.766  3756  3756 I libMedia: copying "FUNKY_HOUSE.raw" to "/data/user/0/media.player.pro/files/ASSETS/FUNKY_HOUSE.raw"[0m
-[38;5;40m05-16 19:10:42.785  3756  3756 I libMedia: obtained a list of assets[0m
-[38;5;40m05-16 19:10:42.785  3756  3756 I libMedia: copying "color_schemes/argonaut.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/argonaut.properties"[0m
-[38;5;40m05-16 19:10:42.786  3756  3756 I libMedia: copying "color_schemes/base16-3024.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-3024.properties"[0m
-[38;5;40m05-16 19:10:42.786  3756  3756 I libMedia: copying "color_schemes/base16-apathy.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-apathy.properties"[0m
-[38;5;40m05-16 19:10:42.786  3756  3756 I libMedia: copying "color_schemes/base16-ashes.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-ashes.properties"[0m
-[38;5;40m05-16 19:10:42.787  3756  3756 I libMedia: copying "color_schemes/base16-atelier-dune.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-atelier-dune.properties"[0m
-[38;5;40m05-16 19:10:42.787  3756  3756 I libMedia: copying "color_schemes/base16-atelier-forest.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-atelier-forest.properties"[0m
-[38;5;40m05-16 19:10:42.788  3756  3756 I libMedia: copying "color_schemes/base16-atelier-heath.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-atelier-heath.properties"[0m
-[38;5;40m05-16 19:10:42.788  3756  3756 I libMedia: copying "color_schemes/base16-atelier-lakeside.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-atelier-lakeside.properties"[0m
-[38;5;40m05-16 19:10:42.789  3756  3756 I libMedia: copying "color_schemes/base16-atelier-seaside.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-atelier-seaside.properties"[0m
-[38;5;40m05-16 19:10:42.789  3756  3756 I libMedia: copying "color_schemes/base16-bespin.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-bespin.properties"[0m
-[38;5;40m05-16 19:10:42.789  3756  3756 I libMedia: copying "color_schemes/base16-brewer.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-brewer.properties"[0m
-[38;5;40m05-16 19:10:42.790  3756  3756 I libMedia: copying "color_schemes/base16-bright.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-bright.properties"[0m
-[38;5;40m05-16 19:10:42.790  3756  3756 I libMedia: copying "color_schemes/base16-chalk.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-chalk.properties"[0m
-[38;5;40m05-16 19:10:42.790  3756  3756 I libMedia: copying "color_schemes/base16-codeschool.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-codeschool.properties"[0m
-[38;5;40m05-16 19:10:42.791  3756  3756 I libMedia: copying "color_schemes/base16-colors.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-colors.properties"[0m
-[38;5;40m05-16 19:10:42.791  3756  3756 I libMedia: copying "color_schemes/base16-default.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-default.properties"[0m
-[38;5;40m05-16 19:10:42.791  3756  3756 I libMedia: copying "color_schemes/base16-eighties.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-eighties.properties"[0m
-[38;5;40m05-16 19:10:42.792  3756  3756 I libMedia: copying "color_schemes/base16-embers.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-embers.properties"[0m
-[38;5;40m05-16 19:10:42.792  3756  3756 I libMedia: copying "color_schemes/base16-flat.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-flat.properties"[0m
-[38;5;40m05-16 19:10:42.793  3756  3756 I libMedia: copying "color_schemes/base16-google.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-google.properties"[0m
-[38;5;40m05-16 19:10:42.793  3756  3756 I libMedia: copying "color_schemes/base16-grayscale.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-grayscale.properties"[0m
-[38;5;40m05-16 19:10:42.794  3756  3756 I libMedia: copying "color_schemes/base16-green-screen.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-green-screen.properties"[0m
-[38;5;40m05-16 19:10:42.794  3756  3756 I libMedia: copying "color_schemes/base16-harmonic.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-harmonic.properties"[0m
-[38;5;40m05-16 19:10:42.795  3756  3756 I libMedia: copying "color_schemes/base16-isotope.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-isotope.properties"[0m
-[38;5;40m05-16 19:10:42.795  3756  3756 I libMedia: copying "color_schemes/base16-london-tube.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-london-tube.properties"[0m
-[38;5;40m05-16 19:10:42.795  3756  3756 I libMedia: copying "color_schemes/base16-marrakesh.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-marrakesh.properties"[0m
-[38;5;40m05-16 19:10:42.796  3756  3756 I libMedia: copying "color_schemes/base16-materia.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-materia.properties"[0m
-[38;5;40m05-16 19:10:42.796  3756  3756 I libMedia: copying "color_schemes/base16-mocha.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-mocha.properties"[0m
-[38;5;40m05-16 19:10:42.797  3756  3756 I libMedia: copying "color_schemes/base16-monokai.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-monokai.properties"[0m
-[38;5;40m05-16 19:10:42.797  3756  3756 I libMedia: copying "color_schemes/base16-ocean.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-ocean.properties"[0m
-[38;5;40m05-16 19:10:42.797  3756  3756 I libMedia: copying "color_schemes/base16-onedark.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-onedark.properties"[0m
-[38;5;40m05-16 19:10:42.798  3756  3756 I libMedia: copying "color_schemes/base16-paraiso.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-paraiso.properties"[0m
-[38;5;40m05-16 19:10:42.798  3756  3756 I libMedia: copying "color_schemes/base16-railscasts.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-railscasts.properties"[0m
-[38;5;40m05-16 19:10:42.798  3756  3756 I libMedia: copying "color_schemes/base16-shapeshifter.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-shapeshifter.properties"[0m
-[38;5;40m05-16 19:10:42.799  3756  3756 I libMedia: copying "color_schemes/base16-solarized.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-solarized.properties"[0m
-[38;5;40m05-16 19:10:42.799  3756  3756 I libMedia: copying "color_schemes/base16-summerfruit.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-summerfruit.properties"[0m
-[38;5;40m05-16 19:10:42.800  3756  3756 I libMedia: copying "color_schemes/base16-tomorrow.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-tomorrow.properties"[0m
-[38;5;40m05-16 19:10:42.800  3756  3756 I libMedia: copying "color_schemes/base16-twilight.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-twilight.properties"[0m
-[38;5;40m05-16 19:10:42.800  3756  3756 I libMedia: copying "color_schemes/dracula.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/dracula.properties"[0m
-[38;5;40m05-16 19:10:42.801  3756  3756 I libMedia: copying "color_schemes/gnome-term.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/gnome-term.properties"[0m
-[38;5;40m05-16 19:10:42.801  3756  3756 I libMedia: copying "color_schemes/gotham.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/gotham.properties"[0m
-[38;5;40m05-16 19:10:42.801  3756  3756 I libMedia: copying "color_schemes/gruvbox.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/gruvbox.properties"[0m
-[38;5;40m05-16 19:10:42.802  3756  3756 I libMedia: copying "color_schemes/material.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/material.properties"[0m
-[38;5;40m05-16 19:10:42.802  3756  3756 I libMedia: copying "color_schemes/nancy.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/nancy.properties"[0m
-[38;5;40m05-16 19:10:42.803  3756  3756 I libMedia: copying "color_schemes/neon.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/neon.properties"[0m
-[38;5;40m05-16 19:10:42.803  3756  3756 I libMedia: copying "color_schemes/nord.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/nord.properties"[0m
-[38;5;40m05-16 19:10:42.803  3756  3756 I libMedia: copying "color_schemes/rydgel.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/rydgel.properties"[0m
-[38;5;40m05-16 19:10:42.804  3756  3756 I libMedia: copying "color_schemes/smyck.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/smyck.properties"[0m
-[38;5;40m05-16 19:10:42.804  3756  3756 I libMedia: copying "color_schemes/solarized-dark.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/solarized-dark.properties"[0m
-[38;5;40m05-16 19:10:42.804  3756  3756 I libMedia: copying "color_schemes/tomorrow-night.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/tomorrow-night.properties"[0m
-[38;5;40m05-16 19:10:42.805  3756  3756 I libMedia: copying "color_schemes/wild-cherry.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/wild-cherry.properties"[0m
-[38;5;40m05-16 19:10:42.805  3756  3756 I libMedia: copying "color_schemes/zenburn.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/zenburn.properties"[0m
-[38;5;40m05-16 19:10:42.806  3756  3756 I libMedia: obtained a list of assets[0m
-[38;5;40m05-16 19:10:42.806  3756  3756 I libMedia: copying "fonts/Inconsolata-LGC.otf" to "/data/user/0/media.player.pro/files/ASSETS/fonts/Inconsolata-LGC.otf"[0m
-[38;5;40m05-16 19:10:42.809  3756  3756 I libMedia: obtained a list of assets[0m
-[38;5;40m05-16 19:10:42.809  3756  3756 I libMedia: obtained a list of assets[0m
-[38;5;40m05-16 19:10:42.810  3756  3756 I libMedia: copying "help/doc/bash-advanced.html" to "/data/user/0/media.player.pro/files/ASSETS/help/doc/bash-advanced.html"[0m
-[38;5;40m05-16 19:10:42.853  3756  3756 I libMedia: obtained a list of assets[0m
-[38;5;40m05-16 19:10:42.853  3756  3756 I libMedia: copying "help/doc/images/caution.gif" to "/data/user/0/media.player.pro/files/ASSETS/help/doc/images/caution.gif"[0m
-[38;5;40m05-16 19:10:42.854  3756  3756 I libMedia: copying "help/doc/images/important.gif" to "/data/user/0/media.player.pro/files/ASSETS/help/doc/images/important.gif"[0m
-[38;5;40m05-16 19:10:42.854  3756  3756 I libMedia: copying "help/doc/images/note.gif" to "/data/user/0/media.player.pro/files/ASSETS/help/doc/images/note.gif"[0m
-[38;5;40m05-16 19:10:42.855  3756  3756 I libMedia: copying "help/doc/images/tip.gif" to "/data/user/0/media.player.pro/files/ASSETS/help/doc/images/tip.gif"[0m
-[38;5;40m05-16 19:10:42.855  3756  3756 I libMedia: copying "help/doc/images/warning.gif" to "/data/user/0/media.player.pro/files/ASSETS/help/doc/images/warning.gif"[0m
-[38;5;40m05-16 19:10:42.856  3756  3756 I libMedia: copying "help/doc/mksh.html" to "/data/user/0/media.player.pro/files/ASSETS/help/doc/mksh.html"[0m
-[38;5;40m05-16 19:10:42.860  3756  3756 I libMedia: copying "help/doc/qemu-doc.html" to "/data/user/0/media.player.pro/files/ASSETS/help/doc/qemu-doc.html"[0m
-[38;5;40m05-16 19:10:42.870  3756  3756 I libMedia: copying "help/help.html" to "/data/user/0/media.player.pro/files/ASSETS/help/help.html"[0m
-[38;5;40m05-16 19:10:42.901  3756  3756 I libMedia: obtained a list of assets[0m
-[38;5;40m05-16 19:10:42.902  3756  3756 I libMedia: copying "images/android-logo-mask.png" to "/data/user/0/media.player.pro/files/ASSETS/images/android-logo-mask.png"[0m
-[38;5;40m05-16 19:10:42.903  3756  3756 I libMedia: copying "images/android-logo-shine.png" to "/data/user/0/media.player.pro/files/ASSETS/images/android-logo-shine.png"[0m
-[38;5;40m05-16 19:10:42.905  3756  3756 I libMedia: copying "images/clock_font.png" to "/data/user/0/media.player.pro/files/ASSETS/images/clock_font.png"[0m
-[38;5;40m05-16 19:10:42.906  3756  3756 I libMedia: obtained a list of assets[0m
-[38;5;40m05-16 19:10:42.906  3756  3756 I chatty  : uid=10313(media.player.pro) identical 1 line[0m
-[38;5;40m05-16 19:10:42.907  3756  3756 I libMedia: obtained a list of assets[0m
-[38;5;40m05-16 19:10:42.907  3756  3756 I libMedia: copying "usr/bin/arm64-v8a/ffmpeg" to "/data/user/0/media.player.pro/files/ASSETS/usr/bin/arm64-v8a/ffmpeg"[0m
-[38;5;40m05-16 19:10:42.912  3756  3756 I libMedia: copying "usr/bin/arm64-v8a/ffmpeg_generate_waveform_png" to "/data/user/0/media.player.pro/files/ASSETS/usr/bin/arm64-v8a/ffmpeg_generate_waveform_png"[0m
-[38;5;40m05-16 19:10:42.913  3756  3756 I libMedia: copying "usr/bin/arm64-v8a/ffprobe" to "/data/user/0/media.player.pro/files/ASSETS/usr/bin/arm64-v8a/ffprobe"[0m
-[38;5;40m05-16 19:10:42.916  3756  3756 I libMedia: obtained a list of assets[0m
-[38;5;40m05-16 19:10:42.917  3756  3756 I libMedia: obtained a list of assets[0m
-[38;5;40m05-16 19:10:42.917  3756  3756 I libMedia: copying "usr/libs/arm64-v8a/libavcodec.so" to "/data/user/0/media.player.pro/files/ASSETS/usr/libs/arm64-v8a/libavcodec.so"[0m
-[38;5;40m05-16 19:10:43.360  3756  3756 I libMedia: copying "usr/libs/arm64-v8a/libavdevice.so" to "/data/user/0/media.player.pro/files/ASSETS/usr/libs/arm64-v8a/libavdevice.so"[0m
-[38;5;40m05-16 19:10:43.372  3756  3756 I libMedia: copying "usr/libs/arm64-v8a/libavfilter.so" to "/data/user/0/media.player.pro/files/ASSETS/usr/libs/arm64-v8a/libavfilter.so"[0m
-[38;5;40m05-16 19:10:43.530  3756  3756 I libMedia: copying "usr/libs/arm64-v8a/libavformat.so" to "/data/user/0/media.player.pro/files/ASSETS/usr/libs/arm64-v8a/libavformat.so"[0m
-[38;5;40m05-16 19:10:43.633  3756  3756 I libMedia: copying "usr/libs/arm64-v8a/libavutil.so" to "/data/user/0/media.player.pro/files/ASSETS/usr/libs/arm64-v8a/libavutil.so"[0m
-[38;5;40m05-16 19:10:43.642  3756  3756 I libMedia: copying "usr/libs/arm64-v8a/libc++_shared.so" to "/data/user/0/media.player.pro/files/ASSETS/usr/libs/arm64-v8a/libc++_shared.so"[0m
-[38;5;40m05-16 19:10:43.657  3756  3756 I libMedia: copying "usr/libs/arm64-v8a/libcpufeatures.so" to "/data/user/0/media.player.pro/files/ASSETS/usr/libs/arm64-v8a/libcpufeatures.so"[0m
-[38;5;40m05-16 19:10:43.658  3756  3756 I libMedia: copying "usr/libs/arm64-v8a/libswresample.so" to "/data/user/0/media.player.pro/files/ASSETS/usr/libs/arm64-v8a/libswresample.so"[0m
-[38;5;40m05-16 19:10:43.662  3756  3756 I libMedia: copying "usr/libs/arm64-v8a/libswscale.so" to "/data/user/0/media.player.pro/files/ASSETS/usr/libs/arm64-v8a/libswscale.so"[0m
-[38;5;40m05-16 19:10:43.671  3756  3756 I libMedia: obtained a list of assets[0m
-[38;5;40m05-16 19:10:43.671  3756  3756 I libMedia: copying "webkit/android-weberror.png" to "/data/user/0/media.player.pro/files/ASSETS/webkit/android-weberror.png"[0m
-[38;5;196m05-16 19:10:43.687  3756  3756 E libMedia: setting Temporary Files Directory to /data/user/0/media.player.pro/files[0m
-[38;5;166m05-16 19:10:43.691  3756  3756 W OboeAudio: Oboe_Init: Creating and Opening AudioStream[0m
-[38;5;75m05-16 19:10:43.691  3756  3756 D AAudio  : AAudioStreamBuilder_openStream() called ----------------------------------------[0m
-[38;5;75m05-16 19:10:43.691  3756  3756 D         : PlayerBase::PlayerBase()[0m
-[38;5;40m05-16 19:10:43.692  3756  3756 I AAudioStream: open() rate   = 48000, channels    = 2, format   = 1, sharing = SH, dir = OUTPUT[0m
-[38;5;40m05-16 19:10:43.692  3756  3756 I AAudioStream: open() device = 0, sessionId   = 0, perfMode = 12, callback: ON with frames = 0[0m
-[38;5;40m05-16 19:10:43.692  3756  3756 I AAudioStream: open() usage  = 1, contentType = 2, inputPreset = 6[0m
-[38;5;75m05-16 19:10:43.692  3756  3756 D AudioStreamTrack: open(), request notificationFrames = 0, frameCount = 384[0m
-[38;5;40m05-16 19:10:43.694  3756  3756 I AudioTrack: AUDIO_OUTPUT_FLAG_FAST successful; frameCount 384 -> 384[0m
-[38;5;166m05-16 19:10:43.695  3756  3756 W AudioStreamTrack: open() flags changed from 0x00000104 to 0x00000004[0m
-[38;5;75m05-16 19:10:43.695  3756  3756 D AAudio  : AAudioStreamBuilder_openStream() returns 0 = AAUDIO_OK for (0x7604625a80) ----------------[0m
-[38;5;75m05-16 19:10:43.696  3756  3756 D OboeAudio: input and output sample rates are not the same, resampling is required[0m
-[38;5;75m05-16 19:10:43.696  3756  3756 D OboeAudio: SOXR VERSION: libsoxr-0.1.3[0m
-[38;5;75m05-16 19:10:43.696  3756  3756 D OboeAudio: INFILE = /data/user/0/media.player.pro/files/ASSETS/00001313_44100.raw[0m
-[38;5;75m05-16 19:10:43.696  3756  3756 D OboeAudio: OUTFILE = /data/user/0/media.player.pro/files/ASSETS/00001313_44100.raw.resampled.raw[0m
-[38;5;75m05-16 19:10:43.696  3756  3756 D OboeAudio: RESAMPLING[0m
-[38;5;75m05-16 19:10:43.696  3756  3756 D OboeAudio: INPUT  SAMPLERATE = 44100[0m
-[38;5;75m05-16 19:10:43.696  3756  3756 D OboeAudio: OUTPUT SAMPLERATE = 48000[0m
-[38;5;75m05-16 19:10:43.696  3756  3756 D OboeAudio: OPENING INFILE...[0m
-[38;5;75m05-16 19:10:43.696  3756  3756 D OboeAudio: OPENED INFILE: 0x76046b4c18[0m
-[38;5;75m05-16 19:10:43.696  3756  3756 D OboeAudio: OPENING OUTFILE...[0m
-[38;5;75m05-16 19:10:43.696  3756  3756 D OboeAudio: OPENED OUTFILE: 0x76046b4cb0[0m
-[38;5;231m05-16 19:10:43.870  3756  3756 V OboeAudio: SOX__RESAMPLER no error; I/O: no error[0m
-[38;5;75m05-16 19:10:43.870  3756  3756 D OboeAudio: GENERATING WAVEFORM[0m
-[38;5;75m05-16 19:10:43.870  3756  3756 D OboeAudio: file to generate waveform from: /data/user/0/media.player.pro/files/ASSETS/00001313_44100.raw.resampled.raw[0m
-[38;5;196m05-16 19:10:43.870  3756  3756 E OboeAudio: Started conversion at 1.58962E+12 milliseconds[0m
-[38;5;196m05-16 19:10:44.092  3756  3756 E OboeAudio: Ended conversion at 1.58962E+12 milliseconds[0m
-[38;5;196m05-16 19:10:44.092  3756  3756 E OboeAudio: TIME took 221.372 milliseconds[0m
-[38;5;75m05-16 19:10:44.092  3756  3756 D OboeAudio: waveform written to: /data/user/0/media.player.pro/files/ASSETS/00001313_44100.raw.resampled.raw.waveform.png[0m
-[38;5;75m05-16 19:10:44.092  3756  3756 D OboeAudio: READING OUTPUT FILE[0m
-[38;5;75m05-16 19:10:44.098  3756  3756 D OboeAudio: Opened backing track[0m
-[38;5;75m05-16 19:10:44.098  3756  3756 D OboeAudio: length in human time:                              0000:00:00:00:00:00:23:374:291:666[0m
-[38;5;75m05-16 19:10:44.098  3756  3756 D OboeAudio: length in nanoseconds:                             23374291666[0m
-[38;5;75m05-16 19:10:44.098  3756  3756 D OboeAudio: length in microseconds:                            23374291[0m
-[38;5;75m05-16 19:10:44.098  3756  3756 D OboeAudio: length in milliseconds:                            23374[0m
-[38;5;75m05-16 19:10:44.098  3756  3756 D OboeAudio: length in seconds:                                 23[0m
-[38;5;75m05-16 19:10:44.098  3756  3756 D OboeAudio: length in minutes:                                 0[0m
-[38;5;75m05-16 19:10:44.098  3756  3756 D OboeAudio: length in hours:                                   0[0m
-[38;5;75m05-16 19:10:44.098  3756  3756 D OboeAudio: length in days:                                    0[0m
-[38;5;75m05-16 19:10:44.099  3756  3756 D OboeAudio: length in weeks:                                   0[0m
-[38;5;75m05-16 19:10:44.099  3756  3756 D OboeAudio: length in months:                                  0[0m
-[38;5;75m05-16 19:10:44.099  3756  3756 D OboeAudio: length in years:                                   0[0m
-[38;5;75m05-16 19:10:44.099  3756  3756 D OboeAudio: bytes:                                             4487864[0m
-[38;5;75m05-16 19:10:44.099  3756  3756 D OboeAudio: frames:                                            1121966[0m
-[38;5;75m05-16 19:10:44.099  3756  3756 D OboeAudio: sample rate:                                       48000[0m
-[38;5;75m05-16 19:10:44.099  3756  3756 D OboeAudio: length of 1 frame at 48000 sample rate:[0m
-[38;5;75m05-16 19:10:44.099  3756  3756 D OboeAudio: Human Time:                                        0000:00:00:00:00:00:23:374:291:666[0m
-[38;5;75m05-16 19:10:44.099  3756  3756 D OboeAudio: Nanoseconds:                                       0[0m
-[38;5;75m05-16 19:10:44.099  3756  3756 D OboeAudio: Microseconds:                                      0[0m
-[38;5;75m05-16 19:10:44.099  3756  3756 D OboeAudio: Milliseconds:                                      0[0m
-[38;5;75m05-16 19:10:44.099  3756  3756 D OboeAudio: Seconds:                                           0[0m
-[38;5;75m05-16 19:10:44.099  3756  3756 D OboeAudio: Minutes:                                           0[0m
-[38;5;75m05-16 19:10:44.099  3756  3756 D OboeAudio: Hours:                                             0[0m
-[38;5;75m05-16 19:10:44.099  3756  3756 D OboeAudio: Days:                                              0[0m
-[38;5;75m05-16 19:10:44.099  3756  3756 D OboeAudio: Weeks:                                             0[0m
-[38;5;75m05-16 19:10:44.099  3756  3756 D OboeAudio: Months:                                            0[0m
-[38;5;75m05-16 19:10:44.099  3756  3756 D OboeAudio: Years:                                             0[0m
-[38;5;196m05-16 19:10:44.113  3756  3756 E NU      : added column to queue[0m
-[38;5;40m05-16 19:10:44.117  3756  3756 I chatty  : uid=10313(media.player.pro) identical 5 lines[0m
-[38;5;196m05-16 19:10:44.118  3756  3756 E NU      : added column to queue[0m
-[38;5;196m05-16 19:10:44.125  3756  3804 E P       : view is not null[0m
-[38;5;166m05-16 19:10:44.126  3756  3804 W P       : view!!.height is 0 and view!!.width is 0[0m
-[38;5;40m05-16 19:10:44.142  3756  3804 I chatty  : uid=10313(media.player.pro) identical 1 line[0m
-[38;5;166m05-16 19:10:44.159  3756  3804 W P       : view!!.height is 0 and view!!.width is 0[0m
-[38;5;75m05-16 19:10:44.172  3756  3756 D OpenGLRenderer: Skia GL Pipeline[0m
-[38;5;166m05-16 19:10:44.175  3756  3804 W P       : view!!.height is 0 and view!!.width is 0[0m
-[38;5;40m05-16 19:10:44.183  3756  3756 I ViewRootImpl: CPU Rendering VSync enable = true[0m
-[38;5;166m05-16 19:10:44.191  3756  3804 W P       : view!!.height is 0 and view!!.width is 0[0m
-[38;5;40m05-16 19:10:44.257  3756  3804 I chatty  : uid=10313(media.player.pro) identical 4 lines[0m
-[38;5;166m05-16 19:10:44.274  3756  3804 W P       : view!!.height is 0 and view!!.width is 0[0m
-[38;5;40m05-16 19:10:44.274  3756  3756 I LibService - Service - Component: libclient_service.LibService_Service_Component.onBind(LibService_Service_Component.java:50) called[0m
-[38;5;166m05-16 19:10:44.290  3756  3804 W P       : view!!.height is 0 and view!!.width is 0[0m
-[38;5;40m05-16 19:10:44.456  3756  3804 I chatty  : uid=10313(media.player.pro) identical 10 lines[0m
-[38;5;166m05-16 19:10:44.472  3756  3804 W P       : view!!.height is 0 and view!!.width is 0[0m
-[38;5;40m05-16 19:10:44.485  3756  3756 I RenderThread: type=1400 audit(0.0:5306): avc: denied { read write } for name="mali0" dev="tmpfs" ino=20039 scontext=u:r:untrusted_app:s0:c57,c257,c512,c768 tcontext=u:object_r:device:s0 tclass=chr_file permissive=1[0m
-[38;5;40m05-16 19:10:44.485  3756  3756 I RenderThread: type=1400 audit(0.0:5306): avc: denied { open } for path="/dev/mali0" dev="tmpfs" ino=20039 scontext=u:r:untrusted_app:s0:c57,c257,c512,c768 tcontext=u:object_r:device:s0 tclass=chr_file permissive=1[0m
-[38;5;166m05-16 19:10:44.485  3756  3756 W RenderThread: type=1300 audit(0.0:5306): arch=c00000b7 syscall=56 success=yes exit=56 a0=ffffff9c a1=75d523de88 a2=80802 a3=0 items=0 ppid=3977 auid=4294967295 uid=10313 gid=10313 euid=10313 suid=10313 fsuid=10313 egid=10313 sgid=10313 fsgid=10313 tty=pts0 ses=4294967295 exe="/system/bin/app_process64" subj=u:r:untrusted_app:s0:c57,c257,c512,c768 key=(null)[0m
-[38;5;166m05-16 19:10:44.488  3756  3804 W P       : view!!.height is 0 and view!!.width is 0[0m
-[38;5;40m05-16 19:10:44.502  3756  3806 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasWideColorDisplay retrieved: 0[0m
-[38;5;40m05-16 19:10:44.502  3756  3806 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasHDRDisplay retrieved: 0[0m
-[38;5;40m05-16 19:10:44.502  3756  3806 I OpenGLRenderer: Initialized EGL, version 1.4[0m
-[38;5;75m05-16 19:10:44.502  3756  3806 D OpenGLRenderer: Swap behavior 2[0m
-[38;5;166m05-16 19:10:44.505  3756  3804 W P       : view!!.height is 0 and view!!.width is 0[0m
-[38;5;75m05-16 19:10:44.511  3756  3806 D mali_winsys: EGLint new_window_surface(egl_winsys_display *, void *, EGLSurface, EGLConfig, egl_winsys_surface **, EGLBoolean) returns 0x3000[0m
-[38;5;166m05-16 19:10:44.521  3756  3804 W P       : view!!.height is 0 and view!!.width is 0[0m
-[38;5;166m05-16 19:10:44.537  3756  3804 W P       : view!!.height is 0 and view!!.width is 0[0m
-[38;5;196m05-16 19:10:44.553  3756  3804 E M       : view!!.height = 2458[0m
-[38;5;196m05-16 19:10:44.553  3756  3804 E M       : view!!.width = 1440[0m
-[38;5;40m05-16 19:10:44.556  3756  3756 I LibService - Service Connection: libclient_service.LibService_Service_Connection.onServiceConnected(LibService_Service_Connection.java:36) called[0m
-[38;5;40m05-16 19:10:44.556  3756  3756 I LibService - Service Connection: onServiceConnected: binded to local service[0m
-[38;5;40m05-16 19:10:44.556  3756  3756 I LibService - Service Connection: checking if object is null...[0m
-[38;5;40m05-16 19:10:44.557  3756  3756 I LibService - Service Connection: object is not null[0m
-[38;5;40m05-16 19:10:44.557  3756  3756 I LibService - Service Connection: checking if object is null...[0m
-[38;5;40m05-16 19:10:44.557  3756  3756 I LibService - Service Connection: object is not null[0m
-[38;5;40m05-16 19:10:44.557  3756  3756 I LibService - Service Connection: checking if object is null...[0m
-[38;5;40m05-16 19:10:44.557  3756  3756 I LibService - Service Connection: object is not null[0m
-[38;5;40m05-16 19:10:44.557  3756  3756 I LibService - Service Connection: checking if object is null...[0m
-[38;5;40m05-16 19:10:44.557  3756  3756 I LibService - Service Connection: object is not null[0m
-[38;5;40m05-16 19:10:44.559  3756  3756 I LibService - Service Connection: checking if object is null...[0m
-[38;5;40m05-16 19:10:44.559  3756  3756 I LibService - Service Connection: object is not null[0m
-[38;5;40m05-16 19:10:44.561  3756  3756 I Terminal Service: initiating shell session with following arguments: [/system/xbin/bash][0m
-[38;5;196m05-16 19:10:44.569  3756  3804 E NU      : executing from queue[0m
-[38;5;196m05-16 19:10:44.577  3756  3804 E NU      : executed[0m
-[38;5;196m05-16 19:10:44.577  3756  3804 E NU      : executing from queue[0m
-[38;5;196m05-16 19:10:44.577  3756  3804 E NU      : executed[0m
-[38;5;196m05-16 19:10:44.577  3756  3804 E NU      : executing from queue[0m
-[38;5;196m05-16 19:10:44.577  3756  3804 E NU      : executed[0m
-[38;5;196m05-16 19:10:44.577  3756  3804 E NU      : executing from queue[0m
-[38;5;196m05-16 19:10:44.577  3756  3804 E NU      : executed[0m
-[38;5;196m05-16 19:10:44.577  3756  3804 E NU      : executing from queue[0m
-[38;5;196m05-16 19:10:44.578  3756  3804 E NU      : executed[0m
-[38;5;196m05-16 19:10:44.578  3756  3804 E NU      : executing from queue[0m
-[38;5;196m05-16 19:10:44.578  3756  3804 E NU      : executed[0m
-[38;5;196m05-16 19:10:44.578  3756  3804 E NU      : executing from queue[0m
-[38;5;196m05-16 19:10:44.578  3756  3804 E NU      : executed[0m
-[38;5;196m05-16 19:10:44.578  3756  3804 E NU      : executing from queue[0m
-[38;5;196m05-16 19:10:44.578  3756  3804 E NU      : executed[0m
-[38;5;196m05-16 19:10:44.578  3756  3804 E NU      : executing from queue[0m
-[38;5;196m05-16 19:10:44.578  3756  3804 E NU      : executed[0m
-[38;5;196m05-16 19:10:44.578  3756  3804 E NU      : executing from queue[0m
-[38;5;196m05-16 19:10:44.578  3756  3804 E NU      : executed[0m
-[38;5;196m05-16 19:10:44.578  3756  3804 E NU      : executing from queue[0m
-[38;5;196m05-16 19:10:44.578  3756  3804 E NU      : executed[0m
-[38;5;196m05-16 19:10:44.578  3756  3804 E NU      : executing from queue[0m
-[38;5;196m05-16 19:10:44.578  3756  3804 E NU      : executed[0m
-[38;5;196m05-16 19:10:44.578  3756  3804 E NU      : executing from queue[0m
-[38;5;196m05-16 19:10:44.578  3756  3804 E TAG     : sum = 10.0[0m
-[38;5;196m05-16 19:10:44.578  3756  3804 E TAG     : 100 - sum = 90.0[0m
-[38;5;196m05-16 19:10:44.578  3756  3804 E TAG     : result / number of unknowns = 22.5[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : new sum = 100.0[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : offset = 491[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : maxHeight = 2455[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : ROW.percentage = 22.5[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : prev COLUMN.sizeFromTop = 2458[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : next COLUMN.sizeFromTop = 553[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : prev COLUMN.distanceFromTop = 0[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : next COLUMN.distanceFromTop = 0[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : prev COLUMN.sizeFromTop = 2458[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : next COLUMN.sizeFromTop = 553[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : prev COLUMN.distanceFromTop = 0[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : next COLUMN.distanceFromTop = 0[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : prev nextRowOffset = 0[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : next nextRowOffset = 553[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : ROW.percentage = 22.5[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : prev COLUMN.sizeFromTop = 2458[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : next COLUMN.sizeFromTop = 553[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : prev COLUMN.distanceFromTop = 0[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : next COLUMN.distanceFromTop = 553[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : prev COLUMN.sizeFromTop = 2458[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : next COLUMN.sizeFromTop = 553[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : prev COLUMN.distanceFromTop = 0[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : next COLUMN.distanceFromTop = 553[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : prev nextRowOffset = 553[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : next nextRowOffset = 1106[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : ROW.percentage = 22.5[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : prev COLUMN.sizeFromTop = 2458[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : next COLUMN.sizeFromTop = 553[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : prev COLUMN.distanceFromTop = 0[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : next COLUMN.distanceFromTop = 1106[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : prev nextRowOffset = 1106[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : next nextRowOffset = 1659[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : ROW.percentage = 22.5[0m
-[38;5;196m05-16 19:10:44.579  3756  3804 E TAG     : prev COLUMN.sizeFromTop = 2458[0m
-[38;5;196m05-16 19:10:44.580  3756  3804 E TAG     : next COLUMN.sizeFromTop = 553[0m
-[38;5;196m05-16 19:10:44.580  3756  3804 E TAG     : prev COLUMN.distanceFromTop = 0[0m
-[38;5;196m05-16 19:10:44.580  3756  3804 E TAG     : next COLUMN.distanceFromTop = 1659[0m
-[38;5;196m05-16 19:10:44.580  3756  3804 E TAG     : prev nextRowOffset = 1659[0m
-[38;5;196m05-16 19:10:44.580  3756  3804 E TAG     : next nextRowOffset = 2212[0m
-[38;5;196m05-16 19:10:44.580  3756  3804 E TAG     : ROW.percentage = 10.0[0m
-[38;5;196m05-16 19:10:44.580  3756  3804 E TAG     : prev COLUMN.sizeFromTop = 2458[0m
-[38;5;196m05-16 19:10:44.580  3756  3804 E TAG     : next COLUMN.sizeFromTop = 245[0m
-[38;5;196m05-16 19:10:44.580  3756  3804 E TAG     : prev COLUMN.distanceFromTop = 0[0m
-[38;5;196m05-16 19:10:44.580  3756  3804 E TAG     : next COLUMN.distanceFromTop = 2212[0m
-[38;5;196m05-16 19:10:44.580  3756  3804 E TAG     : prev nextRowOffset = 2212[0m
-[38;5;196m05-16 19:10:44.580  3756  3804 E TAG     : next nextRowOffset = 2457[0m
-[38;5;40m05-16 19:10:44.582  3756  3756 I Terminal Session: creating log[0m
-[38;5;40m05-16 19:10:44.582  3756  3756 I Terminal Session: using existing FileDescriptor[0m
-[38;5;166m05-16 19:10:44.582  3756  3756 W edia.player.pr: Accessing hidden field Ljava/io/FileDescriptor;->descriptor:I (light greylist, reflection)[0m
-[38;5;40m05-16 19:10:44.583  3756  3756 I Terminal Session: created log[0m
-[38;5;40m05-16 19:10:44.584  3756  3756 I Terminal Session: emulator initialized[0m
-[38;5;40m05-16 19:10:44.624  3756  3756 I Terminal Controller: current session = null[0m
-[38;5;40m05-16 19:10:44.624  3756  3756 I Terminal Controller: target session = alpine.term.emulator.TerminalSession@697cc08[0m
-[38;5;40m05-16 19:10:44.624  3756  3756 I Terminal Controller: current session is null[0m
-[38;5;40m05-16 19:10:44.624  3756  3756 I Terminal Controller: notifying data set changed[0m
-[38;5;40m05-16 19:10:44.624  3756  3756 I Terminal Controller: notified data set changed[0m
-[38;5;40m05-16 19:10:44.624  3756  3756 I Terminal Controller: attaching session[0m
-[38;5;40m05-16 19:10:44.624  3756  3756 I Terminal Controller: attached session[0m
-[38;5;40m05-16 19:10:44.625  3756  3756 I Terminal Controller: targetVisibility visibility = true[0m
-[38;5;40m05-16 19:10:44.625  3756  3756 I Terminal Controller: actual visibility = true[0m
-[38;5;196m05-16 19:10:44.645  3756  3804 E NU      : executed[0m
-[38;5;40m05-16 19:10:44.648  3756  3756 I LibService - Service Connection: checking if object is null...[0m
-[38;5;40m05-16 19:10:44.648  3756  3756 I LibService - Service Connection: object is not null[0m
-[38;5;40m05-16 19:10:44.649  3756  3756 I Terminal Service: initiating sh session with following arguments: [/bin/logcat, -C, --pid=3756][0m
-[38;5;40m05-16 19:10:44.650  3756  3756 I Terminal Session: creating Logcat[0m
-[38;5;40m05-16 19:10:44.662  3756  3756 I Terminal Session: created Logcat[0m
-[38;5;40m05-16 19:10:44.665  3756  3756 I Terminal Session: emulator initialized[0m
-[38;5;40m05-16 19:10:44.693  3756  3756 I Terminal Controller: current session = alpine.term.emulator.TerminalSession@697cc08[0m
-[38;5;40m05-16 19:10:44.693  3756  3756 I Terminal Controller: target session = alpine.term.emulator.TerminalSession@e4b8faa[0m
-[38;5;40m05-16 19:10:44.694  3756  3756 I Terminal Controller: current session and target session are not the same[0m
-[38;5;40m05-16 19:10:44.694  3756  3756 I Terminal Controller: notifying data set changed[0m
-[38;5;40m05-16 19:10:44.694  3756  3756 I Terminal Controller: notified data set changed[0m
-[38;5;40m05-16 19:10:44.694  3756  3756 I Terminal Controller: attaching session[0m
-[38;5;40m05-16 19:10:44.694  3756  3756 I Terminal Controller: attached session[0m
-[38;5;40m05-16 19:10:44.694  3756  3756 I Terminal Controller: targetVisibility visibility = true[0m
-[38;5;40m05-16 19:10:44.694  3756  3756 I Terminal Controller: actual visibility = false[0m
-[38;5;40m05-16 19:10:44.702  3756  3756 I Terminal Service: initiating shell session with following arguments: [/system/xbin/bash][0m
-[38;5;40m05-16 19:10:44.704  3756  3756 I Terminal Session: creating shell[0m
-[38;5;40m05-16 19:10:44.713  3756  3756 I Terminal Session: created shell[0m
-[38;5;40m05-16 19:10:44.727  3756  3756 I Terminal Session: emulator initialized[0m
-[38;5;40m05-16 19:10:44.749  3756  3756 I Terminal Controller: current session = alpine.term.emulator.TerminalSession@e4b8faa[0m
-[38;5;40m05-16 19:10:44.749  3756  3756 I Terminal Controller: target session = alpine.term.emulator.TerminalSession@36e279b[0m
-[38;5;40m05-16 19:10:44.749  3756  3756 I Terminal Controller: current session and target session are not the same[0m
-[38;5;40m05-16 19:10:44.749  3756  3756 I Terminal Controller: notifying data set changed[0m
-[38;5;40m05-16 19:10:44.749  3756  3756 I Terminal Controller: notified data set changed[0m
-[38;5;40m05-16 19:10:44.749  3756  3756 I Terminal Controller: attaching session[0m
-[38;5;40m05-16 19:10:44.749  3756  3756 I Terminal Controller: attached session[0m
-[38;5;40m05-16 19:10:44.750  3756  3756 I Terminal Controller: targetVisibility visibility = true[0m
-[38;5;40m05-16 19:10:44.750  3756  3756 I Terminal Controller: actual visibility = false[0m
-[38;5;40m05-16 19:10:44.760  3756  3756 I Terminal Controller: notifying data set changed[0m
-[38;5;40m05-16 19:10:44.760  3756  3756 I Terminal Controller: notified data set changed[0m
-[38;5;40m05-16 19:10:44.760  3756  3756 I Terminal Controller: attaching session[0m
-[38;5;40m05-16 19:10:44.764  3756  3756 I Terminal Controller: attached session[0m
-[38;5;40m05-16 19:10:44.764  3756  3756 I Terminal Controller: targetVisibility visibility = true[0m
-[38;5;40m05-16 19:10:44.764  3756  3756 I Terminal Controller: actual visibility = true[0m
-[38;5;40m05-16 19:10:44.804  3756  3756 I Choreographer: Skipped 30 frames!  The application may be doing too much work on its main thread.[0m
-[38;5;75m05-16 19:10:44.849  3756  3806 D vndksupport: Loading /vendor/lib64/hw/android.hardware.graphics.mapper@2.0-impl.so from current namespace instead of sphal namespace.[0m
-[38;5;40m05-16 19:10:44.978  3756  3756 I ViewRootImpl: CPU Rendering VSync enable = true[0m
-[38;5;196m05-16 19:10:45.006  3756  3756 E OboeAudio: ADDING VALUE TO MONITOR LIST[0m
-[38;5;40m05-16 19:10:45.006  3756  3756 I chatty  : uid=10313(media.player.pro) identical 6 lines[0m
-[38;5;196m05-16 19:10:45.006  3756  3756 E OboeAudio: ADDING VALUE TO MONITOR LIST[0m
-[38;5;196m05-16 19:10:45.006  3756  3756 E OboeAudio: VALUE CHANGED[0m
-[38;5;40m05-16 19:10:45.006  3756  3756 I chatty  : uid=10313(media.player.pro) identical 2 lines[0m
-[38;5;196m05-16 19:10:45.006  3756  3756 E OboeAudio: VALUE CHANGED[0m
-[38;5;40m05-16 19:10:45.006  3756  3756 I libwaveform: rendering sound form (Waveform)[0m
-[38;5;40m05-16 19:10:45.006  3756  3756 I libwaveform: HEIGHT is 553[0m
-[38;5;40m05-16 19:10:45.006  3756  3756 I libwaveform: WIDTH is 1440[0m
-[38;5;196m05-16 19:10:45.018  3756  3756 E libwaveform: min = -32768[0m
-[38;5;196m05-16 19:10:45.018  3756  3756 E libwaveform: max = 32767[0m
-[38;5;40m05-16 19:10:45.025  3756  3756 I libwaveform: scaling width[0m
-[38;5;40m05-16 19:10:45.025  3756  3756 I libwaveform: scaling height[0m
-[38;5;40m05-16 19:10:45.025  3756  3756 I libwaveform: drawing[0m
-[38;5;40m05-16 19:10:45.026  3756  3756 I libbitmap: cleared bitmap (with a size of 796320) in 0.737061 milliseconds[0m
-[38;5;40m05-16 19:10:45.026  3756  3756 I libwaveform: BITMAP FORMAT RGB_565[0m
-[38;5;40m05-16 19:10:45.029  3756  3756 I libwaveform: rendered sound form (Waveform)[0m
-[38;5;75m05-16 19:10:45.093  3756  3806 D mali_winsys: EGLint new_window_surface(egl_winsys_display *, void *, EGLSurface, EGLConfig, egl_winsys_surface **, EGLBoolean) returns 0x3000[0m
-[38;5;166m05-16 19:10:46.780  3756  3806 W libEGL  : EGLNativeWindowType 0x75d9360010 disconnect failed[0m
-[38;5;166m05-16 19:11:42.138  3756  3806 W libEGL  : EGLNativeWindowType 0x75e233e010 disconnect failed[0m
-[38;5;75m05-16 19:11:42.139  3756  3806 D mali_winsys: EGLint new_window_surface(egl_winsys_display *, void *, EGLSurface, EGLConfig, egl_winsys_surface **, EGLBoolean) returns 0x3000[0m
+[38;5;196m05-16 20:33:58.329 14931 14931 E edia.player.pr: Not starting debugger since process cannot load the jdwp agent.[0m
+[38;5;166m05-16 20:33:58.357 14931 14931 W GraphicsEnvironment: driver package 'com.samsung.gpudriver.S8MaliG71_90' not installed[0m
+[38;5;75m05-16 20:33:58.363 14931 14945 D vndksupport: Loading /vendor/lib64/egl/libGLES_mali.so from current namespace instead of sphal namespace.[0m
+[38;5;75m05-16 20:33:58.383 14931 14945 D libEGL  : loaded /vendor/lib64/egl/libGLES_mali.so[0m
+[38;5;40m05-16 20:33:58.426 14931 14931 I Terminal Controller: starting TerminalControllerService and binding to activity[0m
+[38;5;231m05-16 20:33:58.428 14931 14931 V TERMINAL: opening ptmx (master) device[0m
+[38;5;231m05-16 20:33:58.428 14931 14931 V TERMINAL: opened ptmx (master) device: 35[0m
+[38;5;231m05-16 20:33:58.428 14931 14931 V TERMINAL: opening /dev/pts/0 (slave) device[0m
+[38;5;231m05-16 20:33:58.428 14931 14931 V TERMINAL: opened /dev/pts/0 (slave) device: 36[0m
+[38;5;231m05-16 20:33:58.428 14931 14931 V TERMINAL: duping current stdin (fd 0), stdout (fd 1), and stderr (fd 2) to /dev/pts/0 (slave) device: 36[0m
+[38;5;231m05-16 20:33:58.428 14931 14931 V TERMINAL: returning ptmx (master) device: 35[0m
+[38;5;40m05-16 20:33:58.433 14931 14931 I Terminal Controller: started TerminalControllerService and binded to activity[0m
+[38;5;40m05-16 20:33:58.434 14931 14931 I System.out: android.os.Environment.getExternalStorageDirectory().getPath() = /storage/emulated/0[0m
+[38;5;40m05-16 20:33:58.435 14931 14931 I System.out: getFilesDir().getPath() = /data/user/0/media.player.pro/files[0m
+[38;5;40m05-16 20:33:58.455 14931 14931 I libMedia: copying assets folder[0m
+[38;5;40m05-16 20:33:58.456 14931 14931 I libMedia: obtained a list of assets[0m
+[38;5;40m05-16 20:33:58.456 14931 14931 I libMedia: copying "00001313Upsampled.raw" to "/data/user/0/media.player.pro/files/ASSETS/00001313Upsampled.raw"[0m
+[38;5;40m05-16 20:33:58.525 14931 14931 I libMedia: copying "00001313_44100.raw" to "/data/user/0/media.player.pro/files/ASSETS/00001313_44100.raw"[0m
+[38;5;40m05-16 20:33:58.586 14931 14931 I libMedia: copying "00001313_44100.wav" to "/data/user/0/media.player.pro/files/ASSETS/00001313_44100.wav"[0m
+[38;5;40m05-16 20:33:58.622 14931 14931 I libMedia: copying "00001313_48000.raw" to "/data/user/0/media.player.pro/files/ASSETS/00001313_48000.raw"[0m
+[38;5;40m05-16 20:33:58.688 14931 14931 I libMedia: copying "00001313_48000.wav" to "/data/user/0/media.player.pro/files/ASSETS/00001313_48000.wav"[0m
+[38;5;40m05-16 20:33:58.726 14931 14931 I libMedia: copying "CLAP.raw" to "/data/user/0/media.player.pro/files/ASSETS/CLAP.raw"[0m
+[38;5;40m05-16 20:33:58.731 14931 14931 I libMedia: copying "FUNKY_HOUSE.raw" to "/data/user/0/media.player.pro/files/ASSETS/FUNKY_HOUSE.raw"[0m
+[38;5;40m05-16 20:33:58.739 14931 14931 I libMedia: obtained a list of assets[0m
+[38;5;40m05-16 20:33:58.740 14931 14931 I libMedia: copying "color_schemes/argonaut.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/argonaut.properties"[0m
+[38;5;40m05-16 20:33:58.740 14931 14931 I libMedia: copying "color_schemes/base16-3024.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-3024.properties"[0m
+[38;5;40m05-16 20:33:58.740 14931 14931 I libMedia: copying "color_schemes/base16-apathy.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-apathy.properties"[0m
+[38;5;40m05-16 20:33:58.740 14931 14931 I libMedia: copying "color_schemes/base16-ashes.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-ashes.properties"[0m
+[38;5;40m05-16 20:33:58.741 14931 14931 I libMedia: copying "color_schemes/base16-atelier-dune.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-atelier-dune.properties"[0m
+[38;5;40m05-16 20:33:58.741 14931 14931 I libMedia: copying "color_schemes/base16-atelier-forest.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-atelier-forest.properties"[0m
+[38;5;40m05-16 20:33:58.741 14931 14931 I libMedia: copying "color_schemes/base16-atelier-heath.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-atelier-heath.properties"[0m
+[38;5;40m05-16 20:33:58.741 14931 14931 I libMedia: copying "color_schemes/base16-atelier-lakeside.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-atelier-lakeside.properties"[0m
+[38;5;40m05-16 20:33:58.741 14931 14931 I libMedia: copying "color_schemes/base16-atelier-seaside.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-atelier-seaside.properties"[0m
+[38;5;40m05-16 20:33:58.742 14931 14931 I libMedia: copying "color_schemes/base16-bespin.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-bespin.properties"[0m
+[38;5;40m05-16 20:33:58.742 14931 14931 I libMedia: copying "color_schemes/base16-brewer.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-brewer.properties"[0m
+[38;5;40m05-16 20:33:58.742 14931 14931 I libMedia: copying "color_schemes/base16-bright.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-bright.properties"[0m
+[38;5;40m05-16 20:33:58.742 14931 14931 I libMedia: copying "color_schemes/base16-chalk.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-chalk.properties"[0m
+[38;5;40m05-16 20:33:58.743 14931 14931 I libMedia: copying "color_schemes/base16-codeschool.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-codeschool.properties"[0m
+[38;5;40m05-16 20:33:58.743 14931 14931 I libMedia: copying "color_schemes/base16-colors.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-colors.properties"[0m
+[38;5;40m05-16 20:33:58.743 14931 14931 I libMedia: copying "color_schemes/base16-default.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-default.properties"[0m
+[38;5;40m05-16 20:33:58.743 14931 14931 I libMedia: copying "color_schemes/base16-eighties.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-eighties.properties"[0m
+[38;5;40m05-16 20:33:58.743 14931 14931 I libMedia: copying "color_schemes/base16-embers.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-embers.properties"[0m
+[38;5;40m05-16 20:33:58.744 14931 14931 I libMedia: copying "color_schemes/base16-flat.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-flat.properties"[0m
+[38;5;40m05-16 20:33:58.744 14931 14931 I libMedia: copying "color_schemes/base16-google.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-google.properties"[0m
+[38;5;40m05-16 20:33:58.744 14931 14931 I libMedia: copying "color_schemes/base16-grayscale.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-grayscale.properties"[0m
+[38;5;40m05-16 20:33:58.744 14931 14931 I libMedia: copying "color_schemes/base16-green-screen.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-green-screen.properties"[0m
+[38;5;40m05-16 20:33:58.744 14931 14931 I libMedia: copying "color_schemes/base16-harmonic.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-harmonic.properties"[0m
+[38;5;40m05-16 20:33:58.745 14931 14931 I libMedia: copying "color_schemes/base16-isotope.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-isotope.properties"[0m
+[38;5;40m05-16 20:33:58.745 14931 14931 I libMedia: copying "color_schemes/base16-london-tube.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-london-tube.properties"[0m
+[38;5;40m05-16 20:33:58.745 14931 14931 I libMedia: copying "color_schemes/base16-marrakesh.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-marrakesh.properties"[0m
+[38;5;40m05-16 20:33:58.745 14931 14931 I libMedia: copying "color_schemes/base16-materia.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-materia.properties"[0m
+[38;5;40m05-16 20:33:58.746 14931 14931 I libMedia: copying "color_schemes/base16-mocha.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-mocha.properties"[0m
+[38;5;40m05-16 20:33:58.746 14931 14931 I libMedia: copying "color_schemes/base16-monokai.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-monokai.properties"[0m
+[38;5;40m05-16 20:33:58.746 14931 14931 I libMedia: copying "color_schemes/base16-ocean.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-ocean.properties"[0m
+[38;5;40m05-16 20:33:58.746 14931 14931 I libMedia: copying "color_schemes/base16-onedark.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-onedark.properties"[0m
+[38;5;40m05-16 20:33:58.747 14931 14931 I libMedia: copying "color_schemes/base16-paraiso.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-paraiso.properties"[0m
+[38;5;40m05-16 20:33:58.747 14931 14931 I libMedia: copying "color_schemes/base16-railscasts.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-railscasts.properties"[0m
+[38;5;40m05-16 20:33:58.747 14931 14931 I libMedia: copying "color_schemes/base16-shapeshifter.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-shapeshifter.properties"[0m
+[38;5;40m05-16 20:33:58.747 14931 14931 I libMedia: copying "color_schemes/base16-solarized.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-solarized.properties"[0m
+[38;5;40m05-16 20:33:58.748 14931 14931 I libMedia: copying "color_schemes/base16-summerfruit.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-summerfruit.properties"[0m
+[38;5;40m05-16 20:33:58.748 14931 14931 I libMedia: copying "color_schemes/base16-tomorrow.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-tomorrow.properties"[0m
+[38;5;40m05-16 20:33:58.748 14931 14931 I libMedia: copying "color_schemes/base16-twilight.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/base16-twilight.properties"[0m
+[38;5;40m05-16 20:33:58.748 14931 14931 I libMedia: copying "color_schemes/dracula.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/dracula.properties"[0m
+[38;5;40m05-16 20:33:58.748 14931 14931 I libMedia: copying "color_schemes/gnome-term.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/gnome-term.properties"[0m
+[38;5;40m05-16 20:33:58.749 14931 14931 I libMedia: copying "color_schemes/gotham.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/gotham.properties"[0m
+[38;5;40m05-16 20:33:58.749 14931 14931 I libMedia: copying "color_schemes/gruvbox.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/gruvbox.properties"[0m
+[38;5;40m05-16 20:33:58.749 14931 14931 I libMedia: copying "color_schemes/material.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/material.properties"[0m
+[38;5;40m05-16 20:33:58.749 14931 14931 I libMedia: copying "color_schemes/nancy.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/nancy.properties"[0m
+[38;5;40m05-16 20:33:58.750 14931 14931 I libMedia: copying "color_schemes/neon.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/neon.properties"[0m
+[38;5;40m05-16 20:33:58.750 14931 14931 I libMedia: copying "color_schemes/nord.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/nord.properties"[0m
+[38;5;40m05-16 20:33:58.750 14931 14931 I libMedia: copying "color_schemes/rydgel.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/rydgel.properties"[0m
+[38;5;40m05-16 20:33:58.750 14931 14931 I libMedia: copying "color_schemes/smyck.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/smyck.properties"[0m
+[38;5;40m05-16 20:33:58.750 14931 14931 I libMedia: copying "color_schemes/solarized-dark.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/solarized-dark.properties"[0m
+[38;5;40m05-16 20:33:58.751 14931 14931 I libMedia: copying "color_schemes/tomorrow-night.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/tomorrow-night.properties"[0m
+[38;5;40m05-16 20:33:58.751 14931 14931 I libMedia: copying "color_schemes/wild-cherry.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/wild-cherry.properties"[0m
+[38;5;40m05-16 20:33:58.751 14931 14931 I libMedia: copying "color_schemes/zenburn.properties" to "/data/user/0/media.player.pro/files/ASSETS/color_schemes/zenburn.properties"[0m
+[38;5;40m05-16 20:33:58.752 14931 14931 I libMedia: obtained a list of assets[0m
+[38;5;40m05-16 20:33:58.752 14931 14931 I libMedia: copying "fonts/Inconsolata-LGC.otf" to "/data/user/0/media.player.pro/files/ASSETS/fonts/Inconsolata-LGC.otf"[0m
+[38;5;40m05-16 20:33:58.754 14931 14931 I libMedia: obtained a list of assets[0m
+[38;5;40m05-16 20:33:58.754 14931 14931 I libMedia: obtained a list of assets[0m
+[38;5;40m05-16 20:33:58.754 14931 14931 I libMedia: copying "help/doc/bash-advanced.html" to "/data/user/0/media.player.pro/files/ASSETS/help/doc/bash-advanced.html"[0m
+[38;5;40m05-16 20:33:58.786 14931 14931 I libMedia: obtained a list of assets[0m
+[38;5;40m05-16 20:33:58.787 14931 14931 I libMedia: copying "help/doc/images/caution.gif" to "/data/user/0/media.player.pro/files/ASSETS/help/doc/images/caution.gif"[0m
+[38;5;40m05-16 20:33:58.787 14931 14931 I libMedia: copying "help/doc/images/important.gif" to "/data/user/0/media.player.pro/files/ASSETS/help/doc/images/important.gif"[0m
+[38;5;40m05-16 20:33:58.787 14931 14931 I libMedia: copying "help/doc/images/note.gif" to "/data/user/0/media.player.pro/files/ASSETS/help/doc/images/note.gif"[0m
+[38;5;40m05-16 20:33:58.787 14931 14931 I libMedia: copying "help/doc/images/tip.gif" to "/data/user/0/media.player.pro/files/ASSETS/help/doc/images/tip.gif"[0m
+[38;5;40m05-16 20:33:58.787 14931 14931 I libMedia: copying "help/doc/images/warning.gif" to "/data/user/0/media.player.pro/files/ASSETS/help/doc/images/warning.gif"[0m
+[38;5;40m05-16 20:33:58.788 14931 14931 I libMedia: copying "help/doc/mksh.html" to "/data/user/0/media.player.pro/files/ASSETS/help/doc/mksh.html"[0m
+[38;5;40m05-16 20:33:58.790 14931 14931 I libMedia: copying "help/doc/qemu-doc.html" to "/data/user/0/media.player.pro/files/ASSETS/help/doc/qemu-doc.html"[0m
+[38;5;40m05-16 20:33:58.798 14931 14931 I libMedia: copying "help/help.html" to "/data/user/0/media.player.pro/files/ASSETS/help/help.html"[0m
+[38;5;40m05-16 20:33:58.820 14931 14931 I libMedia: obtained a list of assets[0m
+[38;5;40m05-16 20:33:58.821 14931 14931 I libMedia: copying "images/android-logo-mask.png" to "/data/user/0/media.player.pro/files/ASSETS/images/android-logo-mask.png"[0m
+[38;5;40m05-16 20:33:58.821 14931 14931 I libMedia: copying "images/android-logo-shine.png" to "/data/user/0/media.player.pro/files/ASSETS/images/android-logo-shine.png"[0m
+[38;5;40m05-16 20:33:58.822 14931 14931 I libMedia: copying "images/clock_font.png" to "/data/user/0/media.player.pro/files/ASSETS/images/clock_font.png"[0m
+[38;5;40m05-16 20:33:58.822 14931 14931 I libMedia: obtained a list of assets[0m
+[38;5;40m05-16 20:33:58.823 14931 14931 I chatty  : uid=10320(media.player.pro) identical 1 line[0m
+[38;5;40m05-16 20:33:58.823 14931 14931 I libMedia: obtained a list of assets[0m
+[38;5;40m05-16 20:33:58.823 14931 14931 I libMedia: copying "usr/bin/arm64-v8a/ffmpeg" to "/data/user/0/media.player.pro/files/ASSETS/usr/bin/arm64-v8a/ffmpeg"[0m
+[38;5;40m05-16 20:33:58.827 14931 14931 I libMedia: copying "usr/bin/arm64-v8a/ffmpeg_generate_waveform_png" to "/data/user/0/media.player.pro/files/ASSETS/usr/bin/arm64-v8a/ffmpeg_generate_waveform_png"[0m
+[38;5;40m05-16 20:33:58.827 14931 14931 I libMedia: copying "usr/bin/arm64-v8a/ffprobe" to "/data/user/0/media.player.pro/files/ASSETS/usr/bin/arm64-v8a/ffprobe"[0m
+[38;5;40m05-16 20:33:58.830 14931 14931 I libMedia: obtained a list of assets[0m
+[38;5;40m05-16 20:33:58.830 14931 14931 I libMedia: obtained a list of assets[0m
+[38;5;40m05-16 20:33:58.830 14931 14931 I libMedia: copying "usr/libs/arm64-v8a/libavcodec.so" to "/data/user/0/media.player.pro/files/ASSETS/usr/libs/arm64-v8a/libavcodec.so"[0m
+[38;5;40m05-16 20:33:59.164 14931 14931 I libMedia: copying "usr/libs/arm64-v8a/libavdevice.so" to "/data/user/0/media.player.pro/files/ASSETS/usr/libs/arm64-v8a/libavdevice.so"[0m
+[38;5;40m05-16 20:33:59.174 14931 14931 I libMedia: copying "usr/libs/arm64-v8a/libavfilter.so" to "/data/user/0/media.player.pro/files/ASSETS/usr/libs/arm64-v8a/libavfilter.so"[0m
+[38;5;40m05-16 20:33:59.294 14931 14931 I libMedia: copying "usr/libs/arm64-v8a/libavformat.so" to "/data/user/0/media.player.pro/files/ASSETS/usr/libs/arm64-v8a/libavformat.so"[0m
+[38;5;40m05-16 20:33:59.374 14931 14931 I libMedia: copying "usr/libs/arm64-v8a/libavutil.so" to "/data/user/0/media.player.pro/files/ASSETS/usr/libs/arm64-v8a/libavutil.so"[0m
+[38;5;40m05-16 20:33:59.382 14931 14931 I libMedia: copying "usr/libs/arm64-v8a/libc++_shared.so" to "/data/user/0/media.player.pro/files/ASSETS/usr/libs/arm64-v8a/libc++_shared.so"[0m
+[38;5;40m05-16 20:33:59.393 14931 14931 I libMedia: copying "usr/libs/arm64-v8a/libcpufeatures.so" to "/data/user/0/media.player.pro/files/ASSETS/usr/libs/arm64-v8a/libcpufeatures.so"[0m
+[38;5;40m05-16 20:33:59.394 14931 14931 I libMedia: copying "usr/libs/arm64-v8a/libswresample.so" to "/data/user/0/media.player.pro/files/ASSETS/usr/libs/arm64-v8a/libswresample.so"[0m
+[38;5;40m05-16 20:33:59.397 14931 14931 I libMedia: copying "usr/libs/arm64-v8a/libswscale.so" to "/data/user/0/media.player.pro/files/ASSETS/usr/libs/arm64-v8a/libswscale.so"[0m
+[38;5;40m05-16 20:33:59.404 14931 14931 I libMedia: obtained a list of assets[0m
+[38;5;40m05-16 20:33:59.404 14931 14931 I libMedia: copying "webkit/android-weberror.png" to "/data/user/0/media.player.pro/files/ASSETS/webkit/android-weberror.png"[0m
+[38;5;196m05-16 20:33:59.416 14931 14931 E libMedia: setting Temporary Files Directory to /data/user/0/media.player.pro/files[0m
+[38;5;166m05-16 20:33:59.418 14931 14931 W OboeAudio: Oboe_Init: Creating and Opening AudioStream[0m
+[38;5;75m05-16 20:33:59.418 14931 14931 D AAudio  : AAudioStreamBuilder_openStream() called ----------------------------------------[0m
+[38;5;75m05-16 20:33:59.418 14931 14931 D         : PlayerBase::PlayerBase()[0m
+[38;5;40m05-16 20:33:59.419 14931 14931 I AAudioStream: open() rate   = 48000, channels    = 2, format   = 1, sharing = SH, dir = OUTPUT[0m
+[38;5;40m05-16 20:33:59.419 14931 14931 I AAudioStream: open() device = 0, sessionId   = 0, perfMode = 12, callback: ON with frames = 0[0m
+[38;5;40m05-16 20:33:59.419 14931 14931 I AAudioStream: open() usage  = 1, contentType = 2, inputPreset = 6[0m
+[38;5;75m05-16 20:33:59.419 14931 14931 D AudioStreamTrack: open(), request notificationFrames = 0, frameCount = 384[0m
+[38;5;40m05-16 20:33:59.421 14931 14931 I AudioTrack: AUDIO_OUTPUT_FLAG_FAST successful; frameCount 384 -> 384[0m
+[38;5;166m05-16 20:33:59.421 14931 14931 W AudioStreamTrack: open() flags changed from 0x00000104 to 0x00000004[0m
+[38;5;75m05-16 20:33:59.421 14931 14931 D AAudio  : AAudioStreamBuilder_openStream() returns 0 = AAUDIO_OK for (0x75e2514c00) ----------------[0m
+[38;5;75m05-16 20:33:59.422 14931 14931 D OboeAudio: input and output sample rates are not the same, resampling is required[0m
+[38;5;75m05-16 20:33:59.422 14931 14931 D OboeAudio: SOXR VERSION: libsoxr-0.1.3[0m
+[38;5;75m05-16 20:33:59.422 14931 14931 D OboeAudio: INFILE = /data/user/0/media.player.pro/files/ASSETS/00001313_44100.raw[0m
+[38;5;75m05-16 20:33:59.422 14931 14931 D OboeAudio: OUTFILE = /data/user/0/media.player.pro/files/ASSETS/00001313_44100.raw.resampled.raw[0m
+[38;5;75m05-16 20:33:59.422 14931 14931 D OboeAudio: RESAMPLING[0m
+[38;5;75m05-16 20:33:59.422 14931 14931 D OboeAudio: INPUT  SAMPLERATE = 44100[0m
+[38;5;75m05-16 20:33:59.422 14931 14931 D OboeAudio: OUTPUT SAMPLERATE = 48000[0m
+[38;5;75m05-16 20:33:59.422 14931 14931 D OboeAudio: OPENING INFILE...[0m
+[38;5;75m05-16 20:33:59.422 14931 14931 D OboeAudio: OPENED INFILE: 0x76046b4c18[0m
+[38;5;75m05-16 20:33:59.422 14931 14931 D OboeAudio: OPENING OUTFILE...[0m
+[38;5;75m05-16 20:33:59.423 14931 14931 D OboeAudio: OPENED OUTFILE: 0x76046b4cb0[0m
+[38;5;231m05-16 20:33:59.608 14931 14931 V OboeAudio: SOX__RESAMPLER no error; I/O: no error[0m
+[38;5;75m05-16 20:33:59.608 14931 14931 D OboeAudio: GENERATING WAVEFORM[0m
+[38;5;75m05-16 20:33:59.608 14931 14931 D OboeAudio: file to generate waveform from: /data/user/0/media.player.pro/files/ASSETS/00001313_44100.raw.resampled.raw[0m
+[38;5;196m05-16 20:33:59.608 14931 14931 E OboeAudio: Started conversion at 1.58963E+12 milliseconds[0m
+[38;5;196m05-16 20:34:15.429 14931 14931 E OboeAudio: Ended conversion at 1.58963E+12 milliseconds[0m
+[38;5;196m05-16 20:34:15.429 14931 14931 E OboeAudio: TIME took 15821.1 milliseconds[0m
+[38;5;75m05-16 20:34:15.429 14931 14931 D OboeAudio: waveform written to: /data/user/0/media.player.pro/files/ASSETS/00001313_44100.raw.resampled.raw.waveform.png[0m
+[38;5;75m05-16 20:34:15.429 14931 14931 D OboeAudio: READING OUTPUT FILE[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: Opened backing track[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: length in human time:                              0000:00:00:00:00:00:23:374:291:666[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: length in nanoseconds:                             23374291666[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: length in microseconds:                            23374291[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: length in milliseconds:                            23374[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: length in seconds:                                 23[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: length in minutes:                                 0[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: length in hours:                                   0[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: length in days:                                    0[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: length in weeks:                                   0[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: length in months:                                  0[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: length in years:                                   0[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: bytes:                                             4487864[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: frames:                                            1121966[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: sample rate:                                       48000[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: length of 1 frame at 48000 sample rate:[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: Human Time:                                        0000:00:00:00:00:00:23:374:291:666[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: Nanoseconds:                                       0[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: Microseconds:                                      0[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: Milliseconds:                                      0[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: Seconds:                                           0[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: Minutes:                                           0[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: Hours:                                             0[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: Days:                                              0[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: Weeks:                                             0[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: Months:                                            0[0m
+[38;5;75m05-16 20:34:15.445 14931 14931 D OboeAudio: Years:                                             0[0m
+[38;5;196m05-16 20:34:15.457 14931 14931 E NU      : added column to queue[0m
+[38;5;40m05-16 20:34:15.459 14931 14931 I chatty  : uid=10320(media.player.pro) identical 5 lines[0m
+[38;5;196m05-16 20:34:15.459 14931 14931 E NU      : added column to queue[0m
+[38;5;196m05-16 20:34:15.462 14931 14977 E P       : view is not null[0m
+[38;5;166m05-16 20:34:15.462 14931 14977 W P       : view!!.height is 0 and view!!.width is 0[0m
+[38;5;40m05-16 20:34:15.478 14931 14977 I chatty  : uid=10320(media.player.pro) identical 1 line[0m
+[38;5;166m05-16 20:34:15.495 14931 14977 W P       : view!!.height is 0 and view!!.width is 0[0m
+[38;5;75m05-16 20:34:15.504 14931 14931 D OpenGLRenderer: Skia GL Pipeline[0m
+[38;5;166m05-16 20:34:15.512 14931 14977 W P       : view!!.height is 0 and view!!.width is 0[0m
+[38;5;40m05-16 20:34:15.514 14931 14931 I ViewRootImpl: CPU Rendering VSync enable = true[0m
+[38;5;166m05-16 20:34:15.529 14931 14977 W P       : view!!.height is 0 and view!!.width is 0[0m
+[38;5;40m05-16 20:34:15.578 14931 14977 I chatty  : uid=10320(media.player.pro) identical 3 lines[0m
+[38;5;166m05-16 20:34:15.594 14931 14977 W P       : view!!.height is 0 and view!!.width is 0[0m
+[38;5;40m05-16 20:34:15.608 14931 14931 I LibService - Service - Component: libclient_service.LibService_Service_Component.onBind(LibService_Service_Component.java:50) called[0m
+[38;5;166m05-16 20:34:15.611 14931 14977 W P       : view!!.height is 0 and view!!.width is 0[0m
+[38;5;40m05-16 20:34:15.759 14931 14977 I chatty  : uid=10320(media.player.pro) identical 9 lines[0m
+[38;5;166m05-16 20:34:15.775 14931 14977 W P       : view!!.height is 0 and view!!.width is 0[0m
+[38;5;40m05-16 20:34:15.785 14931 14931 I RenderThread: type=1400 audit(0.0:6878): avc: denied { read write } for name="mali0" dev="tmpfs" ino=20039 scontext=u:r:untrusted_app:s0:c64,c257,c512,c768 tcontext=u:object_r:device:s0 tclass=chr_file permissive=1[0m
+[38;5;40m05-16 20:34:15.785 14931 14931 I RenderThread: type=1400 audit(0.0:6878): avc: denied { open } for path="/dev/mali0" dev="tmpfs" ino=20039 scontext=u:r:untrusted_app:s0:c64,c257,c512,c768 tcontext=u:object_r:device:s0 tclass=chr_file permissive=1[0m
+[38;5;166m05-16 20:34:15.785 14931 14931 W RenderThread: type=1300 audit(0.0:6878): arch=c00000b7 syscall=56 success=yes exit=51 a0=ffffff9c a1=75c26d0e88 a2=80802 a3=0 items=0 ppid=3977 auid=4294967295 uid=10320 gid=10320 euid=10320 suid=10320 fsuid=10320 egid=10320 sgid=10320 fsgid=10320 tty=pts0 ses=4294967295 exe="/system/bin/app_process64" subj=u:r:untrusted_app:s0:c64,c257,c512,c768 key=(null)[0m
+[38;5;166m05-16 20:34:15.791 14931 14977 W P       : view!!.height is 0 and view!!.width is 0[0m
+[38;5;40m05-16 20:34:15.803 14931 14978 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasWideColorDisplay retrieved: 0[0m
+[38;5;40m05-16 20:34:15.803 14931 14978 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasHDRDisplay retrieved: 0[0m
+[38;5;40m05-16 20:34:15.804 14931 14978 I OpenGLRenderer: Initialized EGL, version 1.4[0m
+[38;5;75m05-16 20:34:15.804 14931 14978 D OpenGLRenderer: Swap behavior 2[0m
+[38;5;40m05-16 20:34:15.806 14931 14931 I LibService - Service Connection: libclient_service.LibService_Service_Connection.onServiceConnected(LibService_Service_Connection.java:36) called[0m
+[38;5;40m05-16 20:34:15.806 14931 14931 I LibService - Service Connection: onServiceConnected: binded to local service[0m
+[38;5;40m05-16 20:34:15.807 14931 14931 I LibService - Service Connection: checking if object is null...[0m
+[38;5;40m05-16 20:34:15.808 14931 14931 I LibService - Service Connection: object is not null[0m
+[38;5;196m05-16 20:34:15.810 14931 14977 E M       : view!!.height = 2458[0m
+[38;5;196m05-16 20:34:15.810 14931 14977 E M       : view!!.width = 1440[0m
+[38;5;40m05-16 20:34:15.811 14931 14931 I LibService - Service Connection: checking if object is null...[0m
+[38;5;40m05-16 20:34:15.811 14931 14931 I LibService - Service Connection: object is not null[0m
+[38;5;40m05-16 20:34:15.811 14931 14931 I LibService - Service Connection: checking if object is null...[0m
+[38;5;40m05-16 20:34:15.811 14931 14931 I LibService - Service Connection: object is not null[0m
+[38;5;40m05-16 20:34:15.811 14931 14931 I LibService - Service Connection: checking if object is null...[0m
+[38;5;40m05-16 20:34:15.811 14931 14931 I LibService - Service Connection: object is not null[0m
+[38;5;40m05-16 20:34:15.812 14931 14931 I LibService - Service Connection: checking if object is null...[0m
+[38;5;40m05-16 20:34:15.812 14931 14931 I LibService - Service Connection: object is not null[0m
+[38;5;40m05-16 20:34:15.813 14931 14931 I Terminal Service: initiating shell session with following arguments: [/system/xbin/bash][0m
+[38;5;196m05-16 20:34:15.827 14931 14977 E NU      : executing from queue[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executed[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executing from queue[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executed[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executing from queue[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executed[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executing from queue[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executed[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executing from queue[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executed[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executing from queue[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executed[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executing from queue[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executed[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executing from queue[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executed[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executing from queue[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executed[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executing from queue[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executed[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executing from queue[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executed[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executing from queue[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executed[0m
+[38;5;196m05-16 20:34:15.828 14931 14977 E NU      : executing from queue[0m
+[38;5;196m05-16 20:34:15.829 14931 14977 E TAG     : sum = 10.0[0m
+[38;5;196m05-16 20:34:15.829 14931 14977 E TAG     : 100 - sum = 90.0[0m
+[38;5;196m05-16 20:34:15.829 14931 14977 E TAG     : result / number of unknowns = 22.5[0m
+[38;5;196m05-16 20:34:15.829 14931 14977 E TAG     : new sum = 100.0[0m
+[38;5;196m05-16 20:34:15.829 14931 14977 E TAG     : offset = 491[0m
+[38;5;196m05-16 20:34:15.829 14931 14977 E TAG     : maxHeight = 2455[0m
+[38;5;196m05-16 20:34:15.829 14931 14977 E TAG     : ROW.percentage = 22.5[0m
+[38;5;196m05-16 20:34:15.829 14931 14977 E TAG     : prev COLUMN.sizeFromTop = 2458[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : next COLUMN.sizeFromTop = 553[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : prev COLUMN.distanceFromTop = 0[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : next COLUMN.distanceFromTop = 0[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : prev COLUMN.sizeFromTop = 2458[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : next COLUMN.sizeFromTop = 553[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : prev COLUMN.distanceFromTop = 0[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : next COLUMN.distanceFromTop = 0[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : prev nextRowOffset = 0[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : next nextRowOffset = 553[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : ROW.percentage = 22.5[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : prev COLUMN.sizeFromTop = 2458[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : next COLUMN.sizeFromTop = 553[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : prev COLUMN.distanceFromTop = 0[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : next COLUMN.distanceFromTop = 553[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : prev COLUMN.sizeFromTop = 2458[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : next COLUMN.sizeFromTop = 553[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : prev COLUMN.distanceFromTop = 0[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : next COLUMN.distanceFromTop = 553[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : prev nextRowOffset = 553[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : next nextRowOffset = 1106[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : ROW.percentage = 22.5[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : prev COLUMN.sizeFromTop = 2458[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : next COLUMN.sizeFromTop = 553[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : prev COLUMN.distanceFromTop = 0[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : next COLUMN.distanceFromTop = 1106[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : prev nextRowOffset = 1106[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : next nextRowOffset = 1659[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : ROW.percentage = 22.5[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : prev COLUMN.sizeFromTop = 2458[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : next COLUMN.sizeFromTop = 553[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : prev COLUMN.distanceFromTop = 0[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : next COLUMN.distanceFromTop = 1659[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : prev nextRowOffset = 1659[0m
+[38;5;196m05-16 20:34:15.830 14931 14977 E TAG     : next nextRowOffset = 2212[0m
+[38;5;196m05-16 20:34:15.831 14931 14977 E TAG     : ROW.percentage = 10.0[0m
+[38;5;196m05-16 20:34:15.831 14931 14977 E TAG     : prev COLUMN.sizeFromTop = 2458[0m
+[38;5;196m05-16 20:34:15.831 14931 14977 E TAG     : next COLUMN.sizeFromTop = 245[0m
+[38;5;196m05-16 20:34:15.831 14931 14977 E TAG     : prev COLUMN.distanceFromTop = 0[0m
+[38;5;196m05-16 20:34:15.831 14931 14977 E TAG     : next COLUMN.distanceFromTop = 2212[0m
+[38;5;196m05-16 20:34:15.831 14931 14977 E TAG     : prev nextRowOffset = 2212[0m
+[38;5;196m05-16 20:34:15.831 14931 14977 E TAG     : next nextRowOffset = 2457[0m
+[38;5;75m05-16 20:34:15.832 14931 14978 D mali_winsys: EGLint new_window_surface(egl_winsys_display *, void *, EGLSurface, EGLConfig, egl_winsys_surface **, EGLBoolean) returns 0x3000[0m
+[38;5;40m05-16 20:34:15.839 14931 14931 I Terminal Session: creating log[0m
+[38;5;40m05-16 20:34:15.839 14931 14931 I Terminal Session: using existing FileDescriptor[0m
+[38;5;40m05-16 20:34:15.840 14931 14931 I Terminal Session: created log[0m
+[38;5;40m05-16 20:34:15.841 14931 14931 I Terminal Session: emulator initialized[0m
+[38;5;196m05-16 20:34:15.858 14931 14977 E NU      : executed[0m
+[38;5;40m05-16 20:34:15.920 14931 14931 I Terminal Controller: current session = null[0m
+[38;5;40m05-16 20:34:15.920 14931 14931 I Terminal Controller: target session = alpine.term.emulator.TerminalSession@894524c[0m
+[38;5;40m05-16 20:34:15.920 14931 14931 I Terminal Controller: current session is null[0m
+[38;5;40m05-16 20:34:15.920 14931 14931 I Terminal Controller: notifying data set changed[0m
+[38;5;40m05-16 20:34:15.920 14931 14931 I Terminal Controller: notified data set changed[0m
+[38;5;40m05-16 20:34:15.920 14931 14931 I Terminal Controller: attaching session[0m
+[38;5;40m05-16 20:34:15.920 14931 14931 I Terminal Controller: attached session[0m
+[38;5;40m05-16 20:34:15.920 14931 14931 I Terminal Controller: targetVisibility visibility = true[0m
+[38;5;40m05-16 20:34:15.920 14931 14931 I Terminal Controller: actual visibility = true[0m
+[38;5;40m05-16 20:34:15.928 14931 14931 I LibService - Service Connection: checking if object is null...[0m
+[38;5;40m05-16 20:34:15.928 14931 14931 I LibService - Service Connection: object is not null[0m
+[38;5;40m05-16 20:34:15.928 14931 14931 I Terminal Service: initiating sh session with following arguments: [/bin/logcat, -C, --pid=14931][0m
+[38;5;40m05-16 20:34:15.929 14931 14931 I Terminal Session: creating Logcat[0m
+[38;5;40m05-16 20:34:15.942 14931 14931 I Terminal Session: created Logcat[0m
+[38;5;40m05-16 20:34:15.943 14931 14931 I Terminal Session: emulator initialized[0m
+[38;5;40m05-16 20:34:15.956 14931 14931 I Terminal Controller: current session = alpine.term.emulator.TerminalSession@894524c[0m
+[38;5;40m05-16 20:34:15.956 14931 14931 I Terminal Controller: target session = alpine.term.emulator.TerminalSession@faafc76[0m
+[38;5;40m05-16 20:34:15.956 14931 14931 I Terminal Controller: current session and target session are not the same[0m
+[38;5;40m05-16 20:34:15.956 14931 14931 I Terminal Controller: notifying data set changed[0m
+[38;5;40m05-16 20:34:15.956 14931 14931 I Terminal Controller: notified data set changed[0m
+[38;5;40m05-16 20:34:15.956 14931 14931 I Terminal Controller: attaching session[0m
+[38;5;40m05-16 20:34:15.956 14931 14931 I Terminal Controller: attached session[0m
+[38;5;40m05-16 20:34:15.956 14931 14931 I Terminal Controller: targetVisibility visibility = true[0m
+[38;5;40m05-16 20:34:15.956 14931 14931 I Terminal Controller: actual visibility = false[0m
+[38;5;40m05-16 20:34:15.961 14931 14931 I Terminal Service: initiating shell session with following arguments: [/system/xbin/bash][0m
+[38;5;40m05-16 20:34:15.962 14931 14931 I Terminal Session: creating shell[0m
+[38;5;40m05-16 20:34:15.974 14931 14931 I Terminal Session: created shell[0m
+[38;5;40m05-16 20:34:15.977 14931 14931 I Terminal Session: emulator initialized[0m
+[38;5;40m05-16 20:34:15.992 14931 14931 I Terminal Controller: current session = alpine.term.emulator.TerminalSession@faafc76[0m
+[38;5;40m05-16 20:34:15.992 14931 14931 I Terminal Controller: target session = alpine.term.emulator.TerminalSession@dfda277[0m
+[38;5;40m05-16 20:34:15.992 14931 14931 I Terminal Controller: current session and target session are not the same[0m
+[38;5;40m05-16 20:34:15.992 14931 14931 I Terminal Controller: notifying data set changed[0m
+[38;5;40m05-16 20:34:15.992 14931 14931 I Terminal Controller: notified data set changed[0m
+[38;5;40m05-16 20:34:15.992 14931 14931 I Terminal Controller: attaching session[0m
+[38;5;40m05-16 20:34:15.992 14931 14931 I Terminal Controller: attached session[0m
+[38;5;40m05-16 20:34:15.993 14931 14931 I Terminal Controller: targetVisibility visibility = true[0m
+[38;5;40m05-16 20:34:15.993 14931 14931 I Terminal Controller: actual visibility = false[0m
+[38;5;40m05-16 20:34:15.996 14931 14931 I Terminal Controller: notifying data set changed[0m
+[38;5;40m05-16 20:34:15.996 14931 14931 I Terminal Controller: notified data set changed[0m
+[38;5;40m05-16 20:34:15.996 14931 14931 I Terminal Controller: attaching session[0m
+[38;5;40m05-16 20:34:15.996 14931 14931 I Terminal Controller: attached session[0m
+[38;5;40m05-16 20:34:15.996 14931 14931 I Terminal Controller: targetVisibility visibility = true[0m
+[38;5;40m05-16 20:34:15.996 14931 14931 I Terminal Controller: actual visibility = true[0m
+[38;5;75m05-16 20:34:16.035 14931 14978 D vndksupport: Loading /vendor/lib64/hw/android.hardware.graphics.mapper@2.0-impl.so from current namespace instead of sphal namespace.[0m
+[38;5;40m05-16 20:34:16.186 14931 14931 I ViewRootImpl: CPU Rendering VSync enable = true[0m
+[38;5;196m05-16 20:34:16.214 14931 14931 E OboeAudio: ADDING VALUE TO MONITOR LIST[0m
+[38;5;40m05-16 20:34:16.214 14931 14931 I chatty  : uid=10320(media.player.pro) identical 6 lines[0m
+[38;5;196m05-16 20:34:16.214 14931 14931 E OboeAudio: ADDING VALUE TO MONITOR LIST[0m
+[38;5;196m05-16 20:34:16.214 14931 14931 E OboeAudio: VALUE CHANGED[0m
+[38;5;40m05-16 20:34:16.214 14931 14931 I chatty  : uid=10320(media.player.pro) identical 3 lines[0m
+[38;5;196m05-16 20:34:16.214 14931 14931 E OboeAudio: VALUE CHANGED[0m
+[38;5;40m05-16 20:34:16.214 14931 14931 I libwaveform: rendering sound form (Waveform)[0m
+[38;5;40m05-16 20:34:16.214 14931 14931 I libwaveform: HEIGHT is 553[0m
+[38;5;40m05-16 20:34:16.215 14931 14931 I libwaveform: WIDTH is 1440[0m
+[38;5;196m05-16 20:34:16.216 14931 14931 E libwaveform: min = -32768[0m
+[38;5;196m05-16 20:34:16.216 14931 14931 E libwaveform: max = 32767[0m
+[38;5;40m05-16 20:34:16.217 14931 14931 I libwaveform: scaling width[0m
+[38;5;40m05-16 20:34:16.218 14931 14931 I libwaveform: scaling height[0m
+[38;5;40m05-16 20:34:16.218 14931 14931 I libwaveform: drawing[0m
+[38;5;40m05-16 20:34:16.218 14931 14931 I libbitmap: cleared bitmap (with a size of 796320) in 0.740967 milliseconds[0m
+[38;5;40m05-16 20:34:16.218 14931 14931 I libwaveform: BITMAP FORMAT RGB_565[0m
+[38;5;40m05-16 20:34:16.220 14931 14931 I libwaveform: rendered sound form (Waveform)[0m
+[38;5;75m05-16 20:34:16.277 14931 14978 D mali_winsys: EGLint new_window_surface(egl_winsys_display *, void *, EGLSurface, EGLConfig, egl_winsys_surface **, EGLBoolean) returns 0x3000[0m
+[38;5;166m05-16 20:34:18.001 14931 14978 W libEGL  : EGLNativeWindowType 0x75e2361010 disconnect failed[0m
+[38;5;166m05-16 20:34:38.457 14931 14978 W libEGL  : EGLNativeWindowType 0x76047ba010 disconnect failed[0m
+[38;5;75m05-16 20:34:38.457 14931 14978 D mali_winsys: EGLint new_window_surface(egl_winsys_display *, void *, EGLSurface, EGLConfig, egl_winsys_surface **, EGLBoolean) returns 0x3000[0m

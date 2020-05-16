@@ -1,0 +1,1 @@
+rm build.log ; ./android.sh --speed --enable-gpl --full --enable-rubberband --enable-libvidstab --enable-x264 --enable-x265 --enable-xvidcore --disable-arm-v7a --disable-arm-v7a-neon --disable-x86 --disable-x86-64

@@ -18,6 +18,7 @@
 using AudioTime_Format = uint64_t;
 // declare after AudioTime_Format due to ifdef guard
 #include "../AudioEngine/audio/SoundRecordingAudioData.h"
+#include "timer.h"
 
 #define ATM(include_human_time_markings, what, pointer, time, len) \
     if (time == time##Previous) { \
@@ -341,5 +342,6 @@ public:
     void calculateNanoseconds(AudioTime_Format inputNanoseconds);
 };
 
+clock__declare__print_timing_information_function(core_print_time);
 
 #endif //MEDIA_PLAYER_PRO_AUDIOTIME_H
