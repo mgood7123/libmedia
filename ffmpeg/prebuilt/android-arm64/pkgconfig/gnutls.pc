@@ -1,0 +1,13 @@
+prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/gnutls
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: gnutls
+Description: GNU TLS Implementation
+
+Version: 3.6.13
+Requires: nettle, hogweed, zlib
+Cflags: -I${includedir}
+Libs: -L${libdir} -lgnutls
+Libs.private: -lgmp

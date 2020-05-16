@@ -1,0 +1,18 @@
+prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/fontconfig
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+sysconfdir=${prefix}/etc
+localstatedir=${prefix}/var
+PACKAGE=fontconfig
+confdir=${sysconfdir}/fonts
+cachedir=${localstatedir}/cache/${PACKAGE}
+
+Name: Fontconfig
+Description: Font configuration and customization library
+Version: 2.13.92
+Requires:  freetype2 >= 21.0.15
+Requires.private: 
+Libs: -L${libdir} -lfontconfig
+Libs.private:  -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/expat/lib -lexpat
+Cflags: -I${includedir}  -I/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/expat/include

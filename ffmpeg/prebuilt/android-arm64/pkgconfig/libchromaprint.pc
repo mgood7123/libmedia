@@ -1,0 +1,11 @@
+prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/chromaprint
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: chromaprint
+Description: Audio fingerprint library
+URL: http://acoustid.org/chromaprint
+Version: 1.4.3
+Libs: -L${libdir} -lchromaprint
+Cflags: -I${includedir}

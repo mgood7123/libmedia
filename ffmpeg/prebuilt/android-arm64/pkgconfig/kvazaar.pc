@@ -1,0 +1,11 @@
+prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/kvazaar
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+incdir=${prefix}/include
+
+Name: libkvazaar
+Description: Open-source HEVC encoder
+Version: 1.3.0
+Libs: -L${libdir} -lkvazaar
+Libs.private:    
+Cflags: -I${incdir}

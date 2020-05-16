@@ -1,0 +1,13 @@
+prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/libxml2
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+modules=1
+
+Name: libXML
+Version: 2.9.10
+Description: libXML library version2.
+Requires:
+Libs: -L${libdir} -lxml2
+Libs.private:   -L/Users/mac/Library/Android/sdk/ndk-bundle/platforms/android-24/arch-arm64/usr/lib -lz  -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/libiconv/lib/lib -lm  
+Cflags: -I${includedir}/libxml2 -I/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/libiconv/lib/include 

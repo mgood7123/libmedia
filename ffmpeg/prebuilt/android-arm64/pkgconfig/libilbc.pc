@@ -1,0 +1,11 @@
+prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/libilbc
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libilbc
+Description: Internet Low Bitrate Codec (iLBC) library
+Version: 2.0.2
+Libs: -L${libdir} -lilbc
+Libs.private: 
+Cflags: -I${includedir}/

@@ -1,0 +1,10 @@
+prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/openh264
+libdir=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/openh264/lib
+includedir=${prefix}/include
+
+Name: OpenH264
+Description: OpenH264 is a codec library which supports H.264 encoding and decoding. It is suitable for use in real time applications such as WebRTC.
+Version: 2.1.0
+Libs: -L${libdir} -lopenh264 -lstdc++
+Libs.private: 
+Cflags: -I${includedir}

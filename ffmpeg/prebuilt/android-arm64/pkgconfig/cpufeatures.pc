@@ -1,0 +1,12 @@
+prefix=/Users/mac/Library/Android/sdk/ndk-bundle/sources/android/cpufeatures
+exec_prefix=${prefix}
+libdir=${exec_prefix}
+includedir=${prefix}
+
+Name: cpufeatures
+Description: cpu features Android utility
+Version: 1.24
+
+Requires:
+Libs: -L${libdir} -lcpufeatures
+Cflags: -I${includedir}

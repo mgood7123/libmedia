@@ -1,0 +1,12 @@
+prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/libiconv
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libiconv
+Description: Character set conversion library
+Version: 1.16
+
+Requires:
+Libs: -L${libdir} -liconv -lcharset
+Cflags: -I${includedir}

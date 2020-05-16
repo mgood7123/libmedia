@@ -1,0 +1,11 @@
+prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/rubberband
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: rubberband
+Version: 1.8.2
+Description:
+Requires: sndfile, samplerate
+Libs: -L${libdir} -lrubberband
+Cflags: -I${includedir} 

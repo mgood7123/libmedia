@@ -1,0 +1,12 @@
+prefix=/Users/mac/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr
+exec_prefix=${prefix}
+libdir=/Users/mac/Library/Android/sdk/ndk-bundle/platforms/android-24/arch-arm64/usr/lib
+includedir=${prefix}/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.7
+
+Requires:
+Libs: -L${libdir} -lz
+Cflags: -I${includedir}

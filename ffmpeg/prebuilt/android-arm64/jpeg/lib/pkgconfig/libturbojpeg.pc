@@ -1,0 +1,10 @@
+prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/jpeg
+exec_prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/jpeg
+libdir=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/jpeg/lib
+includedir=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/jpeg/include
+
+Name: libturbojpeg
+Description: A SIMD-accelerated JPEG codec that provides the TurboJPEG API
+Version: 2.0.4
+Libs: -L${libdir} -lturbojpeg
+Cflags: -I${includedir}

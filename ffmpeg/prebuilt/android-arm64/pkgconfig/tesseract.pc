@@ -1,0 +1,16 @@
+prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/tesseract
+exec_prefix=${prefix}
+bindir=${exec_prefix}/bin
+datarootdir=${prefix}/share
+datadir=${datarootdir}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: tesseract
+Description: An OCR Engine that was developed at HP Labs between 1985 and 1995... and now at Google.
+URL: https://github.com/tesseract-ocr/tesseract
+Version: 3.05.02
+
+Requires: lept, libjpeg, libpng, giflib, zlib, libwebp, libtiff-4
+Libs: -L${libdir} -ltesseract -lc++_shared
+Cflags: -I${includedir}

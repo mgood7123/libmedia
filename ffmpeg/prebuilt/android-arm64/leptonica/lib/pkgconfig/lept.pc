@@ -1,0 +1,12 @@
+prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/leptonica
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include/leptonica
+
+Name: leptonica
+Description: An open source C library for efficient image processing and image analysis operations
+Version: 1.78.0
+Libs: -L${libdir} -llept
+Libs.private: -L/Users/mac/Library/Android/sdk/ndk-bundle/platforms/android-24/arch-arm64/usr/lib -lz -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/libpng/lib -L/Users/mac/Library/Android/sdk/ndk-bundle/platforms/android-24/arch-arm64/usr/lib -lpng16 -lm -lz -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/jpeg/lib -ljpeg -lgif -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/tiff/lib -ltiff -ljpeg -lz -lm -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/libwebp/lib -lwebp -lm
+Cflags: -I${includedir}
+

@@ -1,0 +1,14 @@
+prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/ffmpeg
+exec_prefix=${prefix}
+libdir=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/ffmpeg/lib
+includedir=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/ffmpeg/include
+
+Name: libavutil
+Description: FFmpeg utility library
+Version: 56.42.102
+Requires: 
+Requires.private: 
+Conflicts:
+Libs: -L${libdir}  -lavutil 
+Libs.private: -pthread -lm
+Cflags: -I${includedir}

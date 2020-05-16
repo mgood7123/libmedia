@@ -1,0 +1,14 @@
+prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/ffmpeg
+exec_prefix=${prefix}
+libdir=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/ffmpeg/lib
+includedir=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/ffmpeg/include
+
+Name: libswresample
+Description: FFmpeg audio resampling library
+Version: 3.6.100
+Requires: 
+Requires.private: libavutil >= 56.42.102
+Conflicts:
+Libs: -L${libdir}  -lswresample 
+Libs.private: -lm -lsoxr
+Cflags: -I${includedir}

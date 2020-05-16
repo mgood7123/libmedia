@@ -1,0 +1,13 @@
+prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/wavpack
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: wavpack
+Description: wavpack library
+Version: 5.2.0
+Requires:
+Conflicts:
+Libs: -L${libdir} -lwavpack
+Libs.private: -lm
+Cflags: -I${includedir}

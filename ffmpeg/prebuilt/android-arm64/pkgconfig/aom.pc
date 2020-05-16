@@ -1,0 +1,12 @@
+prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/libaom
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: aom
+Description: AV1 codec library v1.0.0.
+Version: 1.0.0
+
+Requires:
+Libs: -L${libdir} -laom -lm
+Cflags: -I${includedir}

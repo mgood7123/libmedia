@@ -1,0 +1,14 @@
+prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/ffmpeg
+exec_prefix=${prefix}
+libdir=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/ffmpeg/lib
+includedir=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/ffmpeg/include
+
+Name: libavdevice
+Description: FFmpeg device handling library
+Version: 58.9.103
+Requires: 
+Requires.private: libavfilter >= 7.77.101, libswscale >= 5.6.101, libavformat >= 58.42.100, libavcodec >= 58.78.102, libswresample >= 3.6.100, libavutil >= 56.42.102
+Conflicts:
+Libs: -L${libdir}  -lavdevice 
+Libs.private: -landroid -lcamera2ndk -lmediandk -lm -landroid -lcamera2ndk -lmediandk -pthread -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/sdl/lib -lSDL2
+Cflags: -I${includedir}

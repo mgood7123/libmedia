@@ -1,0 +1,14 @@
+prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/ffmpeg
+exec_prefix=${prefix}
+libdir=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/ffmpeg/lib
+includedir=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/ffmpeg/include
+
+Name: libavcodec
+Description: FFmpeg codec library
+Version: 58.78.102
+Requires: 
+Requires.private: libswresample >= 3.6.100, libavutil >= 56.42.102
+Conflicts:
+Libs: -L${libdir}  -lavcodec 
+Libs.private: -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/libvpx/lib -lvpx -lm -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/libvpx/lib -lvpx -lm -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/libvpx/lib -lvpx -lm -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/libvpx/lib -lvpx -lm -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/libwebp/lib -lwebpmux -lwebp -pthread -liconv -lm -lopencore-amrwb -lsnappy -lstdc++ -L/Users/mac/Library/Android/sdk/ndk-bundle/platforms/android-24/arch-arm64/usr/lib -lz -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/libaom/lib -laom -lm -lilbc -pthread -lmp3lame -lm -lopencore-amrnb -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/opus/lib -lopus -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/shine/lib -lm -lshine -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/speex/lib -lspeex -ltheoraenc -ltheoradec -logg -ltwolame -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/libvorbis/lib -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/libogg/lib -lvorbis -lm -logg -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/libvorbis/lib -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/libogg/lib -lvorbisenc -lvorbis -lm -logg -lwavpack -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/libwebp/lib -lwebp -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/x264/lib -lx264 -lm -ldl -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/x265/lib -lx265 -lxvidcore -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/openh264/lib -lopenh264 -lstdc++ -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/kvazaar/lib -lkvazaar
+Cflags: -I${includedir}

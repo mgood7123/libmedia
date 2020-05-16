@@ -1,0 +1,14 @@
+prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/ffmpeg
+exec_prefix=${prefix}
+libdir=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/ffmpeg/lib
+includedir=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/ffmpeg/include
+
+Name: libavformat
+Description: FFmpeg container format library
+Version: 58.42.100
+Requires: 
+Requires.private: libavcodec >= 58.78.102, libswresample >= 3.6.100, libavutil >= 56.42.102
+Conflicts:
+Libs: -L${libdir}  -lavformat 
+Libs.private: -lm -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/libxml2/lib -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/libiconv/lib -lxml2 -liconv -lcharset -lchromaprint -lgmp -L/Users/mac/Library/Android/sdk/ndk-bundle/platforms/android-24/arch-arm64/usr/lib -lz -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/gnutls/lib -L/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/nettle/lib -L/Users/mac/Library/Android/sdk/ndk-bundle/platforms/android-24/arch-arm64/usr/lib -lgnutls -lhogweed -lgmp -lnettle -lz
+Cflags: -I${includedir}

@@ -1,0 +1,10 @@
+prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/shine
+exec_prefix=${prefix}
+includedir=${prefix}/include
+libdir=${exec_prefix}/lib
+
+Name: shine
+Description: Fixed-point mp3 encoding library.
+Version: 3.1.1
+Cflags: -I${includedir}
+Libs: -L${libdir} -lm -lshine
