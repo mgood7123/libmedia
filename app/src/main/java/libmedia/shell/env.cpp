@@ -135,6 +135,19 @@ void env__print(env_t env, const char *envtarget) {
     return;
 }
 
+void env__print__as__argument__vector(env_t env) {
+    if (!env) return;
+    for (env_t ep = env; *ep; ep++) {
+        if (*(ep+1) == NULL) printf("%s\n", *ep);
+        else printf("%s ", *ep);
+    }
+}
+
+void env__put(env_t env) {
+    if (!env) return;
+    for (env_t ep = env; *ep; ep++) putenv(*ep);
+}
+
 char *env__return(env_t env, const char *envtarget) {
     if (!env) return NULL;
     const char * STTR = envtarget;
@@ -206,8 +219,7 @@ env_t env__new() {
 
 void env__free(env_t env) {
     if (!env) return;
-    env_t ep;
-    for (ep = env; *ep; ep++) {
+    for (env_t ep = env; *ep; ep++) {
         memset(*ep, 0, strlen(*ep));
         free(*ep);
         *ep = NULL;
@@ -224,8 +236,7 @@ void env__clear(env_t env) {
 
 void env__list(env_t env) {
     if (!env) return;
-    env_t ep;
-    for (ep = env; *ep; ep++) printf("%s\n", *ep);
+    for (env_t ep = env; *ep; ep++) printf("%s\n", *ep);
 }
 
 env_t env__add(env_t env, const char *string) {
@@ -234,7 +245,7 @@ env_t env__add(env_t env, const char *string) {
     char * name = env__get_name(env, string);
     if (env__getposition(env, name==NULL?string:name) != -1) return env;
     env_t array_tmp;
-    size_t i = env__size(env);
+    int i = env__size(env);
     array_tmp = static_cast<env_t>(realloc(env, ((i + 2) * sizeof(char*))));
     if (array_tmp == NULL) {
         fprintf(stderr, "failed to resize env");
@@ -250,7 +261,7 @@ env_t env__add(env_t env, const char *string) {
 env_t env__add_allow_duplicates(env_t env, const char *string) {
     /*if (!env) env = env__new(); */
     env_t array_tmp;
-    size_t i = env__size(env);
+    int i = env__size(env);
     array_tmp = static_cast<env_t>(realloc(env, ((i + 2) * sizeof(char*))));
     if (array_tmp == NULL) {
         fprintf(stderr, "failed to resize env");

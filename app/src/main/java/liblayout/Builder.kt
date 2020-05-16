@@ -90,6 +90,24 @@ fun Builder(UI: UiThread, view: View): Builder {
  * case [column] will throw [ArrayIndexOutOfBoundsException])
  *
  */
+fun Builder(activity: Activity, view: View): Builder {
+    val builder = Builder(null, null).also {
+        it.threaded = true
+        it.view = view
+        it.useParent = false
+        it.activity = activity
+    }
+    return builder
+}
+
+/**
+ * constructs a new [View] that fits the specified **view**
+ *
+ * a Builder does not contain any [rows][row] when created to avoid confusing between the user adding a [row]
+ * thinking the Builder contains no [rows][row], and then ending up with 1 extra [row], and vice versa (in which
+ * case [column] will throw [ArrayIndexOutOfBoundsException])
+ *
+ */
 fun Builder(UI: UiThread, view: View, useParent: Boolean): Builder {
     val builder = Builder(null, null).also {
         it.threaded = true
@@ -113,6 +131,9 @@ class Builder(var maxHeight: Int?, var maxWidth: Int?) {
     var activity: Activity? = null
     var activityFrameLayout: FrameLayout? = null
     var view: View? = null
+    var viewGroup: ViewGroup? = null
+    var hasView = false;
+    var hasActivity = false;
     var UI: UiThread? = null
     var useParent = true
 
@@ -134,7 +155,7 @@ class Builder(var maxHeight: Int?, var maxWidth: Int?) {
 
     class Column() {
         var isView = true
-        var viewfun: (() -> View)? = null
+        var viewfun: ((column: Column) -> View)? = null
         var view: View? = null
         var sizeFromTop = 0
         var sizeFromLeft = 0
@@ -175,7 +196,7 @@ class Builder(var maxHeight: Int?, var maxWidth: Int?) {
      * @param view a function that returns a [View]
      */
     @Throws(ArrayIndexOutOfBoundsException::class)
-    private fun column_(rowIndex: Int, view: () -> View): Builder {
+    private fun column_(rowIndex: Int, view: (column: Column) -> View): Builder {
         if (!threaded || !addToQueue) {
             if (row.isEmpty() && row.size >= rowIndex) throw ArrayIndexOutOfBoundsException()
             else {
@@ -285,7 +306,7 @@ class Builder(var maxHeight: Int?, var maxWidth: Int?) {
      * @param rowIndex the row number
      * @param view a function that returns a [View]
      */
-    fun column(rowIndex: Int, view: () -> View): Builder = column_(rowIndex, view)
+    fun column(rowIndex: Int, view: (column: Column) -> View): Builder = column_(rowIndex, view)
 
     /**
      * appends a new [column] to the last added [row]
@@ -329,7 +350,7 @@ class Builder(var maxHeight: Int?, var maxWidth: Int?) {
      *
      * @param view a function that returns a [View]
      */
-    fun column(view: () -> View) = column_(row.lastIndex, view)
+    fun column(view: (column: Column) -> View) = column_(row.lastIndex, view)
 
     /**
      * adds a new row to the [Builder]
@@ -354,7 +375,7 @@ class Builder(var maxHeight: Int?, var maxWidth: Int?) {
      * that it wants to be attached to
      *
      */
-    fun row(columns: Int, view: () -> View): Builder {
+    fun row(columns: Int, view: (column: Column) -> View): Builder {
         if (!threaded) {
             val i = row.size
             row()
@@ -503,7 +524,7 @@ class Builder(var maxHeight: Int?, var maxWidth: Int?) {
                 row.forEach {
                     it.column.forEach {
                         absoluteLayout.addView(
-                            if (it.isView) it.view else it.viewfun!!(),
+                            if (it.isView) it.view else it.viewfun!!(it),
                             AbsoluteLayout.LayoutParams(
                                 it.sizeFromLeft,
                                 it.sizeFromTop,
@@ -514,7 +535,8 @@ class Builder(var maxHeight: Int?, var maxWidth: Int?) {
                     }
                 }
                 activity!!.runOnUiThread {
-                    activity!!.setContentView(absoluteLayout)
+                    if (view != null) (view!! as ViewGroup).addView(absoluteLayout)
+                    else activity!!.setContentView(absoluteLayout)
                 }
             } else if (view != null) {
                 val absoluteLayout = AbsoluteLayout(UI!!.context)
@@ -527,7 +549,7 @@ class Builder(var maxHeight: Int?, var maxWidth: Int?) {
                         Log.e("NU", "it.distanceFromLeft = ${it.distanceFromLeft}")
                         Log.e("NU", "it.distanceFromTop = ${it.distanceFromTop}")
                         absoluteLayout.addView(
-                            it.view, AbsoluteLayout.LayoutParams(
+                            it.view!!, AbsoluteLayout.LayoutParams(
                                 it.sizeFromLeft,
                                 it.sizeFromTop,
                                 it.distanceFromLeft,
@@ -545,7 +567,7 @@ class Builder(var maxHeight: Int?, var maxWidth: Int?) {
         }
         Thread {
             Looper.prepare()
-            while (activity != null && view != null) {
+            while (activity == null || view == null) {
                 Log.w(
                     "AV",
                     "activity or view is null: activity is $activity and view is $view"
@@ -650,6 +672,10 @@ class Builder(var maxHeight: Int?, var maxWidth: Int?) {
             }
             return absoluteLayout
         } else throw Exception("executing this when threading makes no sense")
+    }
+
+    fun build(view: ViewGroup) {
+        view.addView(buildReturn(activity!!))
     }
 
     /**

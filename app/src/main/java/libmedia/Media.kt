@@ -20,6 +20,7 @@ import java.io.*
 
 @Suppress("unused")
 class Media(private val activity: Activity) {
+
     private val LOG_TAG = "libMedia"
     inner class Classes {
 
@@ -105,31 +106,28 @@ class Media(private val activity: Activity) {
                 fromAssetPath: String?,
                 toPath: String
             ): Boolean {
-                try {
-                    val files: Array<String>? = assetManager.list(if (fromAssetPath.isNullOrBlank()) "" else fromAssetPath)
-                    if (files == null) return false else if (files.isEmpty()) return false
-                    Log.i(LOG_TAG, "obtained a list of assets")
-                    File(toPath).mkdirs()
-                    var res = true
-                    for (file in files)
-                        if (file.contains("."))
-                            res = res and copyAsset(
-                                assetManager,
-                                if (fromAssetPath.isNullOrBlank()) file else "$fromAssetPath/$file",
-                                "$toPath/$file"
-                            )
-                        else
-                            res = res and copyAssetFolder(
-                                assetManager,
-                                if (fromAssetPath.isNullOrBlank()) file else "$fromAssetPath/$file",
-                                "$toPath/$file"
-                            )
-                    return res
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    return false
+                val files: Array<String>? =
+                    assetManager.list(if (fromAssetPath.isNullOrBlank()) "" else fromAssetPath)
+                if (files == null) return false else if (files.isEmpty()) return false
+                Log.i(LOG_TAG, "obtained a list of assets")
+                File(toPath).mkdirs()
+                var res = true
+                files.forEach {
+                    // attempting to open a directory will return a filenotfound exception
+                    var f = ""
+                    f = if (fromAssetPath.isNullOrBlank()) it
+                    else "$fromAssetPath/$it"
+                    res = try {
+                        val dummy = assetManager.open(f)
+                        // if this point has been reached, we found a file
+                        dummy.close()
+                        res and copyAsset(assetManager, f, "$toPath/$it")
+                    } catch (e: IOException) {
+                        // we didnt find a file, assume it must be a folder
+                        res and copyAssetFolder(assetManager, f, "$toPath/$it")
+                    }
                 }
-
+                return res
             }
 
             fun copyAsset(
@@ -138,22 +136,22 @@ class Media(private val activity: Activity) {
             ): Boolean {
                 var `in`: InputStream? = null
                 var out: OutputStream? = null
+                Log.i(LOG_TAG, "copying \"$fromAssetPath\" to \"$toPath\"")
                 try {
-                    Log.i(LOG_TAG, "copying \"$fromAssetPath\" to \"$toPath\"")
                     `in` = assetManager.open(fromAssetPath)
-                    File(toPath).createNewFile()
-                    out = FileOutputStream(toPath)
-                    copyFile(`in`!!, out)
-                    `in`.close()
-                    `in` = null
-                    out.flush()
-                    out.close()
-                    out = null
-                    return true
                 } catch (e: Exception) {
                     e.printStackTrace()
                     return false
                 }
+                File(toPath).createNewFile()
+                out = FileOutputStream(toPath)
+                copyFile(`in`!!, out)
+                `in`.close()
+                `in` = null
+                out.flush()
+                out.close()
+                out = null
+                return true
             }
 
             @Throws(IOException::class)
@@ -331,13 +329,20 @@ class Media(private val activity: Activity) {
     lateinit var mAudioTrack: AudioTrack
 
     fun `init`(): Media {
+        // If this method is called more than once with the same library name, the second and
+        // subsequent calls are ignored.
+        System.loadLibrary("AudioEngine")
+
         ASSETS = activity.filesDir.absolutePath + "/ASSETS"
         Log.i(LOG_TAG, "copying assets folder")
         classes.assetsManager().copyAssetFolder(activity.assets)
+        if (File(ASSETS + "/usr/bin").exists()) {
+            Chmod.main(arrayOf("-R", "a=rwx", ASSETS + "/usr/bin"))
+        }
         setTemporyMediaFilesDirectory(activity.filesDir.absolutePath)
 
         audioManager = activity.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        audioManagerObtained = true;
+        audioManagerObtained = true
 
         when {
             useAudioTrack -> {

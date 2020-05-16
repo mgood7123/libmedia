@@ -28,5 +28,5 @@ extern env_t env__replace(env_t env, const char * string, const char * string2);
 extern env_t env__append(env_t env, const char * name, const char * string);
 extern env_t env__append_env(env_t env1, env_t env2);
 extern env_t env__clean(env_t env1);
-
+extern void env__print__as__argument__vector(env_t env);
 #endif //MEDIA_PLAYER_PRO_ENV_H

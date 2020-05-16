@@ -6,6 +6,78 @@
 #include <OboeDebug.h>
 #include "AudioTime.h"
 
+void AudioTime::calculateNanoseconds(AudioTime_Format inputNanoseconds) {
+    calculateNanoseconds(this, inputNanoseconds);
+}
+
+void AudioTime::calculateNanoseconds(AudioTime * audioTime, AudioTime_Format inputNanoseconds) {
+    // duration::time is unsigned, while chrono::time is signed
+
+    duration::nanoseconds nanoseconds = duration::nanoseconds (inputNanoseconds);
+    audioTime->nanosecondsPrevious = audioTime->nanoseconds;
+    audioTime->nanosecondsTotal = nanoseconds.count();
+
+    duration::microseconds microseconds = std::chrono::duration_cast<duration::microseconds>(nanoseconds);
+    audioTime->microsecondsPrevious = audioTime->microseconds;
+    audioTime->microsecondsTotal = microseconds.count();
+    nanoseconds -= std::chrono::duration_cast<duration::nanoseconds>(microseconds);
+    audioTime->nanoseconds = nanoseconds.count();
+
+    duration::milliseconds milliseconds = std::chrono::duration_cast<duration::milliseconds>(microseconds);
+    audioTime->millisecondsPrevious = audioTime->milliseconds;
+    audioTime->millisecondsTotal = milliseconds.count();
+    microseconds -= std::chrono::duration_cast<duration::milliseconds>(microseconds);
+    audioTime->microseconds = microseconds.count();
+
+    duration::seconds seconds = std::chrono::duration_cast<duration::seconds>(milliseconds);
+    audioTime->secondsPrevious = audioTime->seconds;
+    audioTime->secondsTotal = seconds.count();
+    milliseconds -= std::chrono::duration_cast<duration::milliseconds>(seconds);
+    audioTime->milliseconds = milliseconds.count();
+
+    duration::minutes minutes = std::chrono::duration_cast<duration::minutes>(seconds);
+    audioTime->minutesPrevious = audioTime->minutes;
+    audioTime->minutesTotal = minutes.count();
+    seconds -= std::chrono::duration_cast<duration::seconds>(minutes);
+    audioTime->seconds = seconds.count();
+
+    duration::hours hours = std::chrono::duration_cast<duration::hours>(minutes);
+    audioTime->hoursPrevious = audioTime->hours;
+    audioTime->hoursTotal = hours.count();
+    minutes -= std::chrono::duration_cast<duration::minutes>(hours);
+    audioTime->minutes = minutes.count();
+
+//    typedef date::days days;
+//    typedef date::weeks weeks;
+//    typedef date::months months;
+//    typedef date::years years;
+
+    duration::days days = std::chrono::duration_cast<duration::days>(hours);
+    audioTime->daysPrevious = audioTime->days;
+    audioTime->daysTotal = days.count();
+    hours -= std::chrono::duration_cast<duration::hours>(days);
+    audioTime->hours = hours.count();
+
+    duration::weeks weeks = std::chrono::duration_cast<duration::weeks>(days);
+    audioTime->weeksPrevious = audioTime->weeks;
+    audioTime->weeksTotal = weeks.count();
+    days -= std::chrono::duration_cast<duration::days>(weeks);
+    audioTime->days = days.count();
+
+    duration::months months = std::chrono::duration_cast<duration::months>(weeks);
+    audioTime->monthsPrevious = audioTime->months;
+    audioTime->monthsTotal = months.count();
+    weeks -= std::chrono::duration_cast<duration::weeks>(months);
+    audioTime->weeks = weeks.count();
+
+    duration::years years = std::chrono::duration_cast<duration::years>(months);
+    audioTime->yearsPrevious = audioTime->years;
+    audioTime->yearsTotal = years.count();
+    audioTime->years = audioTime->yearsTotal;
+    months -= std::chrono::duration_cast<duration::months>(years);
+    audioTime->months = months.count();
+}
+
 void AudioTime::update(uint64_t frame, SoundRecordingAudioData *AudioData) {
 
     if (StartOfFile) {
@@ -27,71 +99,10 @@ void AudioTime::update(uint64_t frame, SoundRecordingAudioData *AudioData) {
     std::chrono::steady_clock::time_point start, end;
     if (includeTimingInformation) start = std::chrono::steady_clock::now();
 
-    // duration::time is unsigned, while chrono::time is signed
+    AudioTime_Format nanos = static_cast<AudioTime_Format>(frame) * divisionValue().nanoseconds;
+    AudioTime_Format sampleRate = static_cast<AudioTime_Format>(AudioData->sampleRate);
 
-    duration::nanoseconds nanoseconds = duration::nanoseconds ((static_cast<AudioTime_Format>(frame) * divisionValue().nanoseconds) / static_cast<AudioTime_Format>(AudioData->sampleRate));
-    this->nanosecondsPrevious = this->nanoseconds;
-    this->nanosecondsTotal = nanoseconds.count();
-
-    duration::microseconds microseconds = std::chrono::duration_cast<duration::microseconds>(nanoseconds);
-    this->microsecondsPrevious = this->microseconds;
-    this->microsecondsTotal = microseconds.count();
-    nanoseconds -= std::chrono::duration_cast<duration::nanoseconds>(microseconds);
-    this->nanoseconds = nanoseconds.count();
-
-    duration::milliseconds milliseconds = std::chrono::duration_cast<duration::milliseconds>(microseconds);
-    this->millisecondsPrevious = this->milliseconds;
-    this->millisecondsTotal = milliseconds.count();
-    microseconds -= std::chrono::duration_cast<duration::milliseconds>(microseconds);
-    this->microseconds = microseconds.count();
-
-    duration::seconds seconds = std::chrono::duration_cast<duration::seconds>(milliseconds);
-    this->secondsPrevious = this->seconds;
-    this->secondsTotal = seconds.count();
-    milliseconds -= std::chrono::duration_cast<duration::milliseconds>(seconds);
-    this->milliseconds = milliseconds.count();
-
-    duration::minutes minutes = std::chrono::duration_cast<duration::minutes>(seconds);
-    this->minutesPrevious = this->minutes;
-    this->minutesTotal = minutes.count();
-    seconds -= std::chrono::duration_cast<duration::seconds>(minutes);
-    this->seconds = seconds.count();
-
-    duration::hours hours = std::chrono::duration_cast<duration::hours>(minutes);
-    this->hoursPrevious = this->hours;
-    this->hoursTotal = hours.count();
-    minutes -= std::chrono::duration_cast<duration::minutes>(hours);
-    this->minutes = minutes.count();
-
-//    typedef date::days days;
-//    typedef date::weeks weeks;
-//    typedef date::months months;
-//    typedef date::years years;
-
-    duration::days days = std::chrono::duration_cast<duration::days>(hours);
-    this->daysPrevious = this->days;
-    this->daysTotal = days.count();
-    hours -= std::chrono::duration_cast<duration::hours>(days);
-    this->hours = hours.count();
-
-    duration::weeks weeks = std::chrono::duration_cast<duration::weeks>(days);
-    this->weeksPrevious = this->weeks;
-    this->weeksTotal = weeks.count();
-    days -= std::chrono::duration_cast<duration::days>(weeks);
-    this->days = days.count();
-
-    duration::months months = std::chrono::duration_cast<duration::months>(weeks);
-    this->monthsPrevious = this->months;
-    this->monthsTotal = months.count();
-    weeks -= std::chrono::duration_cast<duration::weeks>(months);
-    this->weeks = weeks.count();
-
-    duration::years years = std::chrono::duration_cast<duration::years>(months);
-    this->yearsPrevious = this->years;
-    this->yearsTotal = years.count();
-    this->years = this->yearsTotal;
-    months -= std::chrono::duration_cast<duration::months>(years);
-    this->months = months.count();
+    calculateNanoseconds(nanos / sampleRate);
 
     if (includeTimingInformation) end = std::chrono::steady_clock::now();
 
@@ -105,25 +116,25 @@ void AudioTime::update(uint64_t frame, SoundRecordingAudioData *AudioData) {
                     AudioData->function_duration__ChronoMICRO);
         }
         if (AudioData->Initializations->ShouldInitialize) {
-            AudioData->nanosecondsPerFrame = nanoseconds.count();
+            AudioData->nanosecondsPerFrame = nanoseconds;
             AudioData->Initializations->nanosecondsPerFrameInitialized = true;
-            AudioData->microsecondsPerFrame = microseconds.count();
+            AudioData->microsecondsPerFrame = microseconds;
             AudioData->Initializations->microsecondsPerFrameInitialized = true;
-            AudioData->millisecondsPerFrame = milliseconds.count();
+            AudioData->millisecondsPerFrame = milliseconds;
             AudioData->Initializations->millisecondsPerFrameInitialized = true;
-            AudioData->secondsPerFrame = seconds.count();
+            AudioData->secondsPerFrame = seconds;
             AudioData->Initializations->secondsPerFrameInitialized = true;
-            AudioData->minutesPerFrame = minutes.count();
+            AudioData->minutesPerFrame = minutes;
             AudioData->Initializations->minutesPerFrameInitialized = true;
-            AudioData->hoursPerFrame = hours.count();
+            AudioData->hoursPerFrame = hours;
             AudioData->Initializations->hoursPerFrameInitialized = true;
-            AudioData->daysPerFrame = days.count();
+            AudioData->daysPerFrame = days;
             AudioData->Initializations->daysPerFrameInitialized = true;
-            AudioData->weeksPerFrame = weeks.count();
+            AudioData->weeksPerFrame = weeks;
             AudioData->Initializations->weeksPerFrameInitialized = true;
-            AudioData->monthsPerFrame = months.count();
+            AudioData->monthsPerFrame = months;
             AudioData->Initializations->monthsPerFrameInitialized = true;
-            AudioData->yearsPerFrame = years.count();
+            AudioData->yearsPerFrame = years;
             AudioData->Initializations->yearsPerFrameInitialized = true;
             AudioData->TimeHumanizedPerFrame = format(true, AudioData);
             AudioData->TimeNormalPerFrame = format(false, AudioData);

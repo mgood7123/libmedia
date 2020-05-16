@@ -1,0 +1,74 @@
+Welcome to the Android Terminal Log
+
+To view a demonstration long press on the screen
+tap "More..."
+tap "printf something to the terminal
+
+By default this invokes the following C/C++ code:
+
+    printf("HELLO FROM NATIVE CPP\n");
+
+like a terminal, output is sent by printing a new line
+so if no output appears, try putting a new line in your printing function
+
+Now printing logging info:
+
+opening ptmx (master) device
+opened ptmx (master) device: 40
+opening /dev/pts/0 (slave) device
+opened /dev/pts/0 (slave) device: 41
+duping current stdin (fd 0), stdout (fd 1), and stderr (fd 2) to /dev/pts/0 (slave) device: 41
+returning ptmx (master) device: 40
+
+
+SOX__RESAMPLE(inFilename, inSampleRate, outFilename, outSampleRate, mChannelCount) took 0 minutes, 0 seconds, 174 milliseconds, 12 microseconds, and 115 nanoseconds to execute
+
+executing command: ffmpeg -f s16le -ar 48000 -ac 2 -i /data/user/0/media.player.pro/files/ASSETS/00001313_44100.raw.resampled.raw -filter_complex showwavespic=s=1080x720 -frames:v 1 -y /data/user/0/media.player.pro/files/ASSETS/00001313_44100.raw.resampled.raw.waveform.png
+
+ffmpeg version v4.3-dev-2955 Copyright (c) 2000-2020 the FFmpeg developers
+  built with Android (5900059 based on r365631c) clang version 9.0.8 (https://android.googlesource.com/toolchain/llvm-project 207d7abc1a2abf3ef8d4301736d6a7ebc224a290) (based on LLVM 9.0.8svn)
+  configuration: --cross-prefix=aarch64-linux-android- --sysroot=/Users/mac/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/sysroot --prefix=/Users/mac/StudioProjects/libmedia-Upated/ffmpeg/prebuilt/android-arm64/ffmpeg --pkg-config=/usr/local/bin/pkg-config --enable-version3 --arch=aarch64 --cpu=armv8-a --cc=aarch64-linux-android24-clang --cxx=aarch64-linux-android24-clang++ --target-os=android --enable-neon --enable-asm --enable-inline-asm --enable-cross-compile --enable-pic --enable-jni --enable-optimizations --enable-swscale --enable-shared --enable-v4l2-m2m --disable-outdev=fbdev --disable-indev=fbdev --disable-openssl --disable-xmm-clobber-test --disable-debug --enable-lto --disable-neon-clobber-test --disable-ffplay --disable-postproc --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages --disable-static --disable-sndio --disable-schannel --disable-securetransport --disable-xlib --disable-cuda --disable-cuvid --disable-nvenc --disable-vaapi --disable-vdpau --disable-videotoolbox --disable-audiotoolbox --disable-appkit --disable-alsa --disable-cuda --disable-cuvid --disable-nvenc --disable-vaapi --disable-vdpau --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-gmp --enable-gnutls --enable-libmp3lame --enable-libass --enable-iconv --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libxml2 --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libshine --enable-libspeex --enable-libwavpack --enable-libkvazaar --enable-libx264 --enable-gpl --enable-libxvid --enable-gpl --enable-libx265 --enable-gpl --enable-libvidstab --enable-gpl --enable-librubberband --enable-gpl --enable-libilbc --enable-libopus --enable-libsnappy --enable-libsoxr --enable-libaom --enable-chromaprint --enable-libtwolame --enable-sdl2 --enable-libtesseract --enable-libopenh264 --enable-zlib --enable-mediacodec
+  libavutil      56. 42.102 / 56. 42.102
+  libavcodec     58. 78.102 / 58. 78.102
+  libavformat    58. 42.100 / 58. 42.100
+  libavdevice    58.  9.103 / 58.  9.103
+  libavfilter     7. 77.101 /  7. 77.101
+  libswscale      5.  6.101 /  5.  6.101
+  libswresample   3.  6.100 /  3.  6.100
+[s16le @ 0x75fb69e000] Estimating duration from bitrate, this may be inaccurate
+Guessed Channel Layout for Input Stream #0.0 : stereo
+Input #0, s16le, from '/data/user/0/media.player.pro/files/ASSETS/00001313_44100.raw.resampled.raw':
+  Duration: 00:00:23.37, bitrate: 1535 kb/s
+    Stream #0:0: Audio: pcm_s16le, 48000 Hz, stereo, s16, 1536 kb/s
+Stream mapping:
+  Stream #0:0 (pcm_s16le) -> showwavespic
+  showwavespic -> Stream #0:0 (png)
+Press [q] to stop, [?] for help
+Output #0, image2, to '/data/user/0/media.player.pro/files/ASSETS/00001313_44100.raw.resampled.raw.waveform.png':
+  Metadata:
+    encoder         : Lavf58.42.100
+    Stream #0:0: Video: png, rgba, 1080x720 [SAR 1:1 DAR 3:2], q=2-31, 200 kb/s, 44.44 fps, 44.44 tbn, 44.44 tbc
+    Metadata:
+      encoder         : Lavc58.78.102 png
+frame=    1 fps=0.0 q=-0.0 Lsize=N/A time=00:00:00.02 bitrate=N/A speed=0.116x    
+video:58kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: unknown
+
+
+FFMPEG_GEN_AUDIO_WAVEFORM(outFilename, true, ar, ac) took 0 minutes, 0 seconds, 221 milliseconds, 536 microseconds, and 846 nanoseconds to execute
+
+
+
+*outsize = read__(outFilename, reinterpret_cast<char **>(out)) took 0 minutes, 0 seconds, 6 milliseconds, 463 microseconds, and 154 nanoseconds to execute
+
+
+
+resample(filename, 44100, mChannelCount, &out, &outsize, SampleRate) took 0 minutes, 0 seconds, 402 milliseconds, 325 microseconds, and 768 nanoseconds to execute
+
+created log
+emulator initialized
+log has started, pid is 3756
+created Logcat
+emulator initialized
+logcat has started, pid is 3829
+emulator initialized
+shell has started, pid is 3833

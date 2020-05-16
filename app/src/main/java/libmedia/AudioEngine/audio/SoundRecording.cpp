@@ -29,6 +29,12 @@
 #include <asm/fcntl.h>
 #include <fcntl.h>
 
+#include <soxr.h>
+#include <vector>
+
+#include <ffmobile-headers/fftools_ffmpeg.h>
+#include <timer.h>
+
 extern AudioTime GlobalTime;
 
 void SoundRecording::renderAudio(int16_t *targetData, uint64_t totalFrames, SoundRecording *Audio){
@@ -82,52 +88,227 @@ NATIVE(void, Oboe, SetTempDir)(JNIEnv *env, jobject type, jstring dir) {
     TEMPDIR = const_cast<char *>(env->GetStringUTFChars(dir, &val));
 }
 
-void resample(int inSampleRate, int outSampleRate, const char * inFilename, char ** out, size_t * outsize) {
-    extern int main(int argc, char * argv[]);
-    char * outfile = new char[4096];
-    memset(outfile, '\0', 4096);
-    strcat(outfile, TEMPDIR);
-    strcat(outfile, "/INFILE.raw");
+// class AudioResampler
+
+class AudioResampler {
+public:
+    // Construct audio resampler.
+    // input_rate : input sampling rate.
+    // output_rate: input sampling rate.
+    AudioResampler(const double input_rate, const double output_rate);
+    // Process monaural audio samples,
+    // converting input_rate to output_rate.
+    template <typename T>
+    size_t process(const T * samples_in, size_t sizeIn, T ** samples_out) {
+        size_t input_size = sizeIn;
+        size_t output_size;
+        if (m_ratio > 1) {
+            output_size = (size_t)lrint((input_size * m_ratio) + 1);
+        } else {
+            output_size = input_size;
+        }
+        *samples_out = new T[output_size];
+        size_t output_length;
+        soxr_error_t error;
+
+        error = soxr_process(
+                m_soxr, static_cast<soxr_in_t>(samples_in), input_size, nullptr,
+                static_cast<soxr_out_t>(*samples_out), output_size, &output_length);
+
+        if (error) {
+            soxr_delete(m_soxr);
+            LOGE("AudioResampler: soxr_process error: %s\n", error);
+        }
+
+        return output_length;
+    }
+
+private:
+    const double m_irate;
+    const double m_orate;
+    const double m_ratio;
+    soxr_t m_soxr;
+};
+
+// class AudioResampler
+
+AudioResampler::AudioResampler(const double input_rate,
+                               const double output_rate)
+        : m_irate(input_rate), m_orate(output_rate),
+          m_ratio(output_rate / input_rate) {
+    soxr_error_t error;
+    // Use double
+    soxr_io_spec_t io_spec = soxr_io_spec(SOXR_INT16_I, SOXR_INT16_I);
+    // Not steep: passband_end = 0.91132832
+    soxr_quality_spec_t quality_spec =
+            soxr_quality_spec((SOXR_VHQ | SOXR_LINEAR_PHASE), 0);
+    soxr_runtime_spec_t runtime_spec = soxr_runtime_spec(1);
+
+    m_soxr = soxr_create(m_irate, m_orate, 2, &error, &io_spec, &quality_spec,
+                         &runtime_spec);
+    if (error) {
+        soxr_delete(m_soxr);
+        LOGE("AudioResampler: unable to create soxr: %s\n", error);
+    }
+}
+
+void SOX__RESAMPLE(const char *inFileName, int inSampleRate, const char *outFileName, int outSampleRate, int mChannelCount) {
+    double const irate = static_cast<double>(inSampleRate);
+    double const orate = static_cast<double>(outSampleRate);
+
+    LOGD("INPUT  SAMPLERATE = %G", irate);
+    LOGD("OUTPUT SAMPLERATE = %G", orate);
+
+    /* Allocate resampling input and output buffers in proportion to the input
+     * and output rates: */
+#define buf_total_len 15000  /* In samples. */
+    size_t const olen = (size_t)(orate * buf_total_len / (irate + orate) + .5);
+    size_t const ilen = buf_total_len - olen;
+    size_t const osize = sizeof(float), isize = osize;
+    void * obuf = malloc(osize * olen);
+    void * ibuf = malloc(isize * ilen);
+
+    LOGD("OPENING INFILE...");
+
+    // Only open a file to read. The file must exist before hand. Do not allow any changes to the file.
+    FILE * IN = fopen(inFileName, "r");
+
+    LOGD("OPENED INFILE: %p", IN);
+    LOGD("OPENING OUTFILE...");
+
+    // Create an empty file. Allow both reading and writing.
+    FILE * OUT = fopen(outFileName, "w+"); // read and write
+
+    LOGD("OPENED OUTFILE: %p", OUT);
+
+    size_t odone, written, need_input = 1;
+    soxr_error_t error;
+
+    /* specify input and output formats: */
+    soxr_io_spec_t io_spec = soxr_io_spec(SOXR_INT16_I, SOXR_INT16_I);
+
+    /* Create a stream resampler: */
+    soxr_t soxr = soxr_create(
+            irate, orate, mChannelCount,             /* Input rate, output rate, # of channels. */
+            &error,                         /* To report any error during creation. */
+            &io_spec, NULL, NULL);                        /* Use configuration defaults.*/
+
+    if (!error) {                         /* If all is well, run the resampler: */
+        /* Resample in blocks: */
+        do {
+            size_t ilen1 = 0;
+
+            if (need_input) {
+
+                /* Read one block into the buffer, ready to be resampled: */
+                ilen1 = fread(ibuf, isize, ilen, IN);
+
+                if (!ilen1) {     /* If the is no (more) input data available, */
+                    free(ibuf);     /* set ibuf to NULL, to indicate end-of-input */
+                    ibuf = NULL;    /* to the resampler. */
+                }
+            }
+
+            /* Copy data from the input buffer into the resampler, and resample
+             * to produce as much output as is possible to the given output buffer: */
+            error = soxr_process(soxr, ibuf, ilen1, NULL, obuf, olen, &odone);
+
+            written = fwrite(obuf, osize, odone, OUT); /* Consume output.*/
+
+            /* If the actual amount of data output is less than that requested, and
+             * we have not already reached the end of the input data, then supply some
+             * more input next time round the loop: */
+            need_input = odone < olen && ibuf;
+
+        } while (!error && (need_input || written));
+    }
+    /* Tidy up: */
+    fclose(IN);
+    fclose(OUT);
+    soxr_delete(soxr);
+    free(obuf), free(ibuf);
+    /* Diagnostics: */
+    LOGV("%s %s; I/O: %s\n", "SOX__RESAMPLER", soxr_strerror(error),
+         ferror(stdin) || ferror(stdout)? strerror(errno) : "no error");
+}
+
+void FFMPEG_GEN_AUDIO_WAVEFORM(const char * inFilename, bool isRaw, const char * ar, const char * ac) {
+    std::string outfilename = std::string(inFilename) + ".waveform.png";
+    const char *outFilename = outfilename.c_str();
+    LOGD("file to generate waveform from: %s", inFilename);
     env_t argv = env__new();
-    argv = env__add_allow_duplicates(argv, "ReSampler");
+    argv = env__add_allow_duplicates(argv, "ffmpeg");
+    if (isRaw) {
+        argv = env__add_allow_duplicates(argv, "-f");
+        argv = env__add_allow_duplicates(argv, "s16le");
+        argv = env__add_allow_duplicates(argv, "-ar");
+        argv = env__add_allow_duplicates(argv, ar);
+        argv = env__add_allow_duplicates(argv, "-ac");
+        argv = env__add_allow_duplicates(argv, ac);
+    }
     argv = env__add_allow_duplicates(argv, "-i");
     argv = env__add_allow_duplicates(argv, inFilename);
-    argv = env__add_allow_duplicates(argv, "--raw-input");
-    argv = env__add_allow_duplicates(argv, std::to_string(inSampleRate).c_str());
-    argv = env__add_allow_duplicates(argv, "16");
-    argv = env__add_allow_duplicates(argv, "2");
-    argv = env__add_allow_duplicates(argv, "-o");
-    argv = env__add_allow_duplicates(argv, outfile);
-    argv = env__add_allow_duplicates(argv, "-r");
-    argv = env__add_allow_duplicates(argv, std::to_string(outSampleRate).c_str());
-    argv = env__add_allow_duplicates(argv, "-b");
-    argv = env__add_allow_duplicates(argv, "16"); // argv[13]
-    argv = env__add_allow_duplicates(argv, "--showStages");
-    argv = env__add_allow_duplicates(argv, "-mt");
-    argv = env__add_allow_duplicates(argv, "--noTempFile");
+    argv = env__add_allow_duplicates(argv, "-filter_complex");
+    argv = env__add_allow_duplicates(argv, "showwavespic=s=1080x720");
+    argv = env__add_allow_duplicates(argv, "-frames:v");
+    argv = env__add_allow_duplicates(argv, "1");
+    argv = env__add_allow_duplicates(argv, "-y"); // overwrite if exists
+    argv = env__add_allow_duplicates(argv, outFilename);
+
+    printf("executing command: ");
+    env__print__as__argument__vector(argv);
+    printf("\n");
+
     double s = now_ms();
     LOGE("Started conversion at %G milliseconds", s);
-    main(env__size(argv), argv);
+    ffmpeg_execute(env__size(argv), argv);
     double e = now_ms();
     LOGE("Ended conversion at %G milliseconds", e);
     LOGE("TIME took %G milliseconds", e - s);
+    LOGD("waveform written to: %s", outFilename);
+};
 
-    // read the file into memory
-    *outsize = read__(const_cast<const char *>(outfile), out);
+clock__declare__print_timing_information_function(print_time) {
+    AudioTime x = AudioTime();
+    x.calculateNanoseconds(clock__calculate__nanoseconds(start, end).count());
+    printf("\n\n%s took %lu minutes, %lu seconds, %lu milliseconds, %lu microseconds, and %lu nanoseconds to execute\n\n", executed_function, x.minutes, x.seconds, x.milliseconds, x.microseconds, x.nanoseconds);
+};
 
-    LOGE("%s file size: %zu", outfile, *outsize);
-    delete[] outfile;
-    env__free(argv);
+void resample(const char * inFilename, int inSampleRate, int mChannelCount, int16_t ** out, size_t * outsize, int outSampleRate) {
+    if (inSampleRate == outSampleRate) {
+        LOGD("input and output sample rates are the same, resampling is not required");
+        *outsize = read__(inFilename, reinterpret_cast<char **>(out));
+    } else {
+        LOGD("input and output sample rates are not the same, resampling is required");
+
+        LOGD("SOXR VERSION: %s", soxr_version());
+
+        LOGD("INFILE = %s", inFilename);
+        std::string outfilename = std::string(inFilename) + ".resampled.raw";
+        const char *outFilename = outfilename.c_str();
+        LOGD("OUTFILE = %s", outFilename);
+
+        LOGD("RESAMPLING");
+        clock__time__code__block(SOX__RESAMPLE(inFilename, inSampleRate, outFilename, outSampleRate, mChannelCount), print_time);
+
+        LOGD("GENERATING WAVEFORM");
+        const char * ar = std::to_string(outSampleRate).c_str();
+        const char * ac = std::to_string(mChannelCount).c_str();
+        clock__time__code__block(FFMPEG_GEN_AUDIO_WAVEFORM(outFilename, true, ar, ac), print_time);
+
+        LOGD("READING OUTPUT FILE");
+        clock__time__code__block(*outsize = read__(outFilename, reinterpret_cast<char **>(out)), print_time);
+    }
 }
 
 SoundRecording * SoundRecording::loadFromPath(const char *filename, int SampleRate, int mChannelCount) {
-    char * out = nullptr; /* this should be int16 */
+    int16_t * out = nullptr; /* signed 16 bit int */
     size_t outsize = 0;
-    resample(SampleRate, 48000, filename, &out, &outsize);
+    clock__time__code__block(resample(filename, 44100, mChannelCount, &out, &outsize, SampleRate), print_time);
 
     const uint64_t totalFrames = outsize / (2 * mChannelCount);
     WAVEFORMAUDIODATATOTALFRAMES = totalFrames;
-    WAVEFORMAUDIODATA = reinterpret_cast<const int16_t *>(out);
+    WAVEFORMAUDIODATA = out;
 
     SoundRecordingAudioData * AudioData = new SoundRecordingAudioData(totalFrames, mChannelCount, SampleRate);
     AudioTime * allFrames = new AudioTime();
@@ -137,31 +318,31 @@ SoundRecording * SoundRecording::loadFromPath(const char *filename, int SampleRa
     allFrames->update(totalFrames, AudioData);
     LOGD("Opened backing track");
     LOGD("length in human time:                              %s", allFrames->format(true));
-    LOGD("length in nanoseconds:                             %ld", allFrames->nanosecondsTotal);
-    LOGD("length in microseconds:                            %ld", allFrames->microsecondsTotal);
-    LOGD("length in milliseconds:                            %ld", allFrames->millisecondsTotal);
-    LOGD("length in seconds:                                 %ld", allFrames->secondsTotal);
-    LOGD("length in minutes:                                 %ld", allFrames->minutesTotal);
-    LOGD("length in hours:                                   %ld", allFrames->hoursTotal);
-    LOGD("length in days:                                    %ld", allFrames->daysTotal);
-    LOGD("length in weeks:                                   %ld", allFrames->weeksTotal);
-    LOGD("length in months:                                  %ld", allFrames->monthsTotal);
-    LOGD("length in years:                                   %ld", allFrames->yearsTotal);
-    LOGD("bytes:                                             %ld", outsize);
-    LOGD("frames:                                            %ld", AudioData->totalFrames);
+    LOGD("length in nanoseconds:                             %lld", allFrames->nanosecondsTotal);
+    LOGD("length in microseconds:                            %lld", allFrames->microsecondsTotal);
+    LOGD("length in milliseconds:                            %lld", allFrames->millisecondsTotal);
+    LOGD("length in seconds:                                 %lld", allFrames->secondsTotal);
+    LOGD("length in minutes:                                 %lld", allFrames->minutesTotal);
+    LOGD("length in hours:                                   %lld", allFrames->hoursTotal);
+    LOGD("length in days:                                    %lld", allFrames->daysTotal);
+    LOGD("length in weeks:                                   %lld", allFrames->weeksTotal);
+    LOGD("length in months:                                  %lld", allFrames->monthsTotal);
+    LOGD("length in years:                                   %lld", allFrames->yearsTotal);
+    LOGD("bytes:                                             %zu", outsize);
+    LOGD("frames:                                            %lld", AudioData->totalFrames);
     LOGD("sample rate:                                       %d", AudioData->sampleRate);
     LOGD("length of 1 frame at %d sample rate:", AudioData->sampleRate);
     LOGD("Human Time:                                        %s", AudioData->TimeNormal);
-    LOGD("Nanoseconds:                                       %ld", AudioData->nanosecondsPerFrame);
-    LOGD("Microseconds:                                      %ld", AudioData->microsecondsPerFrame);
-    LOGD("Milliseconds:                                      %ld", AudioData->millisecondsPerFrame);
-    LOGD("Seconds:                                           %ld", AudioData->secondsPerFrame);
-    LOGD("Minutes:                                           %ld", AudioData->minutesPerFrame);
-    LOGD("Hours:                                             %ld", AudioData->hoursPerFrame);
-    LOGD("Days:                                              %ld", AudioData->daysPerFrame);
-    LOGD("Weeks:                                             %ld", AudioData->weeksPerFrame);
-    LOGD("Months:                                            %ld", AudioData->monthsPerFrame);
-    LOGD("Years:                                             %ld", AudioData->yearsPerFrame);
+    LOGD("Nanoseconds:                                       %lld", AudioData->nanosecondsPerFrame);
+    LOGD("Microseconds:                                      %lld", AudioData->microsecondsPerFrame);
+    LOGD("Milliseconds:                                      %lld", AudioData->millisecondsPerFrame);
+    LOGD("Seconds:                                           %lld", AudioData->secondsPerFrame);
+    LOGD("Minutes:                                           %lld", AudioData->minutesPerFrame);
+    LOGD("Hours:                                             %lld", AudioData->hoursPerFrame);
+    LOGD("Days:                                              %lld", AudioData->daysPerFrame);
+    LOGD("Weeks:                                             %lld", AudioData->weeksPerFrame);
+    LOGD("Months:                                            %lld", AudioData->monthsPerFrame);
+    LOGD("Years:                                             %lld", AudioData->yearsPerFrame);
     allFrames->executeCallbacks = true;
     allFrames->includeTimingInformation = true;
     allFrames->update(0, AudioData);
@@ -202,31 +383,31 @@ SoundRecording * SoundRecording::loadFromAssets(AAssetManager *assetManager, con
     allFrames->update(totalFrames, AudioData);
     LOGD("Opened backing track");
     LOGD("length in human time:                              %s", allFrames->format(true));
-    LOGD("length in nanoseconds:                             %ld", allFrames->nanosecondsTotal);
-    LOGD("length in microseconds:                            %ld", allFrames->microsecondsTotal);
-    LOGD("length in milliseconds:                            %ld", allFrames->millisecondsTotal);
-    LOGD("length in seconds:                                 %ld", allFrames->secondsTotal);
-    LOGD("length in minutes:                                 %ld", allFrames->minutesTotal);
-    LOGD("length in hours:                                   %ld", allFrames->hoursTotal);
-    LOGD("length in days:                                    %ld", allFrames->daysTotal);
-    LOGD("length in weeks:                                   %ld", allFrames->weeksTotal);
-    LOGD("length in months:                                  %ld", allFrames->monthsTotal);
-    LOGD("length in years:                                   %ld", allFrames->yearsTotal);
-    LOGD("bytes:                                             %ld", trackSize);
-    LOGD("frames:                                            %ld", AudioData->totalFrames);
+    LOGD("length in nanoseconds:                             %lld", allFrames->nanosecondsTotal);
+    LOGD("length in microseconds:                            %lld", allFrames->microsecondsTotal);
+    LOGD("length in milliseconds:                            %lld", allFrames->millisecondsTotal);
+    LOGD("length in seconds:                                 %lld", allFrames->secondsTotal);
+    LOGD("length in minutes:                                 %lld", allFrames->minutesTotal);
+    LOGD("length in hours:                                   %lld", allFrames->hoursTotal);
+    LOGD("length in days:                                    %lld", allFrames->daysTotal);
+    LOGD("length in weeks:                                   %lld", allFrames->weeksTotal);
+    LOGD("length in months:                                  %lld", allFrames->monthsTotal);
+    LOGD("length in years:                                   %lld", allFrames->yearsTotal);
+    LOGD("bytes:                                             %lld", trackSize);
+    LOGD("frames:                                            %lld", AudioData->totalFrames);
     LOGD("sample rate:                                       %d", AudioData->sampleRate);
     LOGD("length of 1 frame at %d sample rate:", AudioData->sampleRate);
     LOGD("Human Time:                                        %s", AudioData->TimeNormalPerFrame);
-    LOGD("Nanoseconds:                                       %ld", AudioData->nanosecondsPerFrame);
-    LOGD("Microseconds:                                      %ld", AudioData->microsecondsPerFrame);
-    LOGD("Milliseconds:                                      %ld", AudioData->millisecondsPerFrame);
-    LOGD("Seconds:                                           %ld", AudioData->secondsPerFrame);
-    LOGD("Minutes:                                           %ld", AudioData->minutesPerFrame);
-    LOGD("Hours:                                             %ld", AudioData->hoursPerFrame);
-    LOGD("Days:                                              %ld", AudioData->daysPerFrame);
-    LOGD("Weeks:                                             %ld", AudioData->weeksPerFrame);
-    LOGD("Months:                                            %ld", AudioData->monthsPerFrame);
-    LOGD("Years:                                             %ld", AudioData->yearsPerFrame);
+    LOGD("Nanoseconds:                                       %lld", AudioData->nanosecondsPerFrame);
+    LOGD("Microseconds:                                      %lld", AudioData->microsecondsPerFrame);
+    LOGD("Milliseconds:                                      %lld", AudioData->millisecondsPerFrame);
+    LOGD("Seconds:                                           %lld", AudioData->secondsPerFrame);
+    LOGD("Minutes:                                           %lld", AudioData->minutesPerFrame);
+    LOGD("Hours:                                             %lld", AudioData->hoursPerFrame);
+    LOGD("Days:                                              %lld", AudioData->daysPerFrame);
+    LOGD("Weeks:                                             %lld", AudioData->weeksPerFrame);
+    LOGD("Months:                                            %lld", AudioData->monthsPerFrame);
+    LOGD("Years:                                             %lld", AudioData->yearsPerFrame);
     allFrames->executeCallbacks = true;
     allFrames->includeTimingInformation = true;
     allFrames->update(0, AudioData);

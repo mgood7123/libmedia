@@ -1,25 +1,56 @@
 package media.player.pro
 
+import alpine.term.TerminalController
 import android.os.Bundle
+import android.view.ContextMenu
+import android.view.ContextMenu.ContextMenuInfo
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.slide_out_terminal.*
 import liblayout.Builder
+import liblayout.UiThread
 import libmedia.Media
-import java.io.File
 
 class MainActivity : AppCompatActivity() {
+
     var media: Media? = null
+    var terminalController: TerminalController? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        System.loadLibrary("AudioEngine")
+        // If this method is called more than once with the same library name
+        // the second and subsequent calls are ignored.
+        // set log view
+
+        // set log view
+        setContentView(R.layout.slide_out_terminal)
+
+        // obtain log view instance
+
+        // obtain log view instance
+        terminalController = TerminalController()
+        terminalController!!.onCreate(this, terminal_view)
+
+        when(terminalController!!.terminalContainer.visibility) {
+            View.INVISIBLE -> toggle_terminal.setText(R.string.Show_LogTerminal)
+            else -> toggle_terminal.setText(R.string.Hide_LogTerminal)
+        }
+
+        toggle_terminal.setOnClickListener {
+            terminalController!!.onClick(toggle_terminal)
+        }
+
         println("android.os.Environment.getExternalStorageDirectory().getPath() = ${android.os.Environment.getExternalStorageDirectory().getPath()}")
         println("getFilesDir().getPath() = ${getFilesDir().getPath()}")
         media = Media(this)
         media!!.init()
-            .loadMediaAssetAsFile("00001313_48000.raw")
+            .loadMediaAssetAsFile("00001313_44100.raw")
             .loop(true)
-        val build = Builder(this)
-        build
+
+        Builder(this, mainView)
             .row().height(5)
             .column {
                 Button(this).also {
@@ -62,8 +93,8 @@ class MainActivity : AppCompatActivity() {
             .column {
                 media!!.WaveformView(
                     context = this,
-                    height = build.currentColumn!!.sizeFromTop,
-                    width = build.currentColumn!!.sizeFromLeft,
+                    height = it.sizeFromTop,
+                    width = it.sizeFromLeft,
                     media = media!!
                 )
             }
@@ -135,18 +166,45 @@ class MainActivity : AppCompatActivity() {
             .build()
     }
 
-    public override fun onPause() {
-        super.onPause()
-        media!!.background()
+    override fun onStart() {
+        super.onStart()
+        terminalController!!.onStart()
     }
 
-    public override fun onResume() {
+    override fun onResume() {
         super.onResume()
         media!!.foreground()
     }
 
+    override fun onPause() {
+        super.onPause()
+        media!!.background()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        terminalController!!.onStop()
+    }
+
     override fun onDestroy() {
         media!!.destroy()
+        terminalController!!.onDestroy()
         super.onDestroy()
+    }
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu?,
+        v: View?,
+        menuInfo: ContextMenuInfo?
+    ) {
+        terminalController!!.onCreateContextMenu(menu, v, menuInfo)
+    }
+
+    override fun onContextItemSelected(item: MenuItem?): Boolean {
+        return terminalController!!.onContextItemSelected(item) || super.onContextItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        if (!terminalController!!.onBackPressed()) super.onBackPressed()
     }
 }

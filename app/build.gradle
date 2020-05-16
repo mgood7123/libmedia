@@ -2,8 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-def libmediaPath = "src/main/java/libmedia"
-
 android { // main settings for your application
     compileSdkVersion = 29
     buildToolsVersion = '29.0.3'
@@ -31,9 +29,17 @@ android { // main settings for your application
         }
     }
 
+    sourceSets {
+        main {
+            jniLibs {
+                srcDirs = ["./libs"] // it seems that this must be explicitly specified
+            }
+        }
+    }
+
     externalNativeBuild {
         cmake {
-            path "${libmediaPath}/CMakeLists.txt"
+            path "src/main/CMakeLists.txt"
         }
     }
     compileOptions {
@@ -50,6 +56,11 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.jraska:console:1.0.0'
     implementation "commons-io:commons-io:2.6"
+    implementation "androidx.annotation:annotation:1.1.0"
+    implementation "androidx.drawerlayout:drawerlayout:1.0.0"
+    implementation "androidx.preference:preference:1.1.1"
+    implementation "androidx.viewpager:viewpager:1.0.0"
+
 }
 
 repositories {

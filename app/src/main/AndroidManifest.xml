@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="media.player.pro" >
 
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
@@ -9,16 +15,27 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".MainActivity" >
+        android:supportsRtl="false"
+        android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
+        <activity
+                android:name=".MainActivity"
+                android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|uiMode|keyboard|keyboardHidden|navigation"
+                android:resizeableActivity="true"
+                android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-<!--        <service android:name="libmedia.Service"/>-->
+        <activity
+                android:name="alpine.term.HelpActivity"
+                android:exported="false"
+                android:parentActivityName=".MainActivity"
+                android:resizeableActivity="true"
+                android:theme="@android:style/Theme.Material.Light.DarkActionBar" />
+
+        <service android:name="alpine.term.TerminalService" />
     </application>
 
 </manifest>

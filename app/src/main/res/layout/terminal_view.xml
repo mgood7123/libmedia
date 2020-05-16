@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
+
+    <alpine.term.terminal_view.TerminalView
+        android:id="@+id/terminal_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="50sp"
+        android:layout_marginLeft="50sp"
+        android:layout_marginTop="50sp"
+        android:layout_marginBottom="100sp"
+        android:focusableInTouchMode="true"
+        android:scrollbarThumbVertical="@drawable/terminal_scroll_shape"
+        android:scrollbars="vertical" />
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewpager"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="100sp"
+        android:background="@android:drawable/screen_background_dark_transparent"
+        android:layout_alignParentBottom="true" />
+</RelativeLayout>

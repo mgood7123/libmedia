@@ -335,6 +335,10 @@ public:
     void setCallback(JNIEnv * ENV, jobject THIS, Callback *timeCallback);
     JavaVM* jvm;
     jobject pThis;
+
+    void calculateNanoseconds(AudioTime *audioTime, AudioTime_Format inputNanoseconds);
+
+    void calculateNanoseconds(AudioTime_Format inputNanoseconds);
 };
 
 

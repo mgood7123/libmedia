@@ -1,3 +1,61 @@
 <resources>
     <string name="app_name">Media Player Pro</string>
+
+    <!-- Common -->
+    <string name="cancel_label">Cancel</string>
+    <string name="exit_label">Exit</string>
+    <string name="ok_label">OK</string>
+
+    <!-- Installer dialog -->
+    <string name="installer_progress_message">Installing runtime data…</string>
+    <string name="installer_error_title">Installation failed</string>
+    <string name="installer_error_body">Application was unable to install the runtime data.</string>
+    <string name="installer_error_try_again_button">Try again</string>
+
+    <!-- Context menu: main -->
+    <string name="menu_copy_text">Copy</string>
+    <string name="menu_paste_text">Paste</string>
+    <string name="menu_more">More…</string>
+
+    <!-- Context menu: more -->
+    <string name="menu_vnc_viewer">Open VNC client</string>
+    <string name="menu_show_help">Show help</string>
+    <string name="menu_select_url">Select URL</string>
+    <string name="menu_share_transcript">Share transcript</string>
+    <string name="menu_reset_terminal">Reset</string>
+    <string name="menu_console_style">Change terminal colors</string>
+    <string name="menu_toggle_back_is_escape">Remap key \&quot;back\&quot; to \&quot;escape\&quot;</string>
+    <string name="menu_toggle_ignore_bell">Ignore bell character</string>
+
+    <!-- Context menu: Open VNC client toast messages -->
+    <string name="open_vnc_config_failure">Failed to configure VNC server</string>
+    <string name="open_vnc_intent_failure">Failed to launch VNC client</string>
+
+    <!-- Context menu: Select URL dialog -->
+    <string name="select_url_dialog_title">Click URL to copy or long press to open:</string>
+    <string name="select_url_toast_no_found">No URLs found in the terminal</string>
+    <string name="select_url_toast_copied_to_clipboard">URL was copied to clipboard</string>
+    <string name="select_url_toast_cannot_open">Cannot open this URL</string>
+
+    <!-- Context menu: Share transcript prompt -->
+    <string name="share_transcript_file_name">alpine-term_transcript.txt</string>
+    <string name="share_transcript_chooser_title">Send console transcript to:</string>
+
+    <!-- Context menu: Reset terminal toast message -->
+    <string name="reset_toast_notification">Resetting terminal state…</string>
+
+    <!-- Context menu: color themes -->
+    <string name="style_toast_theme_applied">Applying color theme:</string>
+
+    <!-- Drawer -->
+    <string name="button_toggle_soft_keyboard">Toggle keyboard (long press: toggle extra keys)</string>
+
+    <!-- Notification -->
+    <string name="notification_action_wake_lock">Acquire wakelock</string>
+    <string name="notification_action_wake_unlock">Release wakelock</string>
+
+    <!-- Everything else -->
+    <string name="Show_LogTerminal">Show Log/Terminal</string>
+    <string name="Hide_LogTerminal">Hide Log/Terminal</string>
+    <string name="create_new_shell">Create new shell</string>
 </resources>
