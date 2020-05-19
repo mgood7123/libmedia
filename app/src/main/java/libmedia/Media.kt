@@ -1,18 +1,18 @@
 package libmedia
 
+import android.R
 import android.app.Activity
 import android.content.Context
 import android.content.res.AssetManager
-import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.media.AudioFormat
 import android.media.AudioManager
-import android.media.AudioTrack
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import java.io.*
@@ -193,6 +193,7 @@ class Media(private val activity: Activity) {
 
         inner class WaveformView_ : ConstraintLayout {
 
+            lateinit var imageView: ImageView
             private var media: Media? = null
             private var height_ = 0;
             private var width_ = 0;
@@ -252,9 +253,13 @@ class Media(private val activity: Activity) {
             }
 
             fun initView() {
-                addView(
-                    WaveformView__(context, width_, height_)
-                )
+                imageView = ImageView(context)
+                Log.i("WaveformView", "getting file location")
+                val file = Oboe_getWaveformLocation()
+                Log.i("WaveformView", "got file location")
+                Log.i("WaveformView", "file: $file")
+                loadFile(file)
+                addView(imageView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
                 if (media != null) addView(
                     MyView__(context, height_).also {
                         Thread {
@@ -272,29 +277,18 @@ class Media(private val activity: Activity) {
                     }
                 )
             }
-        }
 
-        private inner class WaveformView__(context: Context, width_: Int, height_: Int) : View(context) {
+            // TODO: have jni callback to load image on availability
+            fun loadFile(file: String) {
+                val imgFile = File(file)
 
-            private val mBitmapLeft: Bitmap
-//            private val mBitmapRight: Bitmap
-            private val mStartTime: Long
-
-            private external fun renderWaveformMono(bitmap: Bitmap, time_ms: Long, waveformViewOptions: WaveformViewOptions__)
-            private external fun renderWaveformStereo(bitmapLeft: Bitmap, bitmapRight: Bitmap?, time_ms: Long, waveformViewOptions: WaveformViewOptions__)
-
-            init {
-                mBitmapLeft = Bitmap.createBitmap(width_, height_, Bitmap.Config.RGB_565)
-//                mBitmapRight = Bitmap.createBitmap(width_, height_, Bitmap.Config.RGB_565)
-                mStartTime = System.currentTimeMillis()
-            }
-
-            override fun onDraw(canvas: Canvas) {
-//                renderWaveformMono(mBitmapLeft, System.currentTimeMillis() - mStartTime, WaveformViewOptions)
-                renderWaveformStereo(mBitmapLeft, null, System.currentTimeMillis() - mStartTime, WaveformViewOptions)
-                canvas.drawBitmap(mBitmapLeft, 0f, 0f, null)
-//                canvas.drawBitmap(mBitmapRight, 0f, 0f, null)
-                invalidate()
+                if (imgFile.exists()) {
+                    Log.i("WaveformView", "file exists")
+                    val myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
+                    imageView.setImageBitmap(myBitmap)
+                } else {
+                    Log.i("WaveformView", "file does not exist")
+                }
             }
         }
 
@@ -321,56 +315,37 @@ class Media(private val activity: Activity) {
     // TODO: vst support (plugins): generator, effects, graphical
 
     lateinit var currentTemporyMediaFilesDirectory: String
+    lateinit var currentAssetFilesDirectory: String
     lateinit var audioManager: AudioManager
     var audioManagerObtained = false
     private val focusManager = classes.FocusManager()
     lateinit var ASSETS: String
-    var useAudioTrack = false
-    lateinit var mAudioTrack: AudioTrack
+    lateinit var CACHE: String
 
     fun `init`(): Media {
         // If this method is called more than once with the same library name, the second and
         // subsequent calls are ignored.
         System.loadLibrary("AudioEngine")
-
-        ASSETS = activity.filesDir.absolutePath + "/ASSETS"
+        val filesDir = activity.filesDir.absolutePath;
+        ASSETS = "$filesDir/ASSETS"
+        setAssetFilesDirectory(ASSETS)
+        CACHE = "$filesDir/CACHE"
+        setTemporyMediaFilesDirectory(CACHE)
         Log.i(LOG_TAG, "copying assets folder")
         classes.assetsManager().copyAssetFolder(activity.assets)
-        if (File(ASSETS + "/usr/bin").exists()) {
-            Chmod.main(arrayOf("-R", "a=rwx", ASSETS + "/usr/bin"))
+        val binDir = "$ASSETS/usr/bin"
+        if (File(binDir).exists()) {
+            Chmod.main(arrayOf("-R", "a=rwx", binDir))
         }
-        setTemporyMediaFilesDirectory(activity.filesDir.absolutePath)
 
         audioManager = activity.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         audioManagerObtained = true
 
-        when {
-            useAudioTrack -> {
-                // play using audio track
-                val sampleRate = 44100
-                val minBufferSize = AudioTrack.getMinBufferSize(
-                    sampleRate,
-                    AudioFormat.CHANNEL_OUT_STEREO,
-                    AudioFormat.ENCODING_PCM_16BIT
-                )
-
-                mAudioTrack = AudioTrack(
-                    AudioManager.STREAM_MUSIC,
-                    sampleRate,
-                    AudioFormat.CHANNEL_OUT_STEREO,
-                    AudioFormat.ENCODING_PCM_16BIT,
-                    minBufferSize,
-                    AudioTrack.MODE_STREAM
-                )
-            }
-            else -> {
-                // library is loaded at application startup
-                Oboe_Init(
-                    audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE).toInt(),
-                    audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER).toInt()
-                )
-            }
-        }
+        // library is loaded at application startup
+        Oboe_Init(
+            audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE).toInt(),
+            audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER).toInt()
+        )
         return this
     }
 
@@ -384,10 +359,17 @@ class Media(private val activity: Activity) {
         return this
     }
 
+    fun setAssetFilesDirectory(dir: String): Media {
+        currentAssetFilesDirectory = dir
+        Log.e(LOG_TAG, "setting Temporary Files Directory to $dir")
+        Oboe_SetAssetsDir(dir)
+        return this
+    }
+
     fun setTemporyMediaFilesDirectory(dir: String): Media {
         currentTemporyMediaFilesDirectory = dir
         Log.e(LOG_TAG, "setting Temporary Files Directory to $dir")
-        Oboe_SetTempDir(currentTemporyMediaFilesDirectory)
+        Oboe_SetTempDir(dir)
         return this
     }
 
@@ -433,16 +415,6 @@ class Media(private val activity: Activity) {
 //        val p = PermissionManager(activity).Permissions("android.permission.READ_EXTERNAL_STORAGE")
 //        p.requestAllRemaining()
 //        while (!p.checkAll()) Thread.sleep(1)
-//        TODO: implement audio streaming for correct play/pause
-//        playback may be controlled via AudioTrack.play(), AudioTrack.pause(), AudioTrack.stop()
-//        if (useAudioTrack) {
-//            // short is signed 16 bits
-//            // read the file into a buffer
-//            // process and read from native
-//            file = FileUtils_ReadFile(path)
-//            data = FileUtils_GetFileData(file)
-//            size = FileUtils_GetFileSize(file)
-//        } else
         Oboe_LoadTrackFromPath(path)
         return this
     }
@@ -588,9 +560,11 @@ class Media(private val activity: Activity) {
     external fun Oboe_getCurrentFrame(): Long
 
     private external fun Oboe_Init(sampleRate: Int, framesPerBurst: Int)
+    private external fun Oboe_SetAssetsDir(dir: String)
     private external fun Oboe_SetTempDir(dir: String)
     private external fun Oboe_LoadTrackFromAssets(asset: String, assetManager: AssetManager)
     private external fun Oboe_LoadTrackFromPath(path: String)
+    private external fun Oboe_getWaveformLocation(): String
     private external fun Oboe_Play()
     private external fun Oboe_Pause()
     private external fun Oboe_Stop()

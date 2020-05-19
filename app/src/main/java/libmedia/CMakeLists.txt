@@ -16,6 +16,8 @@ add_library (
         shell/regex_str.cpp
         libMonitor/MonitorPool.cpp
         native/AudioTime.cpp
+        native/JniHelpers.cpp
+        native/directories.cpp
         AudioEngine/Generator.cpp
         AudioEngine/AudioEngine.cpp
         AudioEngine/audio/SoundRecording.cpp

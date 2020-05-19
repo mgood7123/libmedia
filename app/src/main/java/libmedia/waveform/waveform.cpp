@@ -31,6 +31,7 @@
 #include "timestats.h"
 #include "../AndroidBitmap/bitmap.h"
 #include <MonitorPool.h>
+#include <JniHelpers.h>
 
 MonitorPool MOMO;
 Monitor<uint32_t*> MONITOR_uint32_t;
@@ -228,40 +229,32 @@ static void fill_waveform_mono(AndroidBitmapInfo *info, void *pixels) {
     fill_waveform_stereo(info, nullptr, pixels, nullptr);
 }
 
+void readwaveformclass(JNIEnv * env, jobject waveformOptionsClassInstance) {
+    JniHelpers::Classes::JavaClassConverter *jcc = JniHelpers::Classes::newJavaClassConverter();
+    // TODO:
+    // Automatic Mapping is currently impossible due to type erasure in both C++ and Java
+    // HOWEVER types are known at compile-time
 
-class javaClassToCppClassInformation {
-public:
-    javaClassToCppClassInformation(const char *type, const char *parameter, void *whereToPutParameter)
-            : parameter(parameter), type(type), whereToPutParameter(whereToPutParameter) {}
+    // is there any way to extract these types?
 
-public:
-    const char * type;
-    const char * parameter;
-    void * whereToPutParameter;
-};
+    // first we know that a class CAN be serialized
+    // second we can obtain the size of a class via sizeof(<ITEM>);
 
-void javaClassToCppClass(JNIEnv * env, jobject clazz, std::deque<javaClassToCppClassInformation> items) {
-    // internal classes are accessed via $
-    jclass c = env->FindClass("libmedia/Media$Classes$WaveformViewOptions__");
-    while (!items.empty()) {
-        javaClassToCppClassInformation info = items.front();
-        if (!strcmp(info.type, "bool")) {
-            *static_cast<bool*>(info.whereToPutParameter) =
-                    env->GetBooleanField(clazz,env->GetFieldID(c,info.parameter,"Z"));
-        }
-        items.pop_front();
-    }
+    // can we somehow iterate through a class's members without explicitly stating them?
+
+    // we know that a Java class instance is given to us via renderWaveform(WaveformViewOptions)
+    // in which [KOTLIN] val WaveformViewOptions = WaveformViewOptions__()
+
+    jcc->addBooleanMember("drawLines", &WVO.drawLines);
+    jcc->addBooleanMember("highlightSilence", &WVO.highlightSilence);
+    jcc->addBooleanMember("stretchToScreenWidth", &WVO.stretchToScreenWidth);
+    jcc->addBooleanMember("stretchToScreenHeight", &WVO.stretchToScreenHeight);
+    jcc->read(env, "libmedia/Media$Classes$WaveformViewOptions__", waveformOptionsClassInstance);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_libmedia_Media_00024Classes_00024WaveformView_1_1_renderWaveformMono(JNIEnv * env, jobject  obj, jobject bitmap, jlong  time_ms, jobject waveformOptionsClassInstance)
 {
-    std::deque<javaClassToCppClassInformation> a = std::deque<javaClassToCppClassInformation>();
-    a.push_front(javaClassToCppClassInformation("bool", "drawLines", &WVO.drawLines));
-    a.push_front(javaClassToCppClassInformation("bool", "highlightSilence", &WVO.highlightSilence));
-    a.push_front(javaClassToCppClassInformation("bool", "stretchToScreenWidth", &WVO.stretchToScreenWidth));
-    a.push_front(javaClassToCppClassInformation("bool", "stretchToScreenHeight", &WVO.stretchToScreenHeight));
-    javaClassToCppClass(env, waveformOptionsClassInstance, a);
-
+    readwaveformclass(env, waveformOptionsClassInstance);
     AndroidBitmapInfo  info;
     void*              pixels;
     int                ret;
@@ -304,13 +297,7 @@ extern "C" JNIEXPORT void JNICALL Java_libmedia_Media_00024Classes_00024Waveform
 
 extern "C" JNIEXPORT void JNICALL Java_libmedia_Media_00024Classes_00024WaveformView_1_1_renderWaveformStereo(JNIEnv * env, jobject  obj, jobject bitmapLeft, jobject bitmapRight, jlong  time_ms, jobject waveformOptionsClassInstance)
 {
-    std::deque<javaClassToCppClassInformation> a = std::deque<javaClassToCppClassInformation>();
-    a.push_front(javaClassToCppClassInformation("bool", "drawLines", &WVO.drawLines));
-    a.push_front(javaClassToCppClassInformation("bool", "highlightSilence", &WVO.highlightSilence));
-    a.push_front(javaClassToCppClassInformation("bool", "stretchToScreenWidth", &WVO.stretchToScreenWidth));
-    a.push_front(javaClassToCppClassInformation("bool", "stretchToScreenHeight", &WVO.stretchToScreenHeight));
-    javaClassToCppClass(env, waveformOptionsClassInstance, a);
-
+    readwaveformclass(env, waveformOptionsClassInstance);
     AndroidBitmapInfo  infoLeft;
 //    AndroidBitmapInfo  infoRight;
     void*              pixelsLeft;

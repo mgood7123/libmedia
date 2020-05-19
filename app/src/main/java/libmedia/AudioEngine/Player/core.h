@@ -7,14 +7,17 @@
 
 #include <OboeDebug.h>
 #include <native.h>
+#include <JniHelpers.h>
 #include "../AudioEngine.h"
 #include <android/asset_manager_jni.h>
 
 AudioEngine AudioEngine;
 AudioTime GlobalTime;
 Mixer Mixer;
-AAssetManager *mAssetManager {nullptr};
-SoundRecording *currentAudioTrack {nullptr};
+AAssetManager *mAssetManager = nullptr;
+SoundRecording *currentAudioTrack = nullptr;
+std::string WAVEFORM_LOCATION;
+bool WAVEFORM_READY = false;
 
 #include "internal/looper.h"
 Looper Looper;

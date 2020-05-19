@@ -52,6 +52,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # define LACKS_PTSNAME_R
 #endif
 
+// TODO: should we use JniHelpers instead of this?
+
 static int throw_runtime_exception(JNIEnv* env, char const* message)
 {
     jclass exClass = (*env)->FindClass(env, "java/lang/RuntimeException");

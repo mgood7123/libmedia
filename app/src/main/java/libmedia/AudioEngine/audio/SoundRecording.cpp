@@ -34,6 +34,7 @@
 
 #include <ffmobile-headers/fftools_ffmpeg.h>
 #include <timer.h>
+#include <directories.h>
 
 extern AudioTime GlobalTime;
 
@@ -81,12 +82,8 @@ void SoundRecording::renderAudio(int16_t *targetData, uint64_t totalFrames, Soun
 
 extern const int16_t *WAVEFORMAUDIODATA;
 extern uint64_t WAVEFORMAUDIODATATOTALFRAMES;
-char * TEMPDIR;
-
-NATIVE(void, Oboe, SetTempDir)(JNIEnv *env, jobject type, jstring dir) {
-    jboolean val;
-    TEMPDIR = const_cast<char *>(env->GetStringUTFChars(dir, &val));
-}
+extern std::string WAVEFORM_LOCATION;
+extern bool WAVEFORM_READY;
 
 // class AudioResampler
 
@@ -232,9 +229,8 @@ void SOX__RESAMPLE(const char *inFileName, int inSampleRate, const char *outFile
          ferror(stdin) || ferror(stdout)? strerror(errno) : "no error");
 }
 
-void FFMPEG_GEN_AUDIO_WAVEFORM(const char * inFilename, bool isRaw, const char * ar, const char * ac) {
-    std::string outfilename = std::string(inFilename) + ".waveform.png";
-    const char *outFilename = outfilename.c_str();
+void FFMPEG_GEN_AUDIO_WAVEFORM(const char *inFilename, bool isRaw, const char *ar, const char *ac,
+                               const char *outFileName) {
     LOGD("file to generate waveform from: %s", inFilename);
     env_t argv = env__new();
     argv = env__add_allow_duplicates(argv, "ffmpeg");
@@ -253,7 +249,7 @@ void FFMPEG_GEN_AUDIO_WAVEFORM(const char * inFilename, bool isRaw, const char *
     argv = env__add_allow_duplicates(argv, "-frames:v");
     argv = env__add_allow_duplicates(argv, "1");
     argv = env__add_allow_duplicates(argv, "-y"); // overwrite if exists
-    argv = env__add_allow_duplicates(argv, outFilename);
+    argv = env__add_allow_duplicates(argv, outFileName);
 
     printf("executing command: ");
     env__print__as__argument__vector(argv);
@@ -261,17 +257,27 @@ void FFMPEG_GEN_AUDIO_WAVEFORM(const char * inFilename, bool isRaw, const char *
 
     double s = now_ms();
     LOGE("Started conversion at %G milliseconds", s);
-    ffmpeg_execute(env__size(argv), argv);
+    int ret = ffmpeg_execute(env__size(argv), argv);
     double e = now_ms();
     LOGE("Ended conversion at %G milliseconds", e);
     LOGE("TIME took %G milliseconds", e - s);
-    LOGD("waveform written to: %s", outFilename);
+    printf("\n\nffmpeg_execute returned %d\n\n", ret);
+    LOGD("ffmpeg returned %d", ret);
+    if (ret == 0) {
+        LOGE("SIGNALING WAVEFORM IS READY");
+        WAVEFORM_READY = true;
+        WAVEFORM_LOCATION = std::string(outFileName);
+        LOGE("SIGNALED WAVEFORM IS READY");
+    }
+    LOGD("waveform written to: %s", outFileName);
 };
 
-void resample(const char * inFilename, int inSampleRate, int mChannelCount, int16_t ** out, size_t * outsize, int outSampleRate) {
+void resample(const char * inFilename, int inSampleRate, int mChannelCount, char ** outFileName, int outSampleRate) {
     if (inSampleRate == outSampleRate) {
         LOGD("input and output sample rates are the same, resampling is not required");
-        *outsize = read__(inFilename, reinterpret_cast<char **>(out));
+        size_t len = strlen(inFilename)+1;
+        *outFileName = new char[len];
+        memcpy(*outFileName, inFilename, len);
     } else {
         LOGD("input and output sample rates are not the same, resampling is required");
 
@@ -280,29 +286,35 @@ void resample(const char * inFilename, int inSampleRate, int mChannelCount, int1
         LOGD("INFILE = %s", inFilename);
         std::string outfilename = std::string(inFilename) + ".resampled.raw";
         const char *outFilename = outfilename.c_str();
-        LOGD("OUTFILE = %s", outFilename);
+        size_t len = strlen(outFilename)+1;
+        *outFileName = new char[len];
+        memcpy(*outFileName, outFilename, len);
+        LOGD("OUTFILE = %s", *outFileName);
 
         LOGD("RESAMPLING");
-        clock__time__code__block(SOX__RESAMPLE(inFilename, inSampleRate, outFilename, outSampleRate, mChannelCount), core_print_time);
-
-        LOGD("GENERATING WAVEFORM");
-        // std::string is scope allocated and will deallocate its string upon leaving the scope
-        // this includes std::string("X").c_str(); // std::string("X") has a tmp scope of a single call
-
-        std::string ar = std::to_string(outSampleRate);
-        std::string ac = std::to_string(mChannelCount);
-
-        clock__time__code__block(FFMPEG_GEN_AUDIO_WAVEFORM(outFilename, true, ar.c_str(), ac.c_str()), core_print_time);
-
-        LOGD("READING OUTPUT FILE");
-        clock__time__code__block(*outsize = read__(outFilename, reinterpret_cast<char **>(out)), core_print_time);
+        clock__time__code__block(SOX__RESAMPLE(inFilename, inSampleRate, *outFileName, outSampleRate, mChannelCount), core_print_time);
     }
 }
 
 SoundRecording * SoundRecording::loadFromPath(const char *filename, int SampleRate, int mChannelCount) {
     int16_t * out = nullptr; /* signed 16 bit int */
+    char * outFileName;
     size_t outsize = 0;
-    clock__time__code__block(resample(filename, 44100, mChannelCount, &out, &outsize, SampleRate), core_print_time);
+    clock__time__code__block(resample(filename, 10500, mChannelCount, &outFileName, SampleRate), core_print_time);
+    LOGD("READING OUTPUT FILE");
+    clock__time__code__block(outsize = read__(outFileName, reinterpret_cast<char **>(&out)), core_print_time);
+
+    LOGD("GENERATING WAVEFORM");
+    std::string ar_ = std::to_string(SampleRate);
+    const char * ar = ar_.c_str();
+    std::string ac_ = std::to_string(mChannelCount);
+    const char * ac = ac_.c_str();
+
+    std::string cacheWaveform_ = std::string(TMPDIR) + "waveform.png";
+    const char *cacheWaveform = cacheWaveform_.c_str();
+
+    // TODO: have jni callback to load image on availability
+    clock__time__code__block(FFMPEG_GEN_AUDIO_WAVEFORM(outFileName, true, ar, ac, cacheWaveform), core_print_time);
 
     const uint64_t totalFrames = outsize / (2 * mChannelCount);
     WAVEFORMAUDIODATATOTALFRAMES = totalFrames;

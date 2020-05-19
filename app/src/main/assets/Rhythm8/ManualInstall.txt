@@ -1,0 +1,14 @@
+PSP Rhythm 8.0
+Manual Install Instructions
+
+PSP 1.5 Firmware
+1. Copy the "Rhythm" folder and paste it into your "GAME" folder on your PSP.
+2. Copy over the "Rhythm" and "Rhythm%" folders from the "1.5" folder and paste it into your "GAME" folder on your PSP.
+3. Then run PSP Rhythm from your game menu.
+
+PSP 3.x and Above Firmware
+1. Copy the "Rhythm" folder and paste it into your "GAME" folder on your PSP.
+2. Select PSP Rhythm in the menu to run it.
+
+See http://www.psprhythm.com/forums if you have any problems
+

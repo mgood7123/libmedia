@@ -1,0 +1,12 @@
+//
+// Created by Mac on 17/5/20.
+//
+
+#ifndef MEDIA_PLAYER_PRO_DIRECTORIES_H
+#define MEDIA_PLAYER_PRO_DIRECTORIES_H
+
+
+extern char TMPDIR[4096*2];
+extern char ASSETSDIR[4096*2];
+
+#endif //MEDIA_PLAYER_PRO_DIRECTORIES_H

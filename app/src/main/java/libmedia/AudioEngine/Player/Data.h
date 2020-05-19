@@ -45,7 +45,17 @@ NATIVE(jint, Oboe, bufferCapacity)(JNIEnv *env, jobject thiz) {
 }
 
 NATIVE(jstring, Oboe, getCurrentTime)(JNIEnv *env, jobject thiz) {
-    return (*env).NewStringUTF(GlobalTime.format(false));
+    return env->NewStringUTF(GlobalTime.format(false));
+}
+
+NATIVE(jstring, Oboe, getWaveformLocation)(JNIEnv *env, jobject thiz) {
+    LOGE("WAITING FOR WAVEFORM TO BE READY");
+    while(!WAVEFORM_READY) {
+        // do nothing
+    };
+    LOGE("WAVEFORM IS READY");
+    LOGE("WAVEFORM_LOCATION %s", WAVEFORM_LOCATION.c_str());
+    return env->NewStringUTF(WAVEFORM_LOCATION.c_str());
 }
 
 NATIVE(jlong, Oboe, getAudioTimingNANO)(JNIEnv *env, jobject thiz) {

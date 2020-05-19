@@ -9,8 +9,8 @@
 #include "core.h"
 
 NATIVE(void, Oboe, LoadTrackFromAssets)(JNIEnv *env, jobject type, jstring asset, jobject jAssetManager) {
-    jboolean val;
-    const char * a = env->GetStringUTFChars(asset, &val);
+    WAVEFORM_READY = false;
+    const char * a = JniHelpers::Strings::newJniStringUTF(env, asset);
     mAssetManager = AAssetManager_fromJava(env, jAssetManager);
     currentAudioTrack = SoundRecording::loadFromAssets(
             mAssetManager,
@@ -18,13 +18,15 @@ NATIVE(void, Oboe, LoadTrackFromAssets)(JNIEnv *env, jobject type, jstring asset
             AudioEngine.sampleRate,
             AudioEngine.channelCount
     );
-    env->ReleaseStringUTFChars(asset, a);
+    JniHelpers::Strings::deleteJniStringUTF(&a);
     Mixer.addTrack(currentAudioTrack);
 }
 
 NATIVE(void, Oboe, LoadTrackFromPath)(JNIEnv *env, jobject type, jstring path) {
-    jboolean val;
-    clock__time__code__block(currentAudioTrack = SoundRecording::loadFromPath(env->GetStringUTFChars(path, &val), AudioEngine.sampleRate, AudioEngine.channelCount), core_print_time);
+    WAVEFORM_READY = false;
+    const char * path_ = JniHelpers::Strings::newJniStringUTF(env, path);
+    clock__time__code__block(currentAudioTrack = SoundRecording::loadFromPath(path_, AudioEngine.sampleRate, AudioEngine.channelCount), core_print_time);
+    JniHelpers::Strings::deleteJniStringUTF(&path_);
     Mixer.addTrack(currentAudioTrack);
 }
 

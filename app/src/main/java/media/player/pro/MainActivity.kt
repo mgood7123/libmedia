@@ -43,53 +43,15 @@ class MainActivity : AppCompatActivity() {
             terminalController!!.onClick(toggle_terminal)
         }
 
-        println("android.os.Environment.getExternalStorageDirectory().getPath() = ${android.os.Environment.getExternalStorageDirectory().getPath()}")
-        println("getFilesDir().getPath() = ${getFilesDir().getPath()}")
-        media = Media(this)
-        media!!.init()
-            .loadMediaAssetAsFile("00001313_44100.raw")
-            .loop(true)
+        media = Media(this).also {
+            it.init()
+//            it.loadMediaAssetAsFile("00001313_44100.raw")
+            it.loadMediaAssetAsFile("FUNKY_HOUSE.raw")
+            it.loop(true)
+        }
 
         Builder(this, mainView)
-            .row().height(5)
-            .column {
-                Button(this).also {
-                    it.text = "waveform draw Lines ${media!!.WaveformViewOptions.drawLines}"
-                    it.setOnClickListener { _ ->
-                        media!!.WaveformViewOptions.drawLines = !media!!.WaveformViewOptions.drawLines
-                        it.text = "waveform draw Lines ${media!!.WaveformViewOptions.drawLines}"
-                    }
-                }
-            }
-            .column {
-                Button(this).also {
-                    it.text = "waveform highlight Silence ${media!!.WaveformViewOptions.highlightSilence}"
-                    it.setOnClickListener { _ ->
-                        media!!.WaveformViewOptions.highlightSilence = !media!!.WaveformViewOptions.highlightSilence
-                        it.text = "waveform highlight Silence ${media!!.WaveformViewOptions.highlightSilence}"
-                    }
-                }
-            }
-            .row().height(5)
-            .column {
-                Button(this).also {
-                    it.text = "waveform stretch to screen height ${media!!.WaveformViewOptions.stretchToScreenHeight}"
-                    it.setOnClickListener { _ ->
-                        media!!.WaveformViewOptions.stretchToScreenHeight = !media!!.WaveformViewOptions.stretchToScreenHeight
-                        it.text = "waveform stretch to screen height ${media!!.WaveformViewOptions.stretchToScreenHeight}"
-                    }
-                }
-            }
-            .column {
-                Button(this).also {
-                    it.text = "waveform stretch to screen width ${media!!.WaveformViewOptions.stretchToScreenWidth}"
-                    it.setOnClickListener { _ ->
-                        media!!.WaveformViewOptions.stretchToScreenWidth = !media!!.WaveformViewOptions.stretchToScreenWidth
-                        it.text = "waveform stretch to screen width ${media!!.WaveformViewOptions.stretchToScreenWidth}"
-                    }
-                }
-            }
-            .row().height(70)
+            .row().height(80)
             .column {
                 media!!.WaveformView(
                     context = this,
