@@ -340,10 +340,10 @@ public class TerminalControllerService extends LibService_Service_Connection {
         logPid = session.getPid();
         if (session.isTrackedActivity) {
             session.mSessionName =
-                "logcat -C --pid=" + session.trackedActivityPid +
+                "logcat -v color --pid=" + session.trackedActivityPid +
                     " [CONNECTED: " + trackedActivity.packageName + "]";
         } else {
-            session.mSessionName = "logcat -C --pid=" + JNI.getPid() + " [LOCAL: pid=" + logPid + "]";
+            session.mSessionName = "logcat -v color --pid=" + JNI.getPid() + " [LOCAL: pid=" + logPid + "]";
         }
         JNI.puts(String.format(Locale.ENGLISH, "logcat has started, pid is %d", logPid));
 

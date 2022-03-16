@@ -300,7 +300,7 @@ SoundRecording * SoundRecording::loadFromPath(const char *filename, int SampleRa
     int16_t * out = nullptr; /* signed 16 bit int */
     char * outFileName;
     size_t outsize = 0;
-    clock__time__code__block(resample(filename, 10500, mChannelCount, &outFileName, SampleRate), core_print_time);
+    clock__time__code__block(resample(filename, 48000, mChannelCount, &outFileName, SampleRate), core_print_time);
     LOGD("READING OUTPUT FILE");
     clock__time__code__block(outsize = read__(outFileName, reinterpret_cast<char **>(&out)), core_print_time);
 

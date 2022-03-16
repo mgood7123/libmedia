@@ -468,7 +468,7 @@ public class TerminalService extends LibService_Service_Component implements Ses
         ArrayList<String> processArgs = new ArrayList<>();
         processArgs.add("/sbin/su");
         processArgs.add("-c");
-        processArgs.add("/bin/logcat -C --pid=" + trackedActivity.pid);
+        processArgs.add("/bin/logcat -v color --pid=" + trackedActivity.pid);
         logUtils.log_Info("initiating sh session with following arguments: " + processArgs.toString());
 
         TerminalSession session = new TerminalSession(true, processArgs.get(0), processArgs.toArray(new String[0]), environment.toArray(new String[0]), runtimeDataPath, this, trackedActivity, psuedoTerminal, false, context);
@@ -480,7 +480,8 @@ public class TerminalService extends LibService_Service_Component implements Ses
     TerminalSession startLogcatSessionWithoutRoot(TrackedActivity trackedActivity, int[] psuedoTerminal, ArrayList<String> environment, String runtimeDataPath, Context context) {
         ArrayList<String> processArgs = new ArrayList<>();
         processArgs.add("/bin/logcat");
-        processArgs.add("-C");
+        processArgs.add("-v");
+        processArgs.add("color");
         if (trackedActivity != null) processArgs.add("--pid=" + trackedActivity.pid);
         else processArgs.add("--pid=" + JNI.getPid());
         logUtils.log_Info("initiating sh session with following arguments: " + processArgs.toString());

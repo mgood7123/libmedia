@@ -45,8 +45,8 @@ class MainActivity : AppCompatActivity() {
 
         media = Media(this).also {
             it.init()
-//            it.loadMediaAssetAsFile("00001313_44100.raw")
-            it.loadMediaAssetAsFile("FUNKY_HOUSE.raw")
+            it.loadMediaAssetAsFile("00001313_48000.raw")
+//            it.loadMediaAssetAsFile("FUNKY_HOUSE.raw")
             it.loop(true)
         }
 
